@@ -7,7 +7,7 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
 
   const [ isLiked, setIsLiked ] = useState(false); // GET if user liked the post for initial state.
 
-  const likesWithUser = likes + isLiked ? 1 : 0;
+  const likesWithUser = isLiked ? likes + 1 : likes;
 
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
@@ -22,9 +22,9 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
         <Typography fontSize={18}>{desc}</Typography>
         <Button 
           fontSize={16} 
-          textAlign='right' 
           color={isLiked ? 'error' : 'success'}
           onClick={handleLikeClick}
+          sx={{ alignSelf: 'end' }}
         >
           {isLiked ? 'Unlike' : 'Like'} - {likesWithUser} ⭐
         </Button>
