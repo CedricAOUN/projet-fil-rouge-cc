@@ -2,9 +2,11 @@ import { Box, Button, IconButton, Menu, MenuItem, Link as MuiLink } from "@mui/m
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react";
 import { useMediaQuery } from '@mui/material';
+import LoginModal from "../LoginModal/LoginModal";
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:900px)');
   
   const handleMenuOpen = (event) => {
@@ -14,13 +16,15 @@ export default function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const handleModalOpen = () => setIsOpen(true);
+  const handleModalClose = () => setIsOpen(false);
   
 
   const linkStyles = {
     mx: '5px',
     cursor: 'pointer',
     fontFamily: 'sans-serif',
-    color: 'white',
     fontSize: '18px'
   };
 
@@ -50,7 +54,13 @@ export default function Header() {
               <MenuItem>
                 <MuiLink sx={linkStyles} underline="none" href='/premium'>Premium</MuiLink>
               </MenuItem>
-              <MenuItem onClick={handleMenuClose}>Sign In</MenuItem>
+              <MenuItem 
+                onClick={() => { 
+                  handleModalOpen();
+                  handleMenuClose();
+              }}>
+                Sign In
+              </MenuItem>
             </Menu>
           </>
         ) : (
@@ -60,8 +70,9 @@ export default function Header() {
             <MuiLink href='/premium' sx={linkStyles} underline="none">Premium</MuiLink>
           </Box>
         )}
-        {!isMobile && <Button variant="contained">Sign In</Button>}
+        {!isMobile && <Button variant="contained" onClick={handleModalOpen}>Sign In</Button>}
       </Box>
+      <LoginModal isOpen={isOpen} handleClose={handleModalClose} />
     </header>
   );
 }
