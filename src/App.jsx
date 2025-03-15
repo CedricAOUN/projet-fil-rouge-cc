@@ -3,6 +3,7 @@ import './App.css'
 import Header from './components/Header/Header'
 import SingleRecipePage from './pages/SingleRecipePage/SingleRecipePage'
 import RecipeCreateForm from './pages/RecipeCreateForm/RecipeCreateForm'
+import PremiumCard from './components/PremiumCard/PremiumCard'
 
 function App() {
 
@@ -12,7 +13,7 @@ function App() {
       <main>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<></>} />
+            <Route path='/' element={<PremiumCard></PremiumCard>} />
             <Route path='/recipes' element={<></>} />
             <Route path='/recipe/:id' element={<SingleRecipePage />} />
             <Route path='/recipe-create' element={<RecipeCreateForm />} />

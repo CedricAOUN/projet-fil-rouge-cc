@@ -37,17 +37,17 @@ function RecipeCreateForm() {
   };
 
   return (
-    <Paper sx={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <Typography fontSize={24}>General</Typography>
+    <Paper sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <Typography variant='h4'>General</Typography>
       <Input placeholder="Title" required value={title} onChange={(e) => setTitle(e.target.value)} />
       <TextareaAutosize placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} minRows={4} />
       <Stack direction='row' gap={1} alignItems={'center'}>
         <Input placeholder="Duration (e.g., 30 min)" type='number' value={duration} onChange={(e) => setDuration(e.target.value)} />
-        <Typography>Minutes</Typography>
+        <Typography variant='subtitle2'>Minutes</Typography>
       </Stack>
       <Input placeholder="Image" required type='file' accept="image/png, image/jpeg, image/webp" value={image} onChange={(e) => setImage(e.target.value)} />
 
-      <Typography fontSize={24}>Ingredients</Typography>
+      <Typography variant='h4'>Ingredients</Typography>
 
       {ingredients.map((ingredient, index) => (
         <Stack key={ingredient.id} direction="row" spacing={1} alignItems="center">
@@ -75,7 +75,7 @@ function RecipeCreateForm() {
         +
       </Button>
 
-      <Typography fontSize={24}>Instructions</Typography>
+      <Typography variant='h4'>Instructions</Typography>
       <TextareaAutosize placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} minRows={5} />
       <Button variant="contained" color="primary" onClick={handleSubmit}>
         Submit Recipe

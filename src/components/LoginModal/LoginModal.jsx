@@ -43,7 +43,8 @@ function LoginModal({ isOpen, handleClose }) {
           <Button fullWidth variant="contained" color="primary">
             Login
           </Button>
-          <Typography 
+          <Typography
+            variant='subtitle2' 
             onClick={() => setValue(1)} 
             color='primary' 
             sx={{ textDecoration: 'underline', cursor: 'pointer', marginTop: '10px' }}
@@ -59,7 +60,8 @@ function LoginModal({ isOpen, handleClose }) {
           <Button fullWidth variant="contained" color="primary">
             Sign Up
           </Button>
-          <Typography 
+          <Typography
+            variant='subtitle2'
             onClick={() => setValue(0)} 
             color='primary' 
             sx={{ textDecoration: 'underline', cursor: 'pointer', marginTop: '10px' }}

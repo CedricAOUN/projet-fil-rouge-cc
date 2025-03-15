@@ -3,8 +3,8 @@ import React from 'react'
 
 function StepByStep({ steps }) {
   return (
-    <Paper sx={{ padding: '20px', borderRadius: '15px', flex: 1 }}>
-      <Typography fontSize={24}>Steps</Typography>
+    <Paper sx={{ flex: 1 }}>
+      <Typography variant='h4'>Steps</Typography>
       <Stack>
         {steps}
       </Stack>

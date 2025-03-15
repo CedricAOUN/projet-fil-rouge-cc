@@ -3,8 +3,8 @@ import React from 'react'
 
 function IngredientList({ ingredients }) {
   return (
-    <Paper sx={{ padding: '20px', borderRadius: '15px', flex: 1}}>
-      <Typography fontSize={24}>Ingredients</Typography>
+    <Paper sx={{ flex: 1 }}>
+      <Typography variant='h4'>Ingredients</Typography>
       <Stack>
         {ingredients}
       </Stack>

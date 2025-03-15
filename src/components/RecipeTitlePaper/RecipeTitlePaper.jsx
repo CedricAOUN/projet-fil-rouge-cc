@@ -15,11 +15,11 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
   }
 
   return (
-    <Paper sx={{ display: 'flex', borderRadius: '15px', flexDirection: isMobile ? 'column' : 'row'}}>
+    <Paper sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row'}}>
       <img src={imgUrl} alt={`Image of ${title}`} />
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '30px' }}>
-        <Typography fontSize={24}>{title}</Typography>
-        <Typography fontSize={18}>{desc}</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '30px', flexGrow: 1, alignItems: 'space-between' }}>
+        <Typography variant='h3'>{title}</Typography>
+        <Typography variant='subtitle2'>{desc}</Typography>
         <Button 
           fontSize={16} 
           color={isLiked ? 'error' : 'success'}
