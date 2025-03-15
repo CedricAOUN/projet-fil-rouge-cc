@@ -15,7 +15,7 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
   }
 
   return (
-    <Paper sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row'}}>
+    <Paper sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', padding: 0 }}>
       <img src={imgUrl} alt={`Image of ${title}`} />
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '30px', flexGrow: 1, alignItems: 'space-between' }}>
         <Typography variant='h3'>{title}</Typography>

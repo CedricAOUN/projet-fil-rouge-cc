@@ -1,26 +1,25 @@
-import { Box, Button, IconButton, Menu, MenuItem, Link as MuiLink } from "@mui/material";
+import { Box, Button, IconButton, Menu, MenuItem, Link as MuiLink, Switch } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react";
 import { useMediaQuery } from '@mui/material';
 import LoginModal from "../LoginModal/LoginModal";
+import { DarkModeRounded, LightModeRounded } from "@mui/icons-material";
 
-export default function Header() {
+export default function Header({ currentTheme, onThemeToggle }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:900px)');
-  
+ 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  
+ 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   const handleModalOpen = () => setIsOpen(true);
   const handleModalClose = () => setIsOpen(false);
-  
-
+ 
   const linkStyles = {
     mx: '5px',
     cursor: 'pointer',
@@ -38,7 +37,6 @@ export default function Header() {
         >
           MealMosaic
         </MuiLink>
-        
         {isMobile ? (
           <>
             <IconButton onClick={handleMenuOpen} color="inherit">
@@ -54,12 +52,15 @@ export default function Header() {
               <MenuItem>
                 <MuiLink sx={linkStyles} underline="none" href='/premium'>Premium</MuiLink>
               </MenuItem>
-              <MenuItem 
-                onClick={() => { 
+              <MenuItem
+                onClick={() => {
                   handleModalOpen();
                   handleMenuClose();
               }}>
                 Sign In
+              </MenuItem>
+              <MenuItem onClick={onThemeToggle}>
+                {currentTheme === 'dark' ? 'Light Mode' : 'Dark Mode'}
               </MenuItem>
             </Menu>
           </>
@@ -70,7 +71,20 @@ export default function Header() {
             <MuiLink href='/premium' sx={linkStyles} underline="none">Premium</MuiLink>
           </Box>
         )}
-        {!isMobile && <Button variant="contained" onClick={handleModalOpen}>Sign In</Button>}
+        {!isMobile && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <LightModeRounded />
+              <Switch 
+                checked={currentTheme === 'dark'}
+                onChange={onThemeToggle}
+                color="default"
+              />
+              <DarkModeRounded />
+            </Box>
+            <Button variant="contained" onClick={handleModalOpen}>Sign In</Button>
+          </div>
+        )}
       </Box>
       <LoginModal isOpen={isOpen} handleClose={handleModalClose} />
     </header>

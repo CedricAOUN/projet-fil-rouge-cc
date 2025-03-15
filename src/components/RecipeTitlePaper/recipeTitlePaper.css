@@ -1,13 +1,18 @@
 img {
   width: 300px;
-  border-radius: 15px 0px 0px 15px;
+  border-radius: 4px 0px 0px 4px;
   object-fit: cover;
+  border-right: 3px solid gold;
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1); /* Regular outside shadow */
 }
 
 @media (max-width: 900px) {
   img {
     width: auto;
     height: auto;
-    border-radius: 15px 15px 0px 0px;
+    border-radius: 4px 4px 0px 0px;
+    border-right: none;
+    border-bottom: 3px solid gold;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1); /* Regular outside shadow on smaller screens */
   }
 }
