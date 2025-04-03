@@ -54,7 +54,7 @@ function RecipeCreateForm() {
       description: '',
       instructions: '',
       duration: '',
-      ingredients: [{ name: '', amount: '', unit: '' }],
+      ingredients: [{ name: '', amount: '', unit: 'unit' }],
       image: null,
     },
   });
@@ -123,18 +123,29 @@ function RecipeCreateForm() {
         </Typography>
       </Stack>
 
-      <Stack direction='row' alignItems='center' gap={1}>
+      <Stack direction='row' alignItems='center' gap={'7px'}>
         <ImageIcon />
-        <Typography>{imagePreview}</Typography>
-        <Button variant='contained' component='label'>
-          Upload Image
-          <input
-            type='file'
-            hidden
-            accept='image/png,image/jpeg,image/webp'
-            onChange={handleImageChange}
-          />
-        </Button>
+        <Stack
+          direction={isMobile ? 'column' : 'row'}
+          gap={1}
+          width='100%'
+          justifyContent='center'
+          alignItems='center'
+          border={'1px dashed'}
+          padding='5px'
+          borderRadius={'5px'}
+        >
+          <Typography textAlign='center'>{imagePreview}</Typography>
+          <Button variant='contained' component='label'>
+            Upload Image
+            <input
+              type='file'
+              hidden
+              accept='image/png,image/jpeg,image/webp'
+              onChange={handleImageChange}
+            />
+          </Button>
+        </Stack>
       </Stack>
 
       <Typography variant='h4'>Ingredients</Typography>
@@ -148,7 +159,7 @@ function RecipeCreateForm() {
           direction={isMobile ? 'column' : 'row'}
           spacing={1}
           alignItems='center'
-          sx={{ borderBottom: '1px dotted', paddingBottom: '15px' }}
+          sx={{ borderBottom: '1px solid', paddingBottom: '15px' }}
         >
           <Stack width='100%' gap={1}>
             <Stack direction='row' width='100%' gap={1}>
@@ -160,11 +171,7 @@ function RecipeCreateForm() {
                 error={!!errors.ingredients?.[index]?.name}
               />
               {isMobile && fields.length > 1 && (
-                <Button
-                  variant='outlined'
-                  color='error'
-                  onClick={() => remove(index)}
-                >
+                <Button onClick={() => remove(index)} sx={{ border: 'none' }}>
                   X
                 </Button>
               )}

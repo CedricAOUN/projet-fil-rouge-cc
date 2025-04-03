@@ -2,6 +2,7 @@ body {
   margin: 0;
   font-family: 'Caveat, cursive';
   background-color: gray;
+  transition: background-color 200ms ease-in, color 200ms ease-in;
 }
 
 

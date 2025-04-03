@@ -11,10 +11,28 @@ const getTheme = (mode) => {
       button: { textTransform: 'none' },
     },
     components: {
-      MuiButton: {
+      MuiLink: {
         styleOverrides: {
           root: {
-            borderRadius: '8px',
+            color: mode === 'light' ? '#000' : '#ffffff', // Change text color based on mode
+            position: 'relative', // Ensure the pseudo-element positions correctly
+            textDecoration: 'none', // Remove default underline
+            '&:hover': {
+              color: '#FF4E4E', // Optional: hover color change
+            },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: '0%',
+              height: '2px', // Thickness of the underline
+              backgroundColor: '#FF4E4E', // Underline color
+              transition: 'width 0.3s ease', // Animate the width of the underline
+            },
+            '&:hover::after': {
+              width: '100%', // The underline slides in from the left on hover
+            },
           },
         },
       },
@@ -29,8 +47,8 @@ const getTheme = (mode) => {
         styleOverrides: {
           root: {
             padding: '20px',
-          }
-        }
+          },
+        },
       },
       MuiSelect: {
         styleOverrides: {
@@ -38,6 +56,21 @@ const getTheme = (mode) => {
             display: 'flex',
             alignItems: 'center',
             padding: '12px 16px',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: '20px',
+            background: '#CEB600', // Use a solid color instead of a gradient for transition
+            color: '#000', // Set text color to white
+            transition: 'background-color 0.3s ease, box-shadow 0.3s ease', // Transition only background-color and box-shadow
+            '&:hover': {
+              background: '#FF4E4E', // Change background color on hover
+              color: '#ffffff', // Ensure text stays white
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Optional: add a subtle shadow on hover
+            },
           },
         },
       },
@@ -52,7 +85,7 @@ const getTheme = (mode) => {
             },
           },
         },
-      },   
+      },
     },
   };
 
@@ -78,7 +111,8 @@ const getTheme = (mode) => {
       },
       text: {
         primary: mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : '#ffffff',
-        secondary: mode === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.7)',
+        secondary:
+          mode === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.7)',
       },
     },
     ...commonSettings,

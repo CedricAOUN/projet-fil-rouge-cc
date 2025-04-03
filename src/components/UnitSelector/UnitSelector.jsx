@@ -1,33 +1,23 @@
-import React, { useState } from 'react';
-import {
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  FormHelperText,
-} from '@mui/material';
+import React from 'react';
+import { MenuItem, Select, FormControl, FormHelperText } from '@mui/material';
 import { UNITS } from '../../constants/recipeFormConstants';
 
-function UnitSelector({ onUnitChange, register, index, error }) {
-  const [unit, setUnit] = useState('');
-
-  const handleChange = (event) => {
-    const selectedUnit = event.target.value;
-    setUnit(selectedUnit);
-    if (onUnitChange) {
-      onUnitChange(selectedUnit); // Pass the value to the parent
-    }
-  };
-
+function UnitSelector({ register, index, error }) {
   return (
     <FormControl fullWidth error={!!error}>
-      <InputLabel id={`unit-label-${index}`}>Unit</InputLabel>
       <Select
         {...register(`ingredients.${index}.unit`)} // Pass register here
         labelId={`unit-label-${index}`}
-        value={unit}
-        onChange={handleChange}
+        defaultValue={'unit'}
+        size='small'
+        sx={{
+          maxHeight: '41px',
+          padding: '0px',
+        }}
       >
+        <MenuItem value='unit' disabled>
+          Unit
+        </MenuItem>
         {UNITS.map((unit) => (
           <MenuItem key={unit.value} value={unit.value}>
             {unit.label}
