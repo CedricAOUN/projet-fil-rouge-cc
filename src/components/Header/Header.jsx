@@ -12,7 +12,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import { useMediaQuery } from '@mui/material';
 import LoginModal from '../LoginModal/LoginModal';
-import { DarkModeRounded, LightModeRounded } from '@mui/icons-material';
 import ThemeModeToggle from './ThemeModeToggle';
 
 export default function Header({ currentTheme, onThemeToggle }) {
@@ -53,7 +52,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
           href='/'
           sx={{
             ...linkStyles,
-            fontSize: '30px',
+            fontSize: isMobile ? '20px' : '30px',
             width: '100px',
             display: 'block',
             color: '#FF4E4E',
@@ -73,7 +72,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
           Mosaic
         </MuiLink>
         {isMobile ? (
-          <>
+          <Stack direction='row' gap={1}>
             <IconButton onClick={handleMenuOpen} color='inherit'>
               <MenuIcon />
             </IconButton>
@@ -107,20 +106,14 @@ export default function Header({ currentTheme, onThemeToggle }) {
                   Sign In
                 </MuiLink>
               </MenuItem>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <ThemeModeToggle
-                  currentTheme={currentTheme}
-                  onThemeToggle={onThemeToggle}
-                />
-              </Box>
             </Menu>
-          </>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <ThemeModeToggle
+                currentTheme={currentTheme}
+                onThemeToggle={onThemeToggle}
+              />
+            </Box>
+          </Stack>
         ) : (
           <Stack direction='row' gap='5px'>
             <MuiLink href='/recipes' sx={linkStyles} underline='none'>

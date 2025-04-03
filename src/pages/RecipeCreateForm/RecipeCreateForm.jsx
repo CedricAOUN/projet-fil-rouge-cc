@@ -132,7 +132,7 @@ function RecipeCreateForm() {
           justifyContent='center'
           alignItems='center'
           border={'1px dashed'}
-          padding='5px'
+          padding='10px'
           borderRadius={'5px'}
         >
           <Typography textAlign='center'>{imagePreview}</Typography>
