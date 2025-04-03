@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 
 function UnitSelector({ onUnitChange }) {
-  const [unit, setUnit] = useState('');
+  const [unit, setUnit] = useState('none');
 
   const handleChange = (event) => {
     const selectedUnit = event.target.value;
@@ -13,15 +13,16 @@ function UnitSelector({ onUnitChange }) {
   };
 
   return (
-    <FormControl sx={{ width: '200px' }}>
-      <InputLabel id="unit-select-label">Unit</InputLabel>
+    <FormControl sx={{ minWidth: '150px', width: '100%' }}>
       <Select
         labelId="unit-select-label"
         id="unit-select"
         size='small'
         value={unit}
         onChange={handleChange}
+        sx={{ height: '40px' }}
       >
+        <MenuItem value="none">Unit</MenuItem>
         <MenuItem value="ml">Milliliter (ml)</MenuItem>
         <MenuItem value="l">Liter (L)</MenuItem>
         <MenuItem value="tsp">Teaspoon (tsp)</MenuItem>

@@ -1,83 +1,234 @@
 import React, { useState } from 'react';
-import { Button, Input, Paper, Stack, TextareaAutosize, Typography } from '@mui/material';
+import {
+  Button,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ImageIcon from '@mui/icons-material/Image';
 import UnitSelector from '../../components/UnitSelector/UnitSelector';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+// Define validation schema
+const schema = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  description: yup.string(),
+  instructions: yup.string().required('Instructions are required'),
+  duration: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value)) // Transform empty string to undefined
+    .typeError('Please enter a valid number for duration') // Custom type error
+    .positive('Duration must be positive')
+    .required('Invalid duration'),
+  ingredients: yup
+    .array()
+    .of(
+      yup.object().shape({
+        name: yup.string().required('Ingredient name is required'),
+        amount: yup.string().required('Amount is required'),
+        unit: yup.string().required('Unit is required'),
+      })
+    )
+    .min(1, 'At least one ingredient is required'),
+  image: yup.mixed(),
+});
 
 function RecipeCreateForm() {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [duration, setDuration] = useState('');
-  const [image, setImage] = useState(null);
-  const [ingredients, setIngredients] = useState([{ id: 1, name: '', amount: '', unit: '' }]); // Start with one field
-  const [ingredientId, setIngredientId] = useState(2); // Next available ID
+  const isMobile = useMediaQuery('(max-width:900px)');
+  const [imagePreview, setImagePreview] = useState('No Image Selected');
 
-  // Handle ingredient changes
-  const handleIngredientChange = (index, field, value) => {
-    setIngredients((prevIngredients) =>
-      prevIngredients.map((ingredient, i) =>
-        i === index ? { ...ingredient, [field]: value } : ingredient
-      )
-    );
+  // Initialize React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+    setValue,
+    watch,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      title: '',
+      description: '',
+      instructions: '',
+      duration: '',
+      ingredients: [{ name: '', amount: '', unit: '' }],
+      image: null,
+    },
+  });
+
+  // Setup field array for ingredients
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'ingredients',
+  });
+
+  // Handle image upload
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagePreview(file.name);
+      setValue('image', file);
+    }
   };
 
-  // Add a new ingredient
-  const addIngredient = () => {
-    setIngredients([...ingredients, { id: ingredientId, name: '', amount: '', unit: '' }]);
-    setIngredientId(ingredientId + 1); // Increment ID for the next ingredient
+  // Handle unit selection
+  const handleUnitChange = (index, value) => {
+    setValue(`ingredients.${index}.unit`, value);
   };
 
-  // Remove an ingredient
-  const removeIngredient = (id) => {
-    setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
-  };
-
-  // Submit handler (logs form data)
-  const handleSubmit = () => {
-    const recipeData = { title, description, duration, ingredients, image };
-    console.log('Recipe Data:', recipeData);
+  // Submit handler
+  const onSubmit = (data) => {
+    console.log('Recipe Data:', data);
+    // Here you would typically send the data to your backend
   };
 
   return (
-    <Paper sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <Paper sx={{ display: 'flex', flexDirection: 'column', gap: '20px', p: 3 }}>
       <Typography variant='h4'>General</Typography>
-      <Input placeholder="Title" required value={title} onChange={(e) => setTitle(e.target.value)} />
-      <TextareaAutosize placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} minRows={4} />
+
+      <TextField
+        {...register('title')}
+        placeholder='Title'
+        required
+        error={!!errors.title}
+        helperText={errors.title?.message}
+      />
+
+      <TextField
+        {...register('description')}
+        placeholder='Description'
+        rows={5}
+        multiline
+        error={!!errors.description}
+        helperText={errors.description?.message}
+      />
+
       <Stack direction='row' gap={1} alignItems={'center'}>
-        <Input placeholder="Duration (e.g., 30 min)" type='number' value={duration} onChange={(e) => setDuration(e.target.value)} />
+        <AccessTimeIcon />
+        <TextField
+          {...register('duration')}
+          placeholder='Duration'
+          size='small'
+          type='number'
+          error={!!errors.duration}
+          helperText={errors.duration?.message}
+        />
         <Typography variant='subtitle2'>Minutes</Typography>
       </Stack>
-      <Input placeholder="Image" required type='file' accept="image/png, image/jpeg, image/webp" value={image} onChange={(e) => setImage(e.target.value)} />
+
+      <Stack direction='row' alignItems='center' gap={1}>
+        <ImageIcon />
+        <Typography>{imagePreview}</Typography>
+        <Button variant='contained' component='label'>
+          Upload Image
+          <input
+            type='file'
+            hidden
+            accept='image/png,image/jpeg,image/webp'
+            onChange={handleImageChange}
+          />
+        </Button>
+        {errors.image && (
+          <Typography color='error'>{errors.image.message}</Typography>
+        )}
+      </Stack>
 
       <Typography variant='h4'>Ingredients</Typography>
+      {errors.ingredients && (
+        <Typography color='error'>{errors.ingredients.message}</Typography>
+      )}
 
-      {ingredients.map((ingredient, index) => (
-        <Stack key={ingredient.id} direction="row" spacing={1} alignItems="center">
-          <Input
-            placeholder="Ingredient Name"
-            value={ingredient.name}
-            onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
-            fullWidth
-          />
-          <Input
-            placeholder="Amount"
-            type="number"
-            value={ingredient.amount}
-            onChange={(e) => handleIngredientChange(index, 'amount', e.target.value)}
-          />
-          <UnitSelector onUnitChange={(unit) => handleIngredientChange(index, 'unit', unit)} />
-          {ingredients.length > 1 && (
-            <Button variant="outlined" color="error" onClick={() => removeIngredient(ingredient.id)}>
-              X
-            </Button>
-          )}
+      {fields.map((field, index) => (
+        <Stack
+          key={field.id}
+          direction={isMobile ? 'column' : 'row'}
+          spacing={1}
+          alignItems='center'
+          sx={{ borderBottom: '1px dotted', paddingBottom: '15px' }}
+        >
+          <Stack direction='row' width='100%' gap={1}>
+            <TextField
+              {...register(`ingredients.${index}.name`)}
+              placeholder='Ingredient Name'
+              size='small'
+              fullWidth
+              error={!!errors.ingredients?.[index]?.name}
+              helperText={errors.ingredients?.[index]?.name?.message}
+            />
+            {isMobile && fields.length > 1 && (
+              <Button
+                variant='outlined'
+                color='error'
+                onClick={() => remove(index)}
+              >
+                X
+              </Button>
+            )}
+          </Stack>
+
+          <Stack direction='row' alignItems='center' spacing={1} width={'100%'}>
+            <TextField
+              {...register(`ingredients.${index}.amount`)}
+              sx={{ width: !isMobile ? '150px' : 'auto', minWidth: '100px' }}
+              fullWidth
+              placeholder='Amount'
+              type='text'
+              size='small'
+              error={!!errors.ingredients?.[index]?.amount}
+              helperText={errors.ingredients?.[index]?.amount?.message}
+            />
+
+            <Typography>X</Typography>
+
+            <UnitSelector
+              onUnitChange={(unit) => handleUnitChange(index, unit)}
+              error={!!errors.ingredients?.[index]?.unit}
+              helperText={errors.ingredients?.[index]?.unit?.message}
+              value={watch(`ingredients.${index}.unit`)}
+            />
+
+            {!isMobile && fields.length > 1 && (
+              <Button
+                variant='outlined'
+                color='error'
+                onClick={() => remove(index)}
+              >
+                X
+              </Button>
+            )}
+          </Stack>
         </Stack>
       ))}
-      <Button variant="contained" onClick={addIngredient} sx={{ fontSize: '20px', width: '30px', margin: '0 auto' }}>
+
+      <Button
+        variant='contained'
+        onClick={() => append({ name: '', amount: '', unit: '' })}
+        sx={{ fontSize: '20px', width: '30px', margin: '0 auto' }}
+      >
         +
       </Button>
 
       <Typography variant='h4'>Instructions</Typography>
-      <TextareaAutosize placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} minRows={5} />
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
+      <TextField
+        {...register('instructions')}
+        placeholder='Instructions'
+        rows={5}
+        multiline
+        error={!!errors.instructions}
+        helperText={errors.instructions?.message}
+      />
+
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={handleSubmit(onSubmit)}
+      >
         Submit Recipe
       </Button>
     </Paper>

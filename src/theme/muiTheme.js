@@ -32,43 +32,27 @@ const getTheme = (mode) => {
           }
         }
       },
-      MuiInput: {
+      MuiSelect: {
         styleOverrides: {
-          root: {
-            borderRadius: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.09)',
-            border: '1px solid #333',
-            transition: 'all 0.3s ease-in-out',
+          select: {
+            display: 'flex',
+            alignItems: 'center',
             padding: '12px 16px',
-            fontSize: '16px',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.13)',
-            },
-            '&:before': {
-              borderBottom: 'none',
-            },
-            '&:after': {
-              borderBottom: 'none',
-            },
-            '&.Mui-focused': {
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-              boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.3)',
-            },
-            '&.Mui-error': {
-              backgroundColor: 'rgba(211, 47, 47, 0.1)',
-              boxShadow: '0 0 0 2px rgba(211, 47, 47, 0.3)',
-            },
           },
-          input: {
-            padding: '0',
-            height: '1.4em',
-            '&::placeholder': {
-              opacity: 0.7,
-              fontStyle: 'italic',
+        },
+      },
+      MuiInputLabel: {
+        styleOverrides: {
+          outlined: {
+            transform: 'translate(14px, 16px) scale(1)', // Start lower inside field
+            '&.MuiInputLabel-shrink': {
+              transform: 'translate(14px, -10px) scale(0.75)', // Move fully above border
+              padding: '0 4px', // Adds spacing around text
+              backgroundColor: mode === 'light' ? '#f5f5f5' : '#2A2A2A',
             },
           },
         },
-      },      
+      },   
     },
   };
 
