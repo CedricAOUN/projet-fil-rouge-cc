@@ -13,6 +13,7 @@ import UnitSelector from '../../components/UnitSelector/UnitSelector';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { UNIT_VALUES, UNITS } from '../../constants/recipeFormConstants';
 
 // Define validation schema
 const schema = yup.object().shape({
@@ -21,21 +22,18 @@ const schema = yup.object().shape({
   instructions: yup.string().required('Instructions are required'),
   duration: yup
     .number()
-    .transform((value) => (isNaN(value) ? undefined : value)) // Transform empty string to undefined
     .typeError('Please enter a valid number for duration') // Custom type error
-    .positive('Duration must be positive')
-    .required('Invalid duration'),
+    .positive('Duration must be positive'),
   ingredients: yup
     .array()
     .of(
       yup.object().shape({
         name: yup.string().required('Ingredient name is required'),
         amount: yup.string().required('Amount is required'),
-        unit: yup.string().required('Unit is required'),
+        unit: yup.string().oneOf(UNIT_VALUES, 'Unit is required'),
       })
     )
     .min(1, 'At least one ingredient is required'),
-  image: yup.mixed(),
 });
 
 function RecipeCreateForm() {
@@ -49,7 +47,6 @@ function RecipeCreateForm() {
     formState: { errors },
     control,
     setValue,
-    watch,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -108,18 +105,22 @@ function RecipeCreateForm() {
         error={!!errors.description}
         helperText={errors.description?.message}
       />
-
-      <Stack direction='row' gap={1} alignItems={'center'}>
-        <AccessTimeIcon />
-        <TextField
-          {...register('duration')}
-          placeholder='Duration'
-          size='small'
-          type='number'
-          error={!!errors.duration}
-          helperText={errors.duration?.message}
-        />
-        <Typography variant='subtitle2'>Minutes</Typography>
+      <Stack>
+        <Stack direction='row' gap={1} alignItems={'center'}>
+          <AccessTimeIcon />
+          <TextField
+            {...register('duration')}
+            placeholder='Duration'
+            size='small'
+            type='number'
+            required
+            error={!!errors.duration}
+          />
+          <Typography variant='subtitle2'>Minutes</Typography>
+        </Stack>
+        <Typography variant='subtitle2' color='error'>
+          {errors.duration?.message}
+        </Typography>
       </Stack>
 
       <Stack direction='row' alignItems='center' gap={1}>
@@ -134,9 +135,6 @@ function RecipeCreateForm() {
             onChange={handleImageChange}
           />
         </Button>
-        {errors.image && (
-          <Typography color='error'>{errors.image.message}</Typography>
-        )}
       </Stack>
 
       <Typography variant='h4'>Ingredients</Typography>
@@ -152,56 +150,70 @@ function RecipeCreateForm() {
           alignItems='center'
           sx={{ borderBottom: '1px dotted', paddingBottom: '15px' }}
         >
-          <Stack direction='row' width='100%' gap={1}>
-            <TextField
-              {...register(`ingredients.${index}.name`)}
-              placeholder='Ingredient Name'
-              size='small'
-              fullWidth
-              error={!!errors.ingredients?.[index]?.name}
-              helperText={errors.ingredients?.[index]?.name?.message}
-            />
-            {isMobile && fields.length > 1 && (
-              <Button
-                variant='outlined'
-                color='error'
-                onClick={() => remove(index)}
-              >
-                X
-              </Button>
-            )}
-          </Stack>
+          <Stack width='100%' gap={1}>
+            <Stack direction='row' width='100%' gap={1}>
+              <TextField
+                {...register(`ingredients.${index}.name`)}
+                placeholder='Ingredient Name'
+                size='small'
+                fullWidth
+                error={!!errors.ingredients?.[index]?.name}
+              />
+              {isMobile && fields.length > 1 && (
+                <Button
+                  variant='outlined'
+                  color='error'
+                  onClick={() => remove(index)}
+                >
+                  X
+                </Button>
+              )}
+            </Stack>
 
-          <Stack direction='row' alignItems='center' spacing={1} width={'100%'}>
-            <TextField
-              {...register(`ingredients.${index}.amount`)}
-              sx={{ width: !isMobile ? '150px' : 'auto', minWidth: '100px' }}
-              fullWidth
-              placeholder='Amount'
-              type='text'
-              size='small'
-              error={!!errors.ingredients?.[index]?.amount}
-              helperText={errors.ingredients?.[index]?.amount?.message}
-            />
+            <Stack
+              direction='row'
+              alignItems='center'
+              spacing={1}
+              width={'100%'}
+            >
+              <TextField
+                {...register(`ingredients.${index}.amount`)}
+                sx={{ width: !isMobile ? '150px' : 'auto', minWidth: '100px' }}
+                fullWidth
+                placeholder='Amount'
+                type='text'
+                size='small'
+                error={!!errors.ingredients?.[index]?.amount}
+              />
 
-            <Typography>X</Typography>
+              <Typography>X</Typography>
 
-            <UnitSelector
-              onUnitChange={(unit) => handleUnitChange(index, unit)}
-              error={!!errors.ingredients?.[index]?.unit}
-              helperText={errors.ingredients?.[index]?.unit?.message}
-              value={watch(`ingredients.${index}.unit`)}
-            />
+              <UnitSelector
+                onUnitChange={(unit) => handleUnitChange(index, unit)}
+                error={!!errors.ingredients?.[index]?.unit}
+                register={register}
+                index={index}
+              />
 
-            {!isMobile && fields.length > 1 && (
-              <Button
-                variant='outlined'
-                color='error'
-                onClick={() => remove(index)}
-              >
-                X
-              </Button>
-            )}
+              {!isMobile && fields.length > 1 && (
+                <Button
+                  variant='outlined'
+                  color='error'
+                  onClick={() => remove(index)}
+                >
+                  X
+                </Button>
+              )}
+            </Stack>
+            <Typography color='error'>
+              {errors.ingredients?.[index]?.name?.message}
+            </Typography>
+            <Typography color='error'>
+              {errors.ingredients?.[index]?.amount?.message}
+            </Typography>
+            <Typography color='error'>
+              {errors.ingredients?.[index]?.unit?.message}
+            </Typography>
           </Stack>
         </Stack>
       ))}
