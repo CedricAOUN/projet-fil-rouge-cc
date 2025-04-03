@@ -113,6 +113,7 @@ const getTheme = (mode) => {
         primary: mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : '#ffffff',
         secondary:
           mode === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.7)',
+        disabled: 'rgb(158, 158, 158)',
       },
     },
     ...commonSettings,
