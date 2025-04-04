@@ -1,4 +1,4 @@
-import { Typography, Paper, Stack } from '@mui/material';
+import { Typography, Paper, Stack, Box } from '@mui/material';
 import React from 'react';
 
 function CommentList({ comments }) {
@@ -7,10 +7,17 @@ function CommentList({ comments }) {
       <Typography variant='h4'>Comments</Typography>
       {comments.map((comment, index) => (
         <Paper key={index}>
-          <Typography variant='h6'>
-            {comment.user} - {comment.date}
-          </Typography>
+          <Stack direction='row'>
+            <Typography variant='h6' sx={{ textDecoration: 'underline' }}>
+              {comment.user}:
+            </Typography>
+          </Stack>
           <Typography variant='subtitle'>{comment.message}</Typography>
+          <Box>
+            <Typography variant='subtitle2' textAlign='end'>
+              {comment.date}
+            </Typography>
+          </Box>
         </Paper>
       ))}
     </Stack>

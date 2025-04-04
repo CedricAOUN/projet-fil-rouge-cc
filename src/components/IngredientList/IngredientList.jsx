@@ -6,8 +6,8 @@ function IngredientList({ ingredients }) {
     <Paper sx={{ flex: 1 }}>
       <Typography variant='h4'>Ingredients</Typography>
       <Stack>
-        {ingredients.map((ingr) => (
-          <Typography variant='subtitle'>
+        {ingredients.map((ingr, index) => (
+          <Typography variant='subtitle' key={index}>
             - {ingr.name} x {ingr.amount} {ingr.unit}
           </Typography>
         ))}

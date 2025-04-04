@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import './recipeTitlePaper.css';
-import { Box, Button, Paper, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Paper,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 
 function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
   const isMobile = useMediaQuery('(max-width:900px)');
@@ -35,13 +42,17 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
       >
         <Typography variant='h3'>{title}</Typography>
         <Typography variant='subtitle2'>{desc}</Typography>
-        <Button
-          fontSize={16}
-          onClick={handleLikeClick}
-          sx={{ alignSelf: 'end', backgroundColor: 'success' }}
+        <Stack
+          direction='row'
+          alignItems='center'
+          justifyContent='flex-end'
+          gap={1}
         >
-          {isLiked ? '👎' : '👍'} - {likesWithUser}
-        </Button>
+          <Button variant='contained' fontSize={16} onClick={handleLikeClick}>
+            {isLiked ? 'Unlike' : 'Like'}
+          </Button>
+          <Typography>{likesWithUser}</Typography>
+        </Stack>
       </Box>
     </Paper>
   );
