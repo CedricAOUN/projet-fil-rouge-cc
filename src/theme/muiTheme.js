@@ -74,18 +74,6 @@ const getTheme = (mode) => {
           },
         },
       },
-      MuiInputLabel: {
-        styleOverrides: {
-          outlined: {
-            transform: 'translate(14px, 16px) scale(1)', // Start lower inside field
-            '&.MuiInputLabel-shrink': {
-              transform: 'translate(14px, -10px) scale(0.75)', // Move fully above border
-              padding: '0 4px', // Adds spacing around text
-              backgroundColor: mode === 'light' ? '#f5f5f5' : '#2A2A2A',
-            },
-          },
-        },
-      },
     },
   };
 
@@ -94,23 +82,23 @@ const getTheme = (mode) => {
     palette: {
       mode, // 'light' or 'dark'
       primary: {
-        main: '#1976d2',
-        light: '#42a5f5',
-        dark: '#1565c0',
-        contrastText: '#ffffff',
+        main: '#CEB600',
+        light: '#CEB600',
+        dark: '#FDA34B',
+        contrastText: '#f5f5f5',
       },
       secondary: {
-        main: '#9c27b0',
-        light: '#ba68c8',
-        dark: '#7b1fa2',
-        contrastText: '#ffffff',
+        main: '#FF4E4E',
+        light: '#FF5D4E',
+        dark: '#753232',
+        contrastText: '#f5f5f5',
       },
       background: {
         default: mode === 'light' ? '#f5f5f5' : '#121212',
-        paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
+        paper: mode === 'light' ? '#f5f5f5' : '#1e1e1e',
       },
       text: {
-        primary: mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : '#ffffff',
+        primary: mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : '#f5f5f5',
         secondary:
           mode === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.7)',
         disabled: 'rgb(158, 158, 158)',

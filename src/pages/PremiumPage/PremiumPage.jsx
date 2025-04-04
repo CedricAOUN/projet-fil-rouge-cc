@@ -1,4 +1,6 @@
 import {
+  Badge,
+  Box,
   Button,
   MenuItem,
   Paper,
@@ -13,6 +15,7 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import React, { useRef, useState } from 'react';
 
+// TODO: Put these in DB for configuration
 const PREMIUM_TIERS = [
   {
     id: 'home-cook',
@@ -62,59 +65,78 @@ function PremiumPage() {
       <Typography variant='h1'>Premium</Typography>
       <Stack direction={isMobile ? 'column' : 'row'} width='100%' gap={1}>
         {PREMIUM_TIERS.map((tier, index) => (
-          <Paper
+          <Badge
             key={index}
+            badgeContent={tier?.isPopular && 'Most Popular'}
+            color='secondary'
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             sx={{
               flexGrow: 1,
-              textAlign: 'center',
-              display: 'grid',
-              gridTemplateRows: '1fr 2fr 3fr',
-              gap: '10px',
+              '& .MuiBadge-badge': {
+                transform: 'translate(-5%, -30%)',
+              },
             }}
           >
-            <Typography variant='h4' fontWeight={700}>
-              {tier.title}
-            </Typography>
+            <Paper
+              sx={{
+                flexGrow: 1,
+                textAlign: 'center',
+                display: 'grid',
+                gridTemplateRows: '1fr 2fr 3fr',
+                gap: '10px',
+                position: 'relative',
+              }}
+            >
+              {/* Title */}
+              <Typography variant='h4' fontWeight={700}>
+                {tier?.title}
+              </Typography>
 
-            <Stack justifyContent={'center'} height='100%' gap={1}>
-              <Typography
-                variant='h2'
-                fontSize={50}
-                color='text.disabled'
-                sx={{ textDecoration: 'line-through' }}
-              >
-                ${tier?.prevPrice}
-              </Typography>
-              <Typography
-                variant='h2'
-                fontSize={50}
-                mb={tier.price === 0 ? '60px' : undefined}
-              >
-                {tier?.price !== 0 ? `$${tier.price}` : 'Free'}
-              </Typography>
-              {tier.price !== 0 && (
+              {/* Pricing + Button */}
+              <Stack justifyContent={'center'} height='100%' gap={1}>
+                {tier?.prevPrice && (
+                  <Typography
+                    variant='h2'
+                    fontSize={50}
+                    color='text.disabled'
+                    sx={{ textDecoration: 'line-through' }}
+                  >
+                    ${tier?.prevPrice}
+                  </Typography>
+                )}
                 <Typography
-                  variant='subtitle'
-                  mb={tier.price === 'Free' ? '60px' : undefined}
+                  variant='h2'
+                  fontSize={50}
+                  mb={tier?.price === 0 ? '60px' : undefined}
                 >
-                  ${tier.price * 12} per year
+                  {tier?.price !== 0 ? `$${tier.price}` : 'Free'}
                 </Typography>
-              )}
-              {tier?.isSelectable && (
-                <Button onClick={() => handleTierSelect(tier.id)}>
-                  Get Started
-                </Button>
-              )}
-            </Stack>
-            <Stack mt={4} gap={2}>
-              {tier?.features?.map((feat, index) => (
-                <Stack direction='row' gap={1} key={index}>
-                  <DoneIcon color='success' />
-                  <Typography variant='subtitle'>{feat}</Typography>
-                </Stack>
-              ))}
-            </Stack>
-          </Paper>
+                {tier?.price !== 0 && (
+                  <Typography
+                    variant='subtitle'
+                    mb={tier?.price === 'Free' ? '60px' : undefined}
+                  >
+                    ${tier?.price * 12} per year
+                  </Typography>
+                )}
+                {tier?.isSelectable && (
+                  <Button onClick={() => handleTierSelect(tier.id)}>
+                    Get Started
+                  </Button>
+                )}
+              </Stack>
+
+              {/* Features */}
+              <Stack mt={4} gap={2}>
+                {tier?.features?.map((feat, index) => (
+                  <Stack direction='row' gap={1} key={index}>
+                    <DoneIcon color='success' />
+                    <Typography variant='subtitle'>{feat}</Typography>
+                  </Stack>
+                ))}
+              </Stack>
+            </Paper>
+          </Badge>
         ))}
       </Stack>
       <Typography variant='h1' ref={paymentSectionRef}>

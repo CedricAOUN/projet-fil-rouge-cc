@@ -162,6 +162,7 @@ function RecipeCreateForm() {
           sx={{ borderBottom: '1px solid', paddingBottom: '15px' }}
         >
           <Stack width='100%' gap={1}>
+            <Typography fullWidth>Ingredient {index + 1}</Typography>
             <Stack direction='row' width='100%' gap={1}>
               <TextField
                 {...register(`ingredients.${index}.name`)}

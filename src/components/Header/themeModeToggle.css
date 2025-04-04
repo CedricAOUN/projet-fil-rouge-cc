@@ -1,16 +1,17 @@
 .track {
-  background-image: url('../../assets/track-day.png');
-  background-size: cover;
+  background-image: url('../../assets/track-full-2.jpg');
+  background-position: 15% 50%;
   width: 60px;
   height: 30px;
   border-radius: 15px;
   display: flex;
   align-items: center;
   box-shadow: inset 0 0 5px rgba(5, 5, 5, 0.6);
+  transition: background-position 200ms linear;
 }
 
 .track-night {
-  background-image: url('../../assets/track-night.png');
+  background-position: 80% 50%;
 }
 
 .circle {
