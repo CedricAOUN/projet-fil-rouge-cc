@@ -4,39 +4,36 @@ import RecipeTitlePaper from '../../components/RecipeTitlePaper/RecipeTitlePaper
 import IngredientList from '../../components/IngredientList/IngredientList';
 import StepByStep from '../../components/StepByStep/StepByStep';
 import CommentList from '../../components/CommentList/CommentList';
+import { MOCK_RECIPES } from '../../api/mockApi';
+import { useParams } from 'react-router-dom';
 
-// Mock recipe data to use as default
-const mockRecipe = {
-  title: "Classic Chocolate Chip Cookies",
-  desc: "Soft and chewy chocolate chip cookies with a golden edge. Perfect for any occasion!",
-  imgUrl: 'https://t3.ftcdn.net/jpg/00/92/53/56/360_F_92535664_IvFsQeHjBzfE6sD4VHdO8u5OHUSc6yHF.jpg',
-  likes: 243,
-  ingredients: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus dolores nihil ab ipsum asperiores temporibus quae quos quam fugit itaque!',
-  steps: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus dolores nihil ab ipsum asperiores temporibus quae quos quam fugit itaque!',
-  comments: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus dolores nihil ab ipsum asperiores temporibus quae quos quam fugit itaque!'
-};
-
-const SingleRecipePage = (props) => {
+const SingleRecipePage = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
-  
-  // Use props.recipe if provided, otherwise use mockRecipe
-  const recipeData = props.recipe || mockRecipe;
-  
+  const { id } = useParams();
+
+  // TODO: replace when backend is in place
+  const recipeData = MOCK_RECIPES.find((recipe) => recipe.id === id);
+
   const {
     title,
-    desc,
-    imgUrl,
+    description,
+    img_url,
     likes,
     ingredients,
-    steps,
+    instructions,
     comments,
   } = recipeData;
   return (
     <Stack gap={2}>
-      <RecipeTitlePaper title={title} desc={desc} likes={likes} imgUrl={imgUrl} />
+      <RecipeTitlePaper
+        title={title}
+        desc={description}
+        likes={likes}
+        imgUrl={img_url}
+      />
       <Stack direction={isMobile ? 'column' : 'row'} gap={2}>
         <IngredientList ingredients={ingredients} />
-        <StepByStep steps={steps} />
+        <StepByStep instructions={instructions} />
       </Stack>
       <CommentList comments={comments} />
     </Stack>

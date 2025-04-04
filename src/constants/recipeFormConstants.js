@@ -1,6 +1,7 @@
 export const UNITS = [
   { value: 'ml', label: 'Milliliter (ml)' },
   { value: 'l', label: 'Liter (L)' },
+  { value: 'pcs', label: 'Pieces' },
   { value: 'tsp', label: 'Teaspoon (tsp)' },
   { value: 'tbsp', label: 'Tablespoon (tbsp)' },
   { value: 'cup', label: 'Cup' },

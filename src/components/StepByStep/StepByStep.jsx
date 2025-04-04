@@ -1,15 +1,13 @@
-import { Paper, Stack, Typography } from '@mui/material'
-import React from 'react'
+import { Paper, Stack, Typography } from '@mui/material';
+import React from 'react';
 
-function StepByStep({ steps }) {
+function StepByStep({ instructions }) {
   return (
     <Paper sx={{ flex: 1 }}>
       <Typography variant='h4'>Steps</Typography>
-      <Stack>
-        {steps}
-      </Stack>
+      <Stack>{instructions}</Stack>
     </Paper>
-  )
+  );
 }
 
-export default StepByStep
+export default StepByStep;
