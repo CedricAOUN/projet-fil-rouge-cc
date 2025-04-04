@@ -13,7 +13,8 @@ import UnitSelector from '../../components/UnitSelector/UnitSelector';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { UNIT_VALUES, UNITS } from '../../constants/recipeFormConstants';
+import { UNIT_VALUES } from '../../constants/recipeFormConstants';
+import './recipeCreateForm.css';
 
 // Define validation schema
 const schema = yup.object().shape({
@@ -38,7 +39,8 @@ const schema = yup.object().shape({
 
 function RecipeCreateForm() {
   const isMobile = useMediaQuery('(max-width:900px)');
-  const [imagePreview, setImagePreview] = useState('No Image Selected');
+  const [imageName, setImageName] = useState('No Image Selected');
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Initialize React Hook Form
   const {
@@ -69,8 +71,16 @@ function RecipeCreateForm() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImagePreview(file.name);
+      setImageName(file.name);
       setValue('image', file);
+
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setImagePreview(reader.result); // base64 data URL
+      };
+
+      reader.readAsDataURL(file);
     }
   };
 
@@ -126,7 +136,6 @@ function RecipeCreateForm() {
       <Stack direction='row' alignItems='center' gap={'7px'}>
         <ImageIcon />
         <Stack
-          direction={isMobile ? 'column' : 'row'}
           gap={1}
           width='100%'
           justifyContent='center'
@@ -135,16 +144,19 @@ function RecipeCreateForm() {
           padding='10px'
           borderRadius={'5px'}
         >
-          <Typography textAlign='center'>{imagePreview}</Typography>
-          <Button variant='contained' component='label'>
-            Upload Image
-            <input
-              type='file'
-              hidden
-              accept='image/png,image/jpeg,image/webp'
-              onChange={handleImageChange}
-            />
-          </Button>
+          <Stack gap={1}>
+            <Typography textAlign='center'>{imageName}</Typography>
+            <img className='image-preview' src={imagePreview} />
+            <Button variant='contained' component='label'>
+              {imagePreview ? 'Change' : 'Upload'} image
+              <input
+                type='file'
+                hidden
+                accept='image/png,image/jpeg,image/webp'
+                onChange={handleImageChange}
+              />
+            </Button>
+          </Stack>
         </Stack>
       </Stack>
 

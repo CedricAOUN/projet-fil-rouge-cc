@@ -63,7 +63,7 @@ function App() {
             <Route path='/' element={<PremiumCard />} />
             <Route path='/recipes' element={<></>} />
             <Route path='/recipe/:id' element={<SingleRecipePage />} />
-            <Route path='/recipe-create' element={<RecipeCreateForm />} />
+            <Route path='/recipe/create' element={<RecipeCreateForm />} />
             <Route path='/experts' element={<></>} />
             <Route path='/experts/:id' element={<></>} />
             <Route path='/premium' element={<PremiumPage />} />

@@ -29,7 +29,7 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
         padding: 0,
       }}
     >
-      <img src={imgUrl} alt={`Image of ${title}`} />
+      <img className='recipe-img' src={imgUrl} alt={`Image of ${title}`} />
       <Box
         sx={{
           display: 'flex',
@@ -48,7 +48,7 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
           justifyContent='flex-end'
           gap={1}
         >
-          <Button variant='contained' fontSize={16} onClick={handleLikeClick}>
+          <Button variant='contained' onClick={handleLikeClick}>
             {isLiked ? 'Unlike' : 'Like'}
           </Button>
           <Typography>{likesWithUser}</Typography>

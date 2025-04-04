@@ -1,4 +1,4 @@
-img {
+.recipe-img {
   width: 300px;
   border-radius: 4px 0px 0px 4px;
   object-fit: cover;
@@ -7,7 +7,7 @@ img {
 }
 
 @media (max-width: 900px) {
-  img {
+  .recipe-img {
     width: auto;
     height: auto;
     border-radius: 4px 4px 0px 0px;
