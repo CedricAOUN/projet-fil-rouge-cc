@@ -6,13 +6,13 @@ import {
   MenuItem,
   Link as MuiLink,
   Stack,
-  Switch,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import { useMediaQuery } from '@mui/material';
 import LoginModal from '../LoginModal/LoginModal';
 import ThemeModeToggle from './ThemeModeToggle';
+import { NavLink } from 'react-router-dom';
 
 export default function Header({ currentTheme, onThemeToggle }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -26,6 +26,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
   const handleModalOpen = () => setIsOpen(true);
   const handleModalClose = () => setIsOpen(false);
 
@@ -34,13 +35,20 @@ export default function Header({ currentTheme, onThemeToggle }) {
     cursor: 'pointer',
     fontFamily: 'sans-serif',
     fontSize: '18px',
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'none',
+      '&::after': {
+        width: '0%',
+      },
+    },
   };
 
   return (
     <header>
       <Box
         sx={{
-          backgroundColor: currentTheme == 'light' ? '#fff' : '#1f1f1f',
+          backgroundColor: currentTheme === 'light' ? '#fff' : '#1f1f1f',
           boxShadow: '0px 8px 14px -3px rgba(0,0,0,0.2)',
           padding: '20px 15%',
           display: 'flex',
@@ -49,28 +57,22 @@ export default function Header({ currentTheme, onThemeToggle }) {
         }}
       >
         <MuiLink
-          href='/'
+          component={NavLink}
+          to='/'
           sx={{
             ...linkStyles,
             fontSize: isMobile ? '20px' : '30px',
             width: '100px',
             display: 'block',
             color: '#FF4E4E',
-            textDecoration: 'none', // Ensure no underline by default
-            '&:hover': {
-              textDecoration: 'none', // Disable the hover underline
-              '&::after': {
-                width: '0%', // Disable the underline sliding effect
-              },
-            },
           }}
-          underline='none'
         >
           <Box component='span' sx={{ color: '#CEB600', fontWeight: 700 }}>
             Meal
           </Box>
           Mosaic
         </MuiLink>
+
         {isMobile ? (
           <Stack direction='row' gap={1}>
             <IconButton onClick={handleMenuOpen} color='inherit'>
@@ -82,17 +84,17 @@ export default function Header({ currentTheme, onThemeToggle }) {
               onClose={handleMenuClose}
             >
               <MenuItem>
-                <MuiLink sx={linkStyles} underline='none' href='/recipes'>
+                <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
                   Recipes
                 </MuiLink>
               </MenuItem>
               <MenuItem>
-                <MuiLink sx={linkStyles} underline='none' href='/experts'>
+                <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
                   Experts
                 </MuiLink>
               </MenuItem>
               <MenuItem>
-                <MuiLink sx={linkStyles} underline='none' href='/premium'>
+                <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
                   Premium
                 </MuiLink>
               </MenuItem>
@@ -102,9 +104,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
                   handleMenuClose();
                 }}
               >
-                <MuiLink sx={linkStyles} underline='none'>
-                  Sign In
-                </MuiLink>
+                <MuiLink sx={linkStyles}>Sign In</MuiLink>
               </MenuItem>
             </Menu>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -116,17 +116,18 @@ export default function Header({ currentTheme, onThemeToggle }) {
           </Stack>
         ) : (
           <Stack direction='row' gap='5px'>
-            <MuiLink href='/recipes' sx={linkStyles} underline='none'>
+            <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
               Recipes
             </MuiLink>
-            <MuiLink href='/experts' sx={linkStyles} underline='none'>
+            <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
               Experts
             </MuiLink>
-            <MuiLink href='/premium' sx={linkStyles} underline='none'>
+            <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
               Premium
             </MuiLink>
           </Stack>
         )}
+
         {!isMobile && (
           <Stack direction='row' gap='10px' alignItems='center'>
             <Button variant='contained' onClick={handleModalOpen}>

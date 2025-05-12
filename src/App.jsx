@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header/Header';
 import SingleRecipePage from './pages/SingleRecipePage/SingleRecipePage';
@@ -58,17 +58,15 @@ function App() {
       <CssBaseline />
       <Header currentTheme={mode} onThemeToggle={toggleMode} />
       <main>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={<PremiumCard />} />
-            <Route path='/recipes' element={<></>} />
-            <Route path='/recipe/:id' element={<SingleRecipePage />} />
-            <Route path='/recipe/create' element={<RecipeCreateForm />} />
-            <Route path='/experts' element={<></>} />
-            <Route path='/experts/:id' element={<></>} />
-            <Route path='/premium' element={<PremiumPage />} />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path='/' element={<PremiumCard />} />
+          <Route path='/recipes' element={<></>} />
+          <Route path='/recipe/:id' element={<SingleRecipePage />} />
+          <Route path='/recipe/create' element={<RecipeCreateForm />} />
+          <Route path='/experts' element={<></>} />
+          <Route path='/experts/:id' element={<></>} />
+          <Route path='/premium' element={<PremiumPage />} />
+        </Routes>
       </main>
     </ThemeProvider>
   );
