@@ -8,6 +8,7 @@ import PremiumCard from './components/PremiumCard/PremiumCard';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import getTheme from './theme/muiTheme';
 import PremiumPage from './pages/PremiumPage/PremiumPage';
+import Home from './pages/Home/Home';
 
 function App() {
   // Get stored preference or fall back to system preference
@@ -59,7 +60,7 @@ function App() {
       <Header currentTheme={mode} onThemeToggle={toggleMode} />
       <main>
         <Routes>
-          <Route path='/' element={<PremiumCard />} />
+          <Route path='/' element={<Home />} />
           <Route path='/recipes' element={<></>} />
           <Route path='/recipe/:id' element={<SingleRecipePage />} />
           <Route path='/recipe/create' element={<RecipeCreateForm />} />

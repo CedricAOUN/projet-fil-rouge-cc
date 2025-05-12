@@ -1,6 +1,6 @@
 import { Stack, useMediaQuery } from '@mui/material';
 import React from 'react';
-import RecipeTitlePaper from '../../components/RecipeTitlePaper/RecipeTitlePaper';
+import RecipeTitlePaper from '../../components/RecipeComponents/RecipeTitlePaper/RecipeTitlePaper';
 import IngredientList from '../../components/IngredientList/IngredientList';
 import StepByStep from '../../components/StepByStep/StepByStep';
 import CommentList from '../../components/CommentList/CommentList';
