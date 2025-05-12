@@ -93,6 +93,10 @@ const getTheme = (mode) => {
         dark: '#753232',
         contrastText: '#f5f5f5',
       },
+      error: {
+        main: '#d32f2f', // or whatever error color you want
+        contrastText: '#fff',
+      },
       background: {
         default: mode === 'light' ? '#f5f5f5' : '#121212',
         paper: mode === 'light' ? '#f5f5f5' : '#1e1e1e',
