@@ -148,3 +148,153 @@ export const MOCK_RECIPES = [
     ],
   },
 ];
+
+export const MOCK_EXPERTS = [
+  {
+    id: 1,
+    first_name: 'John',
+    last_name: 'Doe',
+    is_expert: true,
+    courses_count: 14,
+    biography: '10 years of culinary experience, 3 Michelin stars.',
+    courses: [
+      {
+        id: 1,
+        title: 'The Perfect Steak',
+        description: 'Learn how to cook the perfect steak!',
+      },
+      {
+        id: 2,
+        title: 'Sous Vide Basics',
+        description: 'Master the art of sous vide cooking at home.',
+      },
+    ],
+    avatar: 'https://picsum.photos/id/1011/200/300',
+  },
+  {
+    id: 2,
+    first_name: 'Aisha',
+    last_name: 'Khan',
+    is_expert: true,
+    courses_count: 9,
+    biography:
+      'Pastry chef with a love for French desserts and artistic presentation.',
+    courses: [
+      {
+        id: 3,
+        title: 'Macaron Magic',
+        description: 'Create colorful and delicious macarons like a pro.',
+      },
+      {
+        id: 4,
+        title: 'Elegant Éclairs',
+        description: 'Bake and fill éclairs with perfect textures and flavors.',
+      },
+    ],
+    avatar: 'https://picsum.photos/id/1012/200/300',
+  },
+  {
+    id: 3,
+    first_name: 'Carlos',
+    last_name: 'Rodriguez',
+    is_expert: true,
+    courses_count: 11,
+    biography:
+      'Grill master and BBQ pit champion with over 15 years of experience.',
+    courses: [
+      {
+        id: 5,
+        title: 'BBQ Ribs Mastery',
+        description: 'Slow-cooked, fall-off-the-bone ribs every time.',
+      },
+      {
+        id: 6,
+        title: 'Smoked Meats 101',
+        description:
+          'Introduction to smoking techniques and wood flavor profiles.',
+      },
+    ],
+    avatar: 'https://picsum.photos/id/1013/200/300',
+  },
+  {
+    id: 4,
+    first_name: 'Mei',
+    last_name: 'Tanaka',
+    is_expert: true,
+    courses_count: 7,
+    biography:
+      'Fusion cuisine specialist blending Japanese and Western styles.',
+    courses: [
+      {
+        id: 7,
+        title: 'Sushi Rolling Basics',
+        description: 'Step-by-step sushi making with traditional techniques.',
+      },
+      {
+        id: 8,
+        title: 'Japanese-Western Fusion',
+        description: 'Create innovative dishes with cross-cultural flavors.',
+      },
+    ],
+    avatar: 'https://picsum.photos/id/1014/200/300',
+  },
+  {
+    id: 5,
+    first_name: 'Luca',
+    last_name: 'Bianchi',
+    is_expert: true,
+    courses_count: 5,
+    biography:
+      'Italian chef focused on rustic, homestyle recipes passed down for generations.',
+    courses: [
+      {
+        id: 9,
+        title: 'Classic Pasta from Scratch',
+        description: 'Handmade pasta with traditional sauces.',
+      },
+      {
+        id: 10,
+        title: 'Rustic Italian Bread',
+        description: 'Bake hearty loaves with a crunchy crust and soft inside.',
+      },
+    ],
+    avatar: 'https://picsum.photos/id/1015/200/300',
+  },
+  {
+    id: 6,
+    first_name: 'Luca',
+    last_name: 'Bianchi',
+    is_expert: true,
+    courses_count: 5,
+    biography:
+      'Italian chef focused on rustic, homestyle recipes passed down for generations.',
+    courses: [
+      {
+        id: 9,
+        title: 'Classic Pasta from Scratch',
+        description: 'Handmade pasta with traditional sauces.',
+      },
+      {
+        id: 10,
+        title: 'Rustic Italian Bread',
+        description: 'Bake hearty loaves with a crunchy crust and soft inside.',
+      },
+      {
+        id: 11,
+        title: 'Rustic Italian Bread',
+        description: 'Bake hearty loaves with a crunchy crust and soft inside.',
+      },
+      {
+        id: 12,
+        title: 'Rustic Italian Bread',
+        description: 'Bake hearty loaves with a crunchy crust and soft inside.',
+      },
+      {
+        id: 13,
+        title: 'Rustic Italian Bread',
+        description: 'Bake hearty loaves with a crunchy crust and soft inside.',
+      },
+    ],
+    avatar: 'https://picsum.photos/id/1015/200/300',
+  },
+];

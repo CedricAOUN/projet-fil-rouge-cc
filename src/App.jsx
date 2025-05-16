@@ -66,8 +66,10 @@ function App() {
           <Route path='/recipe/:id' element={<SingleRecipePage />} />
           <Route path='/recipe/create' element={<RecipeCreateForm />} />
           <Route path='/experts' element={<></>} />
-          <Route path='/experts/:id' element={<SingleExpertPage />} />
+          <Route path='/expert/:id' element={<SingleExpertPage />} />
           <Route path='/premium' element={<PremiumPage />} />
+          <Route path='/course/:id' element={<></>} />
+          <Route path='/course/create' element={<></>} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </main>
