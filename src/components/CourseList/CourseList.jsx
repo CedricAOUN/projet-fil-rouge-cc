@@ -65,14 +65,14 @@ function CourseList({ expert }) {
                   {course.description}
                 </Typography>
               </Stack>
-              <Button sx={{ ml: 'auto' }} onClick={handleViewClick}>
+              <Button sx={{ ml: 'auto' }} onClick={() => handleViewClick(course.id)}>
                 {currentUserIsPremium ? 'View Course' : 'Get Premium'}
               </Button>
             </Paper>
           </ListItem>
         ))}
       </List>
-      {!showMore && (
+      {!showMore && courses.length > 3 && (
         <Stack width={'100%'}>
           <Link onClick={() => setShowMore(true)} sx={{ mx: 'auto' }}>
             Show more courses

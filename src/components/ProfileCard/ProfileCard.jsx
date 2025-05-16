@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 
 function ProfileCard({ expert, onEdit, isMobile }) {
-  const { firstName, lastName, is_expert, avatar, biography, courses_count } =
+  const { first_name, last_name, is_expert, avatar, biography, courses_count } =
     expert;
 
   const isCurrentUser = true;
@@ -31,7 +31,7 @@ function ProfileCard({ expert, onEdit, isMobile }) {
           spacing={2}
         >
           <Typography variant='h5'>
-            {firstName} {lastName}
+            {first_name} {last_name}
           </Typography>
           <Typography variant='subtitle1' textAlign={'center'}>
             {biography}

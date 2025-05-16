@@ -5,11 +5,14 @@ import NotFound from '../NotFound/NotFound';
 import ProfileCard from '../../components/ProfileCard/ProfileCard';
 import CourseList from '../../components/CourseList/CourseList';
 import EditProfileForm from '../../components/EditProfileForm/EditProfileForm';
+import { useState } from 'react';
 
 const SingleExpertPage = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams();
   const expert = MOCK_EXPERTS.find((expert) => expert.id == id);
+  const [editMode, setEditMode] = useState(false);
+
   if (!expert) {
     return <NotFound />;
   }
@@ -24,10 +27,9 @@ const SingleExpertPage = () => {
       <Box
         maxWidth={isMobile ? '100%' : is_expert && courses ? '300px' : '100%'}
       >
-        <ProfileCard expert={expert} isMobile={isMobile} />
+        <ProfileCard expert={expert} isMobile={isMobile} onEdit={()=> setEditMode(true)}/>
       </Box>
-      {/* {is_expert && courses && <CourseList expert={expert} />} */}
-      <EditProfileForm />
+      {editMode ? <EditProfileForm onStopEdit={()=> setEditMode(false)} /> : is_expert && courses && <CourseList expert={expert} />}
     </Stack>
   );
 };
