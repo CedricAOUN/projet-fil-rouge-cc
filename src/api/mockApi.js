@@ -23,7 +23,8 @@ export const MOCK_RECIPES = [
   {
     id: '2',
     title: 'Spaghetti Carbonara',
-    description: 'Creamy pasta with pancetta and parmesan.',
+    description:
+      'Creamy pasta with pancetta and parmesan. lorem ipsum dolor sit amet, consectetur adipiscing elit. lorem ipsum dolor sit amet, consectetur adipiscing elit. lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     likes: 7520,
     date: '2025-03-11',
     img_url:

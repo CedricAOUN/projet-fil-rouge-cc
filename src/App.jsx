@@ -4,7 +4,6 @@ import './App.css';
 import Header from './components/Header/Header';
 import SingleRecipePage from './pages/SingleRecipePage/SingleRecipePage';
 import RecipeCreateForm from './pages/RecipeCreateForm/RecipeCreateForm';
-import PremiumCard from './components/PremiumCard/PremiumCard';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import getTheme from './theme/muiTheme';
 import PremiumPage from './pages/PremiumPage/PremiumPage';
