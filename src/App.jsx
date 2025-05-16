@@ -8,6 +8,8 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import getTheme from './theme/muiTheme';
 import PremiumPage from './pages/PremiumPage/PremiumPage';
 import Home from './pages/Home/Home';
+import SingleExpertPage from './pages/SingleExpertPage/SingleExpertPage';
+import NotFound from './pages/NotFound/NotFound';
 
 function App() {
   // Get stored preference or fall back to system preference
@@ -64,8 +66,9 @@ function App() {
           <Route path='/recipe/:id' element={<SingleRecipePage />} />
           <Route path='/recipe/create' element={<RecipeCreateForm />} />
           <Route path='/experts' element={<></>} />
-          <Route path='/experts/:id' element={<></>} />
+          <Route path='/experts/:id' element={<SingleExpertPage />} />
           <Route path='/premium' element={<PremiumPage />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </main>
     </ThemeProvider>
