@@ -10,6 +10,7 @@ import PremiumPage from '@/pages/PremiumPage/PremiumPage';
 import Home from '@/pages/Home/Home';
 import SingleExpertPage from '@/pages/SingleExpertPage/SingleExpertPage';
 import NotFound from '@/pages/NotFound/NotFound';
+import SingleCoursePage from './pages/SingleCoursePage/SingleCoursePage';
 
 function App() {
   // Get stored preference or fall back to system preference
@@ -68,7 +69,7 @@ function App() {
           <Route path='/experts' element={<></>} />
           <Route path='/expert/:id' element={<SingleExpertPage />} />
           <Route path='/premium' element={<PremiumPage />} />
-          <Route path='/course/:id' element={<></>} />
+          <Route path='/course/:id' element={<SingleCoursePage />} />
           <Route path='/course/create' element={<></>} />
           <Route path='*' element={<NotFound />} />
         </Routes>

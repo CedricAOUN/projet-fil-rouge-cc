@@ -2,8 +2,10 @@
 export type Course = {
   id: number;
   title: string;
+  description: string;
   video_url: string;
-  // add other properties as needed
+  created_by_id: string;
+  created_on: string;
 };
 
 export type Expert = {

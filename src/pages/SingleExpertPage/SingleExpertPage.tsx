@@ -5,20 +5,27 @@ import NotFound from '@/pages/NotFound/NotFound';
 import ProfileCard from '@/components/ProfileCard/ProfileCard';
 import CourseList from '@/components/CourseList/CourseList';
 import EditProfileForm from '@/components/EditProfileForm/EditProfileForm';
-import { fetchSingleExpert } from '@/api/api';
-import { Expert } from '@/api/api.types';
+import { fetchCourseByExpertId, fetchSingleExpert } from '@/api/api';
+import { Course, Expert } from '@/api/api.types';
 
 const SingleExpertPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams<{ id: string }>();
   const [expert, setExpert] = useState<Expert | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [courses, setCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
     if (id) {
       fetchSingleExpert(id).then((data: Expert) => {
         if (data) {
           setExpert(data);
+        }
+      });
+
+      fetchCourseByExpertId(id).then((data: Course[]) => {
+        if (data) {
+          setCourses(data);
         }
       });
     }
@@ -28,7 +35,9 @@ const SingleExpertPage: React.FC = () => {
     return <NotFound />;
   }
 
-  const { is_expert, courses } = expert;
+  console.log(courses);
+
+  const { is_expert } = expert;
 
   return (
     <Stack
@@ -47,7 +56,7 @@ const SingleExpertPage: React.FC = () => {
       {editMode ? (
         <EditProfileForm onStopEdit={() => setEditMode(false)} />
       ) : (
-        is_expert && courses && <CourseList expert={expert} />
+        is_expert && courses && <CourseList expert={expert} courses={courses} />
       )}
     </Stack>
   );

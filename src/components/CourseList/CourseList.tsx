@@ -9,12 +9,13 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Course, Expert } from '@/api/api.types';
 
-function CourseList({ expert }) {
+function CourseList({ expert, courses }: { expert: Expert; courses: Course[] }) {
   const currentUserIsPremium = true;
   const isCurrentUser = true;
   const navigate = useNavigate();
-  const { courses, first_name, last_name, is_expert } = expert;
+  const { first_name, last_name, is_expert } = expert;
 
   const [showMore, setShowMore] = useState(false);
   const filteredCourses = showMore ? courses : courses.slice(0, 3);

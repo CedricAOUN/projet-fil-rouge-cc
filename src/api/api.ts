@@ -1,9 +1,10 @@
 import { Recipe } from '@/types';
-import { Expert } from '@/api/api.types';
+import { Course, Expert } from '@/api/api.types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 const recipesEndpoint = `${API_URL}/recipes`;
 const expertsEndpoint = `${API_URL}/experts`;
+const coursesEndpoint = `${API_URL}/courses`;
 
 export const fetchRecipes = async (query?: string): Promise<Recipe[]> => {
   try {
@@ -62,6 +63,39 @@ export const fetchSingleRecipe = async (id: string): Promise<Recipe> => {
     return await response.json();
   } catch (error) {
     console.error(`Failed to fetch recipe with id ${id}:`, error);
+    throw error;
+  }
+};
+
+export const fetchCourseByExpertId = async (
+  expertId: string
+): Promise<Course[]> => {
+  try {
+    const response = await fetch(
+      `${coursesEndpoint}?created_by_expert_id=${expertId}`
+    );
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(
+      `Failed to fetch courses for expert with id ${expertId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const fetchCourseById = async (id: string): Promise<Course> => {
+  try {
+    const response = await fetch(`${coursesEndpoint}/${id}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Failed to fetch course with id ${id}:`, error);
     throw error;
   }
 };

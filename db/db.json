@@ -281,5 +281,79 @@
         }
       ]
     }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "title": "The Perfect Steak",
+      "description": "Learn how to cook the perfect steak!",
+      "video_url": "https://example.com/video1.mp4",
+      "created_by_expert_id": 1,
+      "created_on": "2024-09-01T12:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Sous Vide Basics",
+      "description": "Master the art of sous vide cooking at home.",
+      "video_url": "https://example.com/video2.mp4",
+      "created_by_expert_id": 1,
+      "created_on": "2024-09-02T12:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Macaron Magic",
+      "description": "Create colorful and delicious macarons like a pro.",
+      "video_url": "https://example.com/video3.mp4",
+      "created_by_expert_id": 2,
+      "created_on": "2024-09-03T12:00:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Elegant Éclairs",
+      "description": "Bake and fill éclairs with perfect textures and flavors.",
+      "video_url": "https://example.com/video4.mp4",
+      "created_by_expert_id": 2,
+      "created_on": "2024-09-04T12:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "BBQ Ribs Mastery",
+      "description": "Slow-cooked, fall-off-the-bone ribs every time.",
+      "video_url": "https://example.com/video5.mp4",
+      "created_by_expert_id": 3,
+      "created_on": "2024-09-05T12:00:00Z"
+    },
+    {
+      "id": 6,
+      "title": "Smoked Meats 101",
+      "description": "Introduction to smoking techniques and wood flavor profiles.",
+      "video_url": "https://example.com/video6.mp4",
+      "created_by_expert_id": 3,
+      "created_on": "2024-09-06T12:00:00Z"
+    },
+    {
+      "id": 7,
+      "title": "Sushi Rolling Basics",
+      "description": "Step-by-step sushi making with traditional techniques.",
+      "video_url": "https://example.com/video7.mp4",
+      "created_by_expert_id": 4,
+      "created_on": "2024-09-07T12:00:00Z"
+    },
+    {
+      "id": 8,
+      "title": "Japanese-Western Fusion",
+      "description": "Create innovative dishes with cross-cultural flavors.",
+      "video_url": "https://example.com/video8.mp4",
+      "created_by_expert_id": 4,
+      "created_on": "2024-09-08T12:00:00Z"
+    },
+    {
+      "id": 9,
+      "title": "Classic Pasta from Scratch",
+      "description": "Handmade pasta with traditional sauces.",
+      "video_url": "https://example.com/video9.mp4",
+      "created_by_expert_id": 5,
+      "created_on": "2024-09-09T12:00:00Z"
+    }
   ]
 }
