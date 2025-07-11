@@ -6,30 +6,29 @@ import CourseList from '../../components/CourseList/CourseList';
 import EditProfileForm from '../../components/EditProfileForm/EditProfileForm';
 import { useState, useEffect } from 'react';
 import { fetchSingleExpert } from '../../api/api';
+import { Expert } from '../../types';
 
-const SingleExpertPage = () => {
+const SingleExpertPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
-  const { id } = useParams();
-  const [expert, setExpert] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const [expert, setExpert] = useState<Expert | null>(null);
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchSingleExpert(id).then((data) => {
-      if (data) {
-        setExpert(data);
-      }
-    });
-  }, []);
+    if (id) {
+      fetchSingleExpert(id).then((data: Expert) => {
+        if (data) {
+          setExpert(data);
+        }
+      });
+    }
+  }, [id]);
 
   if (!expert) {
     return <NotFound />;
   }
 
   const { is_expert, courses } = expert;
-
-  if (!expert) {
-    return <NotFound />;
-  }
 
   return (
     <Stack
