@@ -3,18 +3,32 @@ import RecipeTitlePaper from '../../components/RecipeComponents/RecipeTitlePaper
 import IngredientList from '../../components/IngredientList/IngredientList';
 import StepByStep from '../../components/StepByStep/StepByStep';
 import CommentList from '../../components/CommentList/CommentList';
-import { MOCK_RECIPES } from '../../api/mockApi';
 import { useParams } from 'react-router-dom';
 import NotFound from '../NotFound/NotFound';
+import { useState, useEffect } from 'react';
+import { fetchSingleRecipe } from '../../api/api';
 
 const SingleRecipePage = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams();
 
   // TODO: replace when backend is in place
-  const recipeData = MOCK_RECIPES.find((recipe) => recipe.id === id);
+  const [recipe, setRecipe] = useState(null);
 
-  if (!recipeData) {
+  useEffect(() => {
+    fetchSingleRecipe(id)
+      .then((data) => {
+        if (data) {
+          setRecipe(data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching recipe:', error);
+        setRecipe(null);
+      });
+  }, []);
+
+  if (!recipe) {
     return <NotFound />;
   }
 
@@ -26,7 +40,7 @@ const SingleRecipePage = () => {
     ingredients,
     instructions,
     comments,
-  } = recipeData;
+  } = recipe;
 
   return (
     <Stack gap={2}>
