@@ -1,6 +1,6 @@
 import { fetchCourseById } from '@/api/api';
 import { Course } from '@/api/api.types';
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 
 const SingleCoursePage = () => {
