@@ -1,4 +1,5 @@
-import { Recipe, Expert } from '../types';
+import { Recipe } from '@/types';
+import { Expert } from '@/api/api.types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 const recipesEndpoint = `${API_URL}/recipes`;

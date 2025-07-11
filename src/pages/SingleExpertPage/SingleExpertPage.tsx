@@ -1,12 +1,12 @@
+import React, { useState, useEffect } from 'react';
 import { Box, Stack, useMediaQuery } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import NotFound from '../NotFound/NotFound';
-import ProfileCard from '../../components/ProfileCard/ProfileCard';
-import CourseList from '../../components/CourseList/CourseList';
-import EditProfileForm from '../../components/EditProfileForm/EditProfileForm';
-import { useState, useEffect } from 'react';
-import { fetchSingleExpert } from '../../api/api';
-import { Expert } from '../../types';
+import NotFound from '@/pages/NotFound/NotFound';
+import ProfileCard from '@/components/ProfileCard/ProfileCard';
+import CourseList from '@/components/CourseList/CourseList';
+import EditProfileForm from '@/components/EditProfileForm/EditProfileForm';
+import { fetchSingleExpert } from '@/api/api';
+import { Expert } from '@/api/api.types';
 
 const SingleExpertPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');

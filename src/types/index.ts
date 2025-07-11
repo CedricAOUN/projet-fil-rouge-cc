@@ -6,17 +6,6 @@ export interface Course {
   description: string;
 }
 
-export interface Expert {
-  id: number;
-  first_name: string;
-  last_name: string;
-  is_expert: boolean;
-  courses_count?: number;
-  biography: string;
-  courses?: Course[];
-  avatar?: string;
-}
-
 export interface Ingredient {
   name: string;
   amount: number | string;

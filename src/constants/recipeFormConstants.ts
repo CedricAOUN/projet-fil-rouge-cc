@@ -1,4 +1,6 @@
-export const UNITS = [
+import { Unit } from '@/api/api.types';
+
+export const UNITS: Unit[] = [
   { value: 'ml', label: 'Milliliter (ml)' },
   { value: 'l', label: 'Liter (L)' },
   { value: 'pcs', label: 'Pieces' },

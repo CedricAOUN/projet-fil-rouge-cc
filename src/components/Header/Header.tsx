@@ -10,7 +10,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import { useMediaQuery } from '@mui/material';
-import LoginModal from '../LoginModal/LoginModal';
+import LoginModal from '@/components/LoginModal/LoginModal';
 import ThemeModeToggle from './ThemeModeToggle';
 import { NavLink } from 'react-router-dom';
 

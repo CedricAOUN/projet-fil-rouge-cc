@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
-import RecipeSearch from '../../components/RecipeComponents/RecipeSearch/RecipeSearch';
-import PremiumCard from '../../components/PremiumCard/PremiumCard';
+import RecipeSearch from '@/components/RecipeComponents/RecipeSearch/RecipeSearch';
+import PremiumCard from '@/components/PremiumCard/PremiumCard';
 
 function Home() {
   return (

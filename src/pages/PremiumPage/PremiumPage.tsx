@@ -113,10 +113,10 @@ function PremiumPage() {
                 </Typography>
                 {tier?.price !== 0 && (
                   <Typography
-                    variant='subtitle'
+                    variant='subtitle2'
                     mb={tier?.price === 'Free' ? '60px' : undefined}
                   >
-                    ${tier?.price * 12} per year
+                    ${tier?.price as number * 12} per year
                   </Typography>
                 )}
                 {tier?.isSelectable && (
@@ -131,7 +131,7 @@ function PremiumPage() {
                 {tier?.features?.map((feat, index) => (
                   <Stack direction='row' gap={1} key={index}>
                     <DoneIcon color='success' />
-                    <Typography variant='subtitle'>{feat}</Typography>
+                    <Typography variant='subtitle2'>{feat}</Typography>
                   </Stack>
                 ))}
               </Stack>

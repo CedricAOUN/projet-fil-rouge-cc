@@ -100,7 +100,7 @@ function LoginModal({ isOpen, handleClose }) {
           </Typography>
         </CustomTabPanel>
 
-        <CustomTabPanel value={value} index={1} sx={{ display: 'flex' }}>
+        <CustomTabPanel value={value} index={1}>
           <TextField fullWidth placeholder='Email' sx={{ mb: 2 }} />
           <TextField fullWidth placeholder='Username' sx={{ mb: 2 }} />
           <TextField

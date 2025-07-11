@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import RecipeCard from '../RecipeCard/RecipeCard';
+import RecipeCard from '@/components/RecipeComponents/RecipeCard/RecipeCard';
 import { Stack, TextField, Typography } from '@mui/material';
-import { fetchRecipes } from '../../../api/api';
+import { fetchRecipes } from '@/api/api';
 import { debounce } from 'lodash';
 
 function RecipeSearch() {

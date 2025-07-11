@@ -12,7 +12,7 @@ function CommentList({ comments }) {
               {comment.user}:
             </Typography>
           </Stack>
-          <Typography variant='subtitle'>{comment.message}</Typography>
+          <Typography variant='subtitle2'>{comment.message}</Typography>
           <Box>
             <Typography variant='subtitle2' textAlign='end'>
               {comment.date}

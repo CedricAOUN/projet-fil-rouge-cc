@@ -1,6 +1,6 @@
 import React from 'react';
 import { MenuItem, Select, FormControl, FormHelperText } from '@mui/material';
-import { UNITS } from '../../constants/recipeFormConstants';
+import { UNITS } from '@/constants/recipeFormConstants';
 
 function UnitSelector({ register, index, error }) {
   return (

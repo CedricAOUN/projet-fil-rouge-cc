@@ -9,21 +9,22 @@ import {
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ImageIcon from '@mui/icons-material/Image';
-import UnitSelector from '../../components/UnitSelector/UnitSelector';
+import UnitSelector from '@/components/UnitSelector/UnitSelector';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { UNIT_VALUES } from '../../constants/recipeFormConstants';
+import { UNIT_VALUES } from '@/constants/recipeFormConstants';
 import './recipeCreateForm.css';
 
 const schema = yup.object().shape({
   title: yup.string().required('Title is required'),
-  description: yup.string(),
+  description: yup.string().optional(),
   instructions: yup.string().required('Instructions are required'),
   duration: yup
     .number()
     .typeError('Please enter a valid number for duration')
-    .positive('Duration must be positive'),
+    .positive('Duration must be positive')
+    .optional(),
   ingredients: yup
     .array()
     .of(
@@ -34,14 +35,17 @@ const schema = yup.object().shape({
       })
     )
     .min(1, 'At least one ingredient is required'),
+  image: yup.mixed<File>().nullable(),
 });
+
+type RecipeFormData = yup.InferType<typeof schema>;
 
 function RecipeCreateForm() {
   const isMobile = useMediaQuery('(max-width:900px)');
-  const fileInputRef = useRef();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [imageName, setImageName] = useState('No Image Selected');
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imageName, setImageName] = useState<string>('No Image Selected');
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
     register,
@@ -55,7 +59,7 @@ function RecipeCreateForm() {
       title: '',
       description: '',
       instructions: '',
-      duration: '',
+      duration: 0,
       ingredients: [{ name: '', amount: '', unit: 'unit' }],
       image: null,
     },
@@ -66,15 +70,15 @@ function RecipeCreateForm() {
     name: 'ingredients',
   });
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       setImageName(file.name);
       setValue('image', file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -90,11 +94,7 @@ function RecipeCreateForm() {
     }
   };
 
-  const handleUnitChange = (index, value) => {
-    setValue(`ingredients.${index}.unit`, value);
-  };
-
-  const onSubmit = (data) => {
+  const onSubmit = (data: yup.InferType<typeof schema>) => {
     console.log('Recipe Data:', data);
     // Send data to backend here
   };
@@ -218,7 +218,6 @@ function RecipeCreateForm() {
               <Typography>X</Typography>
 
               <UnitSelector
-                onUnitChange={(unit) => handleUnitChange(index, unit)}
                 error={!!errors.ingredients?.[index]?.unit}
                 register={register}
                 index={index}

@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import './App.css';
-import Header from './components/Header/Header';
-import SingleRecipePage from './pages/SingleRecipePage/SingleRecipePage';
-import RecipeCreateForm from './pages/RecipeCreateForm/RecipeCreateForm';
+import '@/App.css';
+import Header from '@/components/Header/Header';
+import SingleRecipePage from '@/pages/SingleRecipePage/SingleRecipePage';
+import RecipeCreateForm from '@/pages/RecipeCreateForm/RecipeCreateForm';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import getTheme from './theme/muiTheme';
-import PremiumPage from './pages/PremiumPage/PremiumPage';
-import Home from './pages/Home/Home';
-import SingleExpertPage from './pages/SingleExpertPage/SingleExpertPage';
-import NotFound from './pages/NotFound/NotFound';
+import getTheme from '@/theme/muiTheme';
+import PremiumPage from '@/pages/PremiumPage/PremiumPage';
+import Home from '@/pages/Home/Home';
+import SingleExpertPage from '@/pages/SingleExpertPage/SingleExpertPage';
+import NotFound from '@/pages/NotFound/NotFound';
 
 function App() {
   // Get stored preference or fall back to system preference
