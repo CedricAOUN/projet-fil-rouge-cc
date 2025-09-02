@@ -16,11 +16,13 @@
     "@hookform/resolvers": "^5.0.1",
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
+    "@reduxjs/toolkit": "^2.8.2",
     "import": "^0.0.6",
     "lodash": "^4.17.21",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.3.0",
     "yup": "^1.6.1"
   },
