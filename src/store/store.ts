@@ -4,10 +4,11 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 // Import your slices here
 import userSlice from './slices/userSlice';
 import recipesSlice from './slices/recipesSlice';
+import appSlice from './slices/appSlice';
 
 export const store = configureStore({
   reducer: {
-    // Add your reducers here
+    app: appSlice,
     user: userSlice,
     recipes: recipesSlice,
   },

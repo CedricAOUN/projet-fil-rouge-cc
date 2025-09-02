@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import '@/App.css';
 import Header from '@/components/Header/Header';
@@ -11,58 +11,44 @@ import Home from '@/pages/Home/Home';
 import SingleExpertPage from '@/pages/SingleExpertPage/SingleExpertPage';
 import NotFound from '@/pages/NotFound/NotFound';
 import SingleCoursePage from './pages/SingleCoursePage/SingleCoursePage';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/store';
+import { toggleThemeMode, setThemeMode } from '@/store/slices/appSlice';
 
 function App() {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isMobile = useMediaQuery('(max-width: 900px)');
-  // Get stored preference or fall back to system preference
-  const getInitialMode = () => {
-    const savedMode = localStorage.getItem('theme-mode');
-    if (savedMode) {
-      return savedMode;
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
-  };
-
-  const [mode, setMode] = useState(getInitialMode);
+  
+  const dispatch = useDispatch();
+  const themeMode = useSelector((state: RootState) => state.app.themeMode);
 
   // Save theme preference to localStorage when it changes
   useEffect(() => {
-    localStorage.setItem('theme-mode', mode);
-  }, [mode]);
+    localStorage.setItem('theme-mode', themeMode ? 'dark' : 'light');
+  }, [themeMode]);
 
   // Listen for changes to the system preference (only if user hasn't explicitly set a preference)
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const handleChange = (e) => {
-      // Only update if there's no saved preference
+    const handleChange = (e: MediaQueryListEvent) => {
       if (!localStorage.getItem('theme-mode')) {
-        setMode(e.matches ? 'dark' : 'light');
+        dispatch(setThemeMode(e.matches));
       }
     };
-
     mediaQuery.addEventListener('change', handleChange);
     return () => {
       mediaQuery.removeEventListener('change', handleChange);
     };
-  }, []);
+  }, [dispatch]);
 
-  // Generate the theme based on the current mode
-  const theme = useMemo(() => getTheme(mode), [mode]);
-
-  // Toggle between light and dark themes
-  const toggleMode = () => {
-    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-  };
+  const theme = useMemo(() => getTheme(themeMode ? 'dark' : 'light'), [themeMode]);
+  const toggleMode = () => dispatch(toggleThemeMode());
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header currentTheme={mode} onThemeToggle={toggleMode} />
+      <Header currentTheme={themeMode ? 'dark' : 'light'} onThemeToggle={toggleMode} />
       <main>
         <Box sx={{ margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%' }}>
           <Routes>

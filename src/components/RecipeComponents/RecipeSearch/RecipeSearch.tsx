@@ -1,11 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import RecipeCard from '@/components/RecipeComponents/RecipeCard/RecipeCard';
 import { Stack, TextField, Typography } from '@mui/material';
 import { fetchRecipes } from '@/api/api';
 import { debounce } from 'lodash';
+import { setSearchQuery, useAppSelector } from '@/store';
+import { useDispatch } from 'react-redux';
 
-function RecipeSearch() {
-  const [searchTerm, setSearchTerm] = useState('');
+function RecipeSearch({ showSearch = true, headerSearchRef }) {
+  const dispatch = useDispatch();
+  const searchRef = useRef(null);
+  const searchTerm = useAppSelector((state) => state.recipes.searchQuery);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
   const fetchRecipesCallback = useCallback(async (term) => {
@@ -25,6 +29,13 @@ function RecipeSearch() {
 
   useEffect(() => {
     debouncedFetch(searchTerm);
+    if (Boolean(searchTerm)) {
+      searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      searchRef.current?.focus();
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      headerSearchRef.current?.focus();
+    }
     // Cleanup function to cancel pending debounced calls
     return () => {
       debouncedFetch.cancel();
@@ -32,15 +43,19 @@ function RecipeSearch() {
   }, [searchTerm, debouncedFetch]);
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    dispatch(setSearchQuery(event.target.value));
   };
 
   return (
     <Stack gap={1} padding={2} border={'1px solid #ccc'} borderRadius={2} bgcolor={(theme) => theme.palette.background.paper}>
-      <Typography variant='h5' marginBottom={2}>
-        Find a recipe
-      </Typography>
-      <TextField value={searchTerm} onChange={handleSearch} />
+      {showSearch && (
+        <>
+          <Typography variant='h5' marginBottom={2}>
+            Find a recipe
+          </Typography>
+          <TextField inputRef={searchRef} value={searchTerm} onChange={handleSearch} />
+        </>
+      )}
       <Stack gap={1} overflow={'auto'} maxHeight={300} padding={1}>
         {filteredRecipes.map((recipe) => (
           <RecipeCard

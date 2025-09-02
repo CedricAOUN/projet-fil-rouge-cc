@@ -82,9 +82,9 @@ const recipesSlice = createSlice({
     },
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
-      state.filteredRecipes = state.recipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(action.payload.toLowerCase())
-      );
+      // state.filteredRecipes = state.recipes.filter((recipe) =>
+      //   recipe.title.toLowerCase().includes(action.payload.toLowerCase())
+      // );
     },
     clearError: (state) => {
       state.error = null;
