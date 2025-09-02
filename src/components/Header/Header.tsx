@@ -45,7 +45,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
   };
 
   return (
-    <header>
+    <header style={{ position: 'sticky', top: 0, zIndex: 1000 }}>
       <Box
         sx={{
           backgroundColor: currentTheme === 'light' ? '#fff' : '#1f1f1f',

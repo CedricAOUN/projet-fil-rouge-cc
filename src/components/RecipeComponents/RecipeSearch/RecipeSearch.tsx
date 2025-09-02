@@ -36,7 +36,7 @@ function RecipeSearch() {
   };
 
   return (
-    <Stack gap={1} padding={2} border={'1px solid #ccc'} borderRadius={1}>
+    <Stack gap={1} padding={2} border={'1px solid #ccc'} borderRadius={2} bgcolor={(theme) => theme.palette.background.paper}>
       <Typography variant='h5' marginBottom={2}>
         Find a recipe
       </Typography>

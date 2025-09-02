@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import '@/App.css';
 import Header from '@/components/Header/Header';
 import SingleRecipePage from '@/pages/SingleRecipePage/SingleRecipePage';
 import RecipeCreateForm from '@/pages/RecipeCreateForm/RecipeCreateForm';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import getTheme from '@/theme/muiTheme';
 import PremiumPage from '@/pages/PremiumPage/PremiumPage';
 import Home from '@/pages/Home/Home';
@@ -13,6 +13,9 @@ import NotFound from '@/pages/NotFound/NotFound';
 import SingleCoursePage from './pages/SingleCoursePage/SingleCoursePage';
 
 function App() {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const isMobile = useMediaQuery('(max-width: 900px)');
   // Get stored preference or fall back to system preference
   const getInitialMode = () => {
     const savedMode = localStorage.getItem('theme-mode');
@@ -61,18 +64,20 @@ function App() {
       <CssBaseline />
       <Header currentTheme={mode} onThemeToggle={toggleMode} />
       <main>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/recipes' element={<></>} />
-          <Route path='/recipe/:id' element={<SingleRecipePage />} />
-          <Route path='/recipe/create' element={<RecipeCreateForm />} />
-          <Route path='/experts' element={<></>} />
-          <Route path='/expert/:id' element={<SingleExpertPage />} />
-          <Route path='/premium' element={<PremiumPage />} />
-          <Route path='/course/:id' element={<SingleCoursePage />} />
-          <Route path='/course/create' element={<></>} />
-          <Route path='*' element={<NotFound />} />
-        </Routes>
+        <Box sx={{ margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%' }}>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/recipes' element={<></>} />
+            <Route path='/recipe/:id' element={<SingleRecipePage />} />
+            <Route path='/recipe/create' element={<RecipeCreateForm />} />
+            <Route path='/experts' element={<></>} />
+            <Route path='/expert/:id' element={<SingleExpertPage />} />
+            <Route path='/premium' element={<PremiumPage />} />
+            <Route path='/course/:id' element={<SingleCoursePage />} />
+            <Route path='/course/create' element={<></>} />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+        </Box>
       </main>
     </ThemeProvider>
   );

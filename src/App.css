@@ -1,9 +1,0 @@
-main {
-  margin: 15px 15%;
-}
-
-@media (max-width: 900px) {
-  main {
-    margin: 15px;
-  }
-}
