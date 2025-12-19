@@ -6,9 +6,10 @@ import { debounce } from 'lodash';
 import { setSearchQuery, useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 
-function RecipeSearch({ showSearch = true, headerSearchRef }) {
+function RecipeSearch({ showSearch = true, headerSearchRef = null, maxHeight = '300px' }) {
   const dispatch = useDispatch();
   const searchRef = useRef(null);
+  const containerRef = useRef(null);
   const searchTerm = useAppSelector((state) => state.recipes.searchQuery);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
@@ -34,7 +35,7 @@ function RecipeSearch({ showSearch = true, headerSearchRef }) {
       searchRef.current?.focus();
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      headerSearchRef.current?.focus();
+      headerSearchRef?.current?.focus();
     }
     // Cleanup function to cancel pending debounced calls
     return () => {
@@ -47,23 +48,21 @@ function RecipeSearch({ showSearch = true, headerSearchRef }) {
   };
 
   return (
-    <Stack gap={1} padding={2} border={'1px solid #ccc'} borderRadius={2} bgcolor={(theme) => theme.palette.background.paper}>
-      {showSearch && (
-        <>
-          <Typography variant='h5' marginBottom={2}>
-            Find a recipe
-          </Typography>
-          <TextField inputRef={searchRef} value={searchTerm} onChange={handleSearch} />
-        </>
-      )}
-      <Stack gap={1} overflow={'auto'} maxHeight={300} padding={1}>
+    <Stack ref={containerRef} gap={1} padding={2} border={'1px solid #ccc'} borderRadius={2} bgcolor={(theme) => theme.palette.background.paper}>
+      <>
+        <Typography variant='h5' marginBottom={2}>
+          Find a recipe
+        </Typography>
+        <TextField inputRef={searchRef} value={searchTerm} onChange={handleSearch} />
+      </>
+      <Stack gap={1} overflow={'auto'} maxHeight={maxHeight} padding={1}>
         {filteredRecipes.map((recipe) => (
           <RecipeCard
-            key={recipe.id}
-            id={recipe.id}
+            key={recipe.recipe_id}
+            id={recipe.recipe_id}
             title={recipe.title}
             description={recipe.description}
-            image={recipe.img_url}
+            image={recipe.image_url}
           />
         ))}
       </Stack>

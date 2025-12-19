@@ -1,21 +1,33 @@
+import { Comment } from '@/api/api.types';
 import { Typography, Paper, Stack, Box } from '@mui/material';
 import React from 'react';
 
-function CommentList({ comments }) {
+function CommentList({ comments }: { comments: Comment[] }) {
+
+  console.log('Comments:', comments);
+  if (!comments || comments.length === 0) {
+    return (
+      <Paper>
+        <Typography variant='h4'>Comments</Typography>
+        <Typography variant='subtitle1'>No comments available.</Typography>
+      </Paper>
+    );
+  }
+
   return (
     <Stack gap={2}>
       <Typography variant='h4'>Comments</Typography>
       {comments.map((comment, index) => (
         <Paper key={index}>
           <Stack direction='row'>
-            <Typography variant='h6' sx={{ textDecoration: 'underline' }}>
-              {comment.user}:
+            <Typography variant='h6'>
+              {comment.username}:
             </Typography>
           </Stack>
-          <Typography variant='subtitle2'>{comment.message}</Typography>
+          <Typography variant='subtitle2'>{comment.content}</Typography>
           <Box>
             <Typography variant='subtitle2' textAlign='end'>
-              {comment.date}
+              {comment.created_at}
             </Typography>
           </Box>
         </Paper>

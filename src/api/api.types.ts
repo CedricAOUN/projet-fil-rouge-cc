@@ -41,3 +41,9 @@ export type Unit = {
   value: string;
   label: string;
 };
+
+export type Comment = {
+  username: string;
+  content: string;
+  created_at: string;
+};

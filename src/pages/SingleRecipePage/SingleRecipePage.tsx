@@ -38,7 +38,7 @@ const SingleRecipePage: React.FC = () => {
   const {
     title,
     description,
-    img_url,
+    image_url,
     likes,
     ingredients,
     instructions,
@@ -51,7 +51,7 @@ const SingleRecipePage: React.FC = () => {
         title={title}
         desc={description}
         likes={likes}
-        imgUrl={img_url}
+        imgUrl={image_url}
       />
       <Stack direction={isMobile ? 'column' : 'row'} gap={2}>
         <IngredientList ingredients={ingredients} />

@@ -10,7 +10,7 @@ function Home() {
   const dispatch = useDispatch();
   const [scrollY, setScrollY] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const PARALLAX_HEIGHT = 600; // px, adjust as needed
+  const PARALLAX_HEIGHT = window.innerHeight; // 100vh
   const isDarkMode = useAppSelector((state) => state.app.themeMode);
   const searchQuery = useAppSelector((state) => state.recipes.searchQuery);
   const headerSearchRef = useRef(null);
@@ -43,8 +43,8 @@ function Home() {
           top: 0,
           left: 0,
           width: '100vw',
-          height: `${PARALLAX_HEIGHT}px`,
-          objectFit: 'contain',
+          height: '100vh',
+          objectFit: 'fill',
           zIndex: 1,
           pointerEvents: 'none',
         }}
@@ -70,7 +70,7 @@ function Home() {
           <Typography variant='h5' marginBottom={2}>
             Find a recipe
           </Typography>
-          <TextField inputRef={headerSearchRef} value={searchQuery} onChange={handleSearch} />
+          <TextField inputRef={headerSearchRef} value={searchQuery} onChange={handleSearch} placeholder="What are you looking for?"/>
         </Stack>
       )}
       {/* Overlay image */}
@@ -79,10 +79,10 @@ function Home() {
         alt='Counter'
         style={{
           position: 'absolute',
-          top: 270,
+          top: PARALLAX_HEIGHT - 370,
           left: 0,
           width: '100vw',
-          height: `${PARALLAX_HEIGHT}px`,
+          height: '20%',
           objectFit: 'contain',
           zIndex: 200,
           transform: `translateY(-${overlayTranslate}px)`,
@@ -94,7 +94,7 @@ function Home() {
       <div style={{ 
         position: 'relative', 
         zIndex: 3, 
-        marginTop: `${PARALLAX_HEIGHT}px`, 
+        marginTop: `${PARALLAX_HEIGHT - 290}px`, 
         padding: 32, 
         background: `url(/background${isDarkMode ? '-dark' : ''}.jpg)`,
         backgroundSize: 'contain',
@@ -102,7 +102,7 @@ function Home() {
         minHeight: '100vh',
         height: '100%'
       }}>
-        <Stack sx={{ pt: 10, zIndex: 500, mx: 10, pointerEvents: 'auto', position: 'relative' }} spacing={2}>
+        <Stack sx={{ pt: 25, zIndex: 500, mx: 10, pointerEvents: 'auto', position: 'relative' }} spacing={2}>
           <RecipeSearch 
             showSearch={Boolean(searchQuery)} 
             headerSearchRef={headerSearchRef} 

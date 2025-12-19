@@ -107,29 +107,87 @@ app.get('/experts', (req, res) => {
 });
 
 app.get('/recipes', (req, res) => {
-  db.query('SELECT * FROM recipes', (err, results) => {
+  const query = `
+    SELECT 
+      r.*,
+      COALESCE(l.amount, 0) as likes,
+      COALESCE(
+        JSON_ARRAYAGG(
+          CASE 
+            WHEN c.comment_id IS NOT NULL 
+            THEN JSON_OBJECT(
+              'comment_id', c.comment_id,
+              'content', c.content,
+              'creator_id', c.creator_id,
+              'username', u.username,
+              'avatar_url', u.avatar_url
+            )
+            ELSE NULL
+          END
+        ),
+        JSON_ARRAY()
+      ) as comments
+    FROM recipes r
+    LEFT JOIN likes l ON r.recipe_id = l.recipe_id
+    LEFT JOIN comments c ON r.recipe_id = c.recipe_id
+    LEFT JOIN users u ON c.creator_id = u.user_id
+    GROUP BY r.recipe_id
+    ORDER BY r.creation_date DESC
+  `;
+
+  db.query(query, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
+      // Clean up comments - remove null values from array
+      results = results.map((recipe) => ({
+        ...recipe,
+        comments: recipe.comments.filter((c) => c !== null),
+      }));
       res.json(results);
     }
   });
 });
 
 app.get('/recipes/:id', (req, res) => {
-  db.query(
-    'SELECT * FROM recipes WHERE recipe_id = ?',
-    [req.params.id],
-    (err, results) => {
-      if (err) {
-        res.status(500).send(err);
-      } else if (results.length === 0) {
-        res.status(404).json({ error: 'Recipe not found' });
-      } else {
-        res.json(results[0]);
-      }
+  const query = `
+    SELECT 
+      r.*,
+      COALESCE(l.amount, 0) as likes,
+      COALESCE(
+        JSON_ARRAYAGG(
+          CASE 
+            WHEN c.comment_id IS NOT NULL 
+            THEN JSON_OBJECT(
+              'comment_id', c.comment_id,
+              'content', c.content,
+              'creator_id', c.creator_id,
+              'username', u.username,
+              'avatar_url', u.avatar_url
+            )
+            ELSE NULL
+          END
+        ),
+        JSON_ARRAY()
+      ) as comments
+    FROM recipes r
+    LEFT JOIN likes l ON r.recipe_id = l.recipe_id
+    LEFT JOIN comments c ON r.recipe_id = c.recipe_id
+    LEFT JOIN users u ON c.creator_id = u.user_id
+    WHERE r.recipe_id = ?
+    GROUP BY r.recipe_id
+    ORDER BY r.creation_date DESC
+  `;
+
+  db.query(query, [req.params.id], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else if (results.length === 0) {
+      res.status(404).json({ error: 'Recipe not found' });
+    } else {
+      res.json(results[0]);
     }
-  );
+  });
 });
 
 app.listen(port, () => {
