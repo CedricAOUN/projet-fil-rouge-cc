@@ -1,0 +1,16 @@
+{
+  "name": "mealmosaic-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "dev"
+  },
+  "author": "Cedric A",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "mysql2": "^3.16.0"
+  }
+}
