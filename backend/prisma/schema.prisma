@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  user_id        Int         @id @default(autoincrement())
+  is_premium     Boolean
+  is_expert      Boolean
+  username       String      @db.VarChar(255)
+  pwd            String      @db.VarChar(255)
+  premium_expire DateTime    @db.Date
+  email          String      @db.VarChar(255)
+  first_name     String      @db.VarChar(255)
+  last_name      String      @db.VarChar(255)
+  biography      String      @db.VarChar(255)
+  avatar_url     String      @db.VarChar(255)
+  recipes        recipes[]
+  courses        courses[]
+  comments       comments[]
+  favorites      favorites[]
+
+  @@map("users")
+}
+
+model recipes {
+  recipe_id     Int         @id @default(autoincrement())
+  title         String      @db.VarChar(255)
+  description   String      @db.VarChar(255)
+  ingredients   Json
+  instructions  Json
+  is_premium    Boolean
+  creator_id    Int
+  image_url     String      @db.VarChar(255)
+  creation_date DateTime    @db.Date
+  creator       users       @relation(fields: [creator_id], references: [user_id], onDelete: Cascade)
+  comments      comments[]
+  likes         likes?
+  favorites     favorites[]
+
+  @@index([creator_id])
+  @@map("recipes")
+}
+
+model courses {
+  course_id   Int    @id @default(autoincrement())
+  expert_id   Int
+  title       String @db.VarChar(255)
+  description String @db.VarChar(255)
+  video_url   String @db.VarChar(255)
+  expert      users  @relation(fields: [expert_id], references: [user_id], onDelete: Cascade)
+
+  @@index([expert_id])
+  @@map("courses")
+}
+
+model comments {
+  comment_id Int     @id @default(autoincrement())
+  content    String  @db.VarChar(255)
+  creator_id Int
+  recipe_id  Int
+  creator    users   @relation(fields: [creator_id], references: [user_id], onDelete: Cascade)
+  recipe     recipes @relation(fields: [recipe_id], references: [recipe_id], onDelete: Cascade)
+
+  @@index([creator_id])
+  @@index([recipe_id])
+  @@map("comments")
+}
+
+model likes {
+  id        Int     @id @default(autoincrement())
+  recipe_id Int     @unique
+  amount    Int
+  recipe    recipes @relation(fields: [recipe_id], references: [recipe_id], onDelete: Cascade)
+
+  @@map("likes")
+}
+
+model favorites {
+  id        Int     @id @default(autoincrement())
+  user_id   Int
+  recipe_id Int
+  user      users   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  recipe    recipes @relation(fields: [recipe_id], references: [recipe_id], onDelete: Cascade)
+
+  @@unique([user_id, recipe_id])
+  @@index([user_id])
+  @@index([recipe_id])
+  @@map("favorites")
+}
