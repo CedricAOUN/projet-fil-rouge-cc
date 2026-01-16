@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import NotFound from '@/pages/NotFound/NotFound';
 import { fetchSingleRecipe } from '@/api/api';
 import { Recipe } from '@/types';
+import { Comment } from '@/api/api.types';
 
 const SingleRecipePage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');

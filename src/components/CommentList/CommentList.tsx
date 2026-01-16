@@ -1,10 +1,8 @@
-import { Comment } from '@/api/api.types';
+import { Comment } from '@/types';
 import { Typography, Paper, Stack, Box } from '@mui/material';
 import React from 'react';
 
 function CommentList({ comments }: { comments: Comment[] }) {
-
-  console.log('Comments:', comments);
   if (!comments || comments.length === 0) {
     return (
       <Paper>

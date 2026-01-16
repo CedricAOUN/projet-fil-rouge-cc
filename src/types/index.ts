@@ -13,9 +13,12 @@ export interface Ingredient {
 }
 
 export interface Comment {
-  user: string;
-  message: string;
-  date: string;
+  comment_id: number;
+  content: string;
+  creator_id: number;
+  created_at: string;
+  username: string;
+  avatar_url: string;
 }
 
 export interface Recipe {
