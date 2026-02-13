@@ -11,8 +11,13 @@ Ensure you are back at root of the project, and run these commands in 2 separate
 - `npm run backend:dev`
 
 
-### Mock data
+### Backend
 
-Ensure you have a mysql server running (WAMP for now, later docker will be implemented), then run:
+Backend handled by https://github.com/CedricAOUN/pfr-backend-cc
+
+- Clone it
+- `php artisan serve` after installing dependencies.
+
+
 
 - `npm run backend:mockdata`
