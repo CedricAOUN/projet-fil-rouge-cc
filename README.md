@@ -16,5 +16,8 @@ Ensure you are back at root of the project, and run these commands in 2 separate
 Backend handled by https://github.com/CedricAOUN/pfr-backend-cc
 
 - Clone it
-- `php artisan serve` after installing dependencies.
+- `composer` to install dependencies.
+- Ensure a mysql server is running (WAMP or other)
+- Configure mysql in .env of the project.
+- `php artisan serve`
 
