@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import RecipeCard from '@/components/RecipeComponents/RecipeCard/RecipeCard';
-import { Stack, TextField, Typography } from '@mui/material';
+import { CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { fetchRecipes } from '@/api/api';
 import { debounce } from 'lodash';
 import { setSearchQuery, useAppSelector } from '@/store';
@@ -12,6 +12,7 @@ function RecipeSearch({ showSearch = true, headerSearchRef = null, maxHeight = '
   const containerRef = useRef(null);
   const searchTerm = useAppSelector((state) => state.recipes.searchQuery);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchRecipesCallback = useCallback(async (term) => {
     try {
@@ -23,12 +24,16 @@ function RecipeSearch({ showSearch = true, headerSearchRef = null, maxHeight = '
     }
   }, []);
 
-  const debouncedFetch = useMemo(
-    () => debounce(fetchRecipesCallback, 300),
-    [fetchRecipesCallback]
-  );
+  const debouncedFetch = useMemo(() => {
+    return debounce((term) => {
+      fetchRecipesCallback(term).finally(() => {
+        setIsLoading(false); // Ensure isLoading is set to false after debounce ends
+      });
+    }, 300);
+  }, [fetchRecipesCallback]);
 
   useEffect(() => {
+    setIsLoading(true); // Set loading to true when searchTerm changes
     debouncedFetch(searchTerm);
     if (Boolean(searchTerm)) {
       searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -55,17 +60,20 @@ function RecipeSearch({ showSearch = true, headerSearchRef = null, maxHeight = '
         </Typography>
         <TextField inputRef={searchRef} value={searchTerm} onChange={handleSearch} />
       </>
-      <Stack gap={1} overflow={'auto'} maxHeight={maxHeight} padding={1}>
-        {filteredRecipes.map((recipe) => (
-          <RecipeCard
-            key={recipe.recipe_id}
-            id={recipe.recipe_id}
-            title={recipe.title}
-            description={recipe.description}
-            image={recipe.image_url}
-          />
-        ))}
-      </Stack>
+      {isLoading && <Stack direction={'row'} justifyContent={'center'} p={3}><CircularProgress size={'50px'} /></Stack>}
+      {!isLoading && (
+        <Stack gap={1} overflow={'auto'} maxHeight={maxHeight} padding={1}>
+          {filteredRecipes.map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              id={recipe.id}
+              title={recipe.title}
+              description={recipe.description}
+              image={recipe.image_url}
+            />
+          ))}
+        </Stack>
+      )}
     </Stack>
   );
 }

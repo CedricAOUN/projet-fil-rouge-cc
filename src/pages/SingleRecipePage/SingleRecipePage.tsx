@@ -46,12 +46,14 @@ const SingleRecipePage: React.FC = () => {
     comments,
   } = recipe;
 
+  console.log({ instructions })
+
   return (
     <Stack gap={2}>
       <RecipeTitlePaper
         title={title}
         desc={description}
-        likes={likes}
+        likes={likes.count}
         imgUrl={image_url}
       />
       <Stack direction={isMobile ? 'column' : 'row'} gap={2}>

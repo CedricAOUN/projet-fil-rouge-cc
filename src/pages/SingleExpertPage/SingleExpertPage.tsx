@@ -5,19 +5,19 @@ import NotFound from '@/pages/NotFound/NotFound';
 import ProfileCard from '@/components/ProfileCard/ProfileCard';
 import CourseList from '@/components/CourseList/CourseList';
 import EditProfileForm from '@/components/EditProfileForm/EditProfileForm';
-import { fetchCourseByExpertId, fetchSingleExpert } from '@/api/api';
-import { Course, Expert } from '@/api/api.types';
+import { fetchCourseByExpertId, fetchSingleUser } from '@/api/api';
+import { Course, User } from '@/api/api.types';
 
 const SingleExpertPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams<{ id: string }>();
-  const [expert, setExpert] = useState<Expert | null>(null);
+  const [expert, setExpert] = useState<User | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [courses, setCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
     if (id) {
-      fetchSingleExpert(id).then((data: Expert) => {
+      fetchSingleUser(id).then((data: User) => {
         if (data) {
           setExpert(data);
         }

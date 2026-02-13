@@ -1,5 +1,5 @@
 import { Comment } from '@/types';
-import { Typography, Paper, Stack, Box } from '@mui/material';
+import { Typography, Paper, Stack, Box, Avatar } from '@mui/material';
 import React from 'react';
 
 function CommentList({ comments }: { comments: Comment[] }) {
@@ -17,17 +17,22 @@ function CommentList({ comments }: { comments: Comment[] }) {
       <Typography variant='h4'>Comments</Typography>
       {comments.map((comment, index) => (
         <Paper key={index}>
-          <Stack direction='row'>
-            <Typography variant='h6'>
-              {comment.username}:
-            </Typography>
+          <Stack direction='row' alignItems='center' gap={1} padding={1} width='100%'>
+            <Avatar alt={comment.creator.name} src={comment.creator.avatar_url} />
+            <Stack>
+              <Stack direction='row'>
+                <Typography variant='h6' fontWeight='bold'>
+                  {comment.creator.name}:
+                </Typography>
+              </Stack>
+              <Typography variant='subtitle2'>{comment.content}</Typography>
+            </Stack>
+            <Box flexGrow={1}>
+              <Typography variant='subtitle2' textAlign='end'>
+                {comment.created_at}
+              </Typography>
+            </Box>
           </Stack>
-          <Typography variant='subtitle2'>{comment.content}</Typography>
-          <Box>
-            <Typography variant='subtitle2' textAlign='end'>
-              {comment.created_at}
-            </Typography>
-          </Box>
         </Paper>
       ))}
     </Stack>

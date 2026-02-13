@@ -1,7 +1,10 @@
+import { Ingredient } from '@/api/api.types';
 import { Paper, Stack, Typography } from '@mui/material';
 import React from 'react';
 
-function IngredientList({ ingredients }) {
+function IngredientList({ ingredients }: { ingredients: Ingredient[] }) {
+  console.log({ ingredients } );
+
   if(!ingredients || ingredients.length === 0) {
     return (
       <Paper sx={{ flex: 1 }}>
@@ -17,7 +20,7 @@ function IngredientList({ ingredients }) {
       <Stack>
         {ingredients.map((ingr, index) => (
           <Typography variant='subtitle1' key={index}>
-            - {ingr.name} x {ingr.amount} {ingr.unit}
+            - {ingr.name} x {ingr.quantity} {ingr.unit}
           </Typography>
         ))}
       </Stack>

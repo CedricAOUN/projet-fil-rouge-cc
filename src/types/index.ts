@@ -1,5 +1,7 @@
 // Type definitions for the application
 
+import { User } from '@/api/api.types';
+
 export interface Course {
   id: number;
   title: string;
@@ -8,29 +10,35 @@ export interface Course {
 
 export interface Ingredient {
   name: string;
-  amount: number | string;
+  quantity: number | string;
   unit: string;
 }
 
 export interface Comment {
-  comment_id: number;
+  id: number;
   content: string;
-  creator_id: number;
   created_at: string;
-  username: string;
-  avatar_url: string;
+  updated_at: string;
+  recipe_id: string;
+  creator: User;
 }
 
 export interface Recipe {
   id: string;
   title: string;
   description: string;
-  likes: number;
+  likes: Likes;
   date: string;
   image_url: string;
   ingredients: Ingredient[];
   instructions: string;
   comments: Comment[];
+}
+
+interface Likes {
+  count: number;
+  is_logged_in_user: boolean;
+  is_liked_by_current_user: boolean;
 }
 
 export interface Unit {

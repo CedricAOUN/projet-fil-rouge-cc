@@ -29,7 +29,7 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
         padding: 0,
       }}
     >
-      <img className='recipe-img' src={imgUrl} alt={`Image of ${title}`} />
+      <img className='recipe-img' src={imgUrl} alt={`Image of ${title}`} height={'300px'}/>
       <Box
         sx={{
           display: 'flex',

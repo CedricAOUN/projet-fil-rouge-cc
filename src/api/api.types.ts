@@ -8,15 +8,16 @@ export type Course = {
   created_on: string;
 };
 
-export type Expert = {
+export type User = {
   id: number;
+  name: string; // Username
   first_name: string;
   last_name: string;
   is_expert: boolean;
   courses_count?: number;
   biography: string;
   courses?: Course[];
-  avatar?: string;
+  avatar_url?: string;
 };
 
 export interface Recipe {
@@ -33,7 +34,7 @@ export interface Recipe {
 
 export type Ingredient = {
   name: string;
-  amount: number | string;
+  quantity: number | string;
   unit: string;
 };
 
