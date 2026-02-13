@@ -18,6 +18,3 @@ Backend handled by https://github.com/CedricAOUN/pfr-backend-cc
 - Clone it
 - `php artisan serve` after installing dependencies.
 
-
-
-- `npm run backend:mockdata`
