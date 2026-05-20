@@ -7,10 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "backend": "cd backend && node server.js",
-    "backend:dev": "cd backend && node --inspect --watch-path=./ ./server.js",
-    "backend:mockdata": "npx prisma migrate dev --name init && npx prisma db seed"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
