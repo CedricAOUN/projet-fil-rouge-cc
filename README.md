@@ -11,11 +11,9 @@ Ensure you are back at root of the project, and run these commands in 2 separate
 
 ### Backend
 
-Backend handled by https://github.com/CedricAOUN/pfr-backend-cc
+Backend handled by https://github.com/CedricAOUN/pfr-backend-cc.
 
-- Clone it
-- `composer` to install dependencies.
-- Ensure a mysql server is running (WAMP or other)
-- Configure mysql in .env of the project.
-- `php artisan serve`
+Follow instructions in the backend README to get it running. Afterwards, make a `.env` file and set VITE_API_URL to the backend URL (e.g. `http://localhost:8080`).
+
+```
 
