@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   IconButton,
@@ -13,11 +14,14 @@ import { useMediaQuery } from '@mui/material';
 import LoginModal from '@/components/LoginModal/LoginModal';
 import ThemeModeToggle from './ThemeModeToggle';
 import { NavLink } from 'react-router-dom';
+import { useAppSelector } from '@/store/store';
+import { AuthUser, useLogoutMutation } from '@/api/authApi';
 
 export default function Header({ currentTheme, onThemeToggle }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:900px)');
+  const currentUser: AuthUser | null = useAppSelector((state) => state.user.currentUser);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,6 +33,12 @@ export default function Header({ currentTheme, onThemeToggle }) {
 
   const handleModalOpen = () => setIsOpen(true);
   const handleModalClose = () => setIsOpen(false);
+
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+
+  const handleLogout = () => {
+    logout().unwrap();
+  };
 
   const linkStyles = {
     mx: '5px',
@@ -98,14 +108,23 @@ export default function Header({ currentTheme, onThemeToggle }) {
                   Premium
                 </MuiLink>
               </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleModalOpen();
-                  handleMenuClose();
-                }}
-              >
-                <MuiLink sx={linkStyles}>Sign In</MuiLink>
-              </MenuItem>
+              {!currentUser && (
+                <MenuItem
+                  onClick={() => {
+                    handleModalOpen();
+                    handleMenuClose();
+                  }}
+                >
+                  <MuiLink sx={linkStyles}>Sign In</MuiLink>
+                </MenuItem>
+              )}
+              {currentUser && (
+                <MenuItem>
+                  <MuiLink sx={{ ...linkStyles, color: 'error.main' }} onClick={handleLogout}>
+                    Sign Out
+                  </MuiLink>
+                </MenuItem>
+              )}
             </Menu>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <ThemeModeToggle
@@ -130,9 +149,17 @@ export default function Header({ currentTheme, onThemeToggle }) {
 
         {!isMobile && (
           <Stack direction='row' gap='10px' alignItems='center'>
-            <Button variant='contained' onClick={handleModalOpen}>
-              Sign In
-            </Button>
+            {!currentUser && (
+              <Button variant='contained' onClick={handleModalOpen}>
+                Sign In
+              </Button>
+            )}
+            {currentUser && (
+              <Button variant='outlined' color='primary' sx={{ backgroundColor: 'error.main' }} onClick={handleLogout}>
+                Sign Out
+              </Button>
+            )}
+            {currentUser && <Avatar src={currentUser.avatar_url} alt={currentUser.name} />}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <ThemeModeToggle
                 currentTheme={currentTheme}

@@ -3,7 +3,7 @@ import { Course, User } from '@/api/api.types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 const recipesEndpoint = `${API_URL}/recipes`;
-const expertsEndpoint = `${API_URL}/experts`;
+const usersEndpoint = `${API_URL}/users`;
 const coursesEndpoint = `${API_URL}/courses`;
 
 const defaultHeaders = {
@@ -22,36 +22,6 @@ export const fetchRecipes = async (query?: string): Promise<Recipe[]> => {
     return data;
   } catch (error) {
     console.error('Failed to fetch recipes:', error);
-    throw error;
-  }
-};
-
-export const fetchUsers = async (): Promise<User[]> => {
-  try {
-    const response = await fetch(expertsEndpoint, {
-      headers: defaultHeaders,
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return await response.json().then((data) => data.data);
-  } catch (error) {
-    console.error('Failed to fetch users:', error);
-    throw error;
-  }
-};
-
-export const fetchSingleUser = async (id: string): Promise<User> => {
-  try {
-    const response = await fetch(`${expertsEndpoint}/${id}`, {
-      headers: defaultHeaders,
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return await response.json().then((data) => data.data);
-  } catch (error) {
-    console.error(`Failed to fetch user with id ${id}:`, error);
     throw error;
   }
 };

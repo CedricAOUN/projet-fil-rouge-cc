@@ -15,11 +15,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { toggleThemeMode, setThemeMode } from '@/store/slices/appSlice';
 import RecipeSearch from './components/RecipeComponents/RecipeSearch/RecipeSearch';
+import { useGetCurrentUserQuery } from './api/authApi';
 
 function App() {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isMobile = useMediaQuery('(max-width: 900px)');
+
+  const token = localStorage.getItem('token');
+  useGetCurrentUserQuery(undefined, { skip: !token });
   
   const dispatch = useDispatch();
   const themeMode = useSelector((state: RootState) => state.app.themeMode);

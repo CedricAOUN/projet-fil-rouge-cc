@@ -3,16 +3,6 @@ export { store } from './store';
 export type { RootState, AppDispatch } from './store';
 export { useAppDispatch, useAppSelector } from './store';
 
-// User slice exports
-export {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-  logout,
-  updateUser,
-  clearError as clearUserError,
-} from './slices/userSlice';
-
 // Recipes slice exports
 export {
   fetchRecipesStart,

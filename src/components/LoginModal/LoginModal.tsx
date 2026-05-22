@@ -8,9 +8,13 @@ import {
   Typography,
   TextField,
   Paper,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import './LoginModal.css';
 import { Close } from '@mui/icons-material';
+import { useLoginMutation, useRegisterMutation } from '@/api/authApi';
+import { formatErrors } from '@/utils/formUtils';
 
 function a11yProps(index) {
   return {
@@ -35,9 +39,38 @@ function CustomTabPanel({ children, value, index }) {
 function LoginModal({ isOpen, handleClose }) {
   const [value, setValue] = useState(0);
 
+  const [loginContext, setLoginContext] = useState({
+    email: '',
+    password: '',
+  });
+  const [registerContext, setRegisterContext] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const [ login, { error: loginError, isLoading: isLoggingIn } ] = useLoginMutation();
+
+  const [ register, { error: registerError, isLoading: isRegistering } ] = useRegisterMutation();
+
+
+  const handleLogin = () => {
+    login({ email: loginContext.email, password: loginContext.password }).unwrap().then(() => {
+      handleClose();
+    }).catch(() => {});
+  };
+
+  const handleRegister = () => {
+    register({ name: registerContext.name, email: registerContext.email, password: registerContext.password }).unwrap().then(() => {
+      handleClose();
+    }).catch(() => {});
+  };
+
+  const loginErrors = formatErrors(loginError, 'array');
+  const registerErrors = formatErrors(registerError, 'array');
 
   return (
     <Modal
@@ -76,15 +109,40 @@ function LoginModal({ isOpen, handleClose }) {
         </Box>
 
         <CustomTabPanel value={value} index={0}>
-          <TextField fullWidth placeholder='Username' sx={{ mb: 2 }} />
-          <TextField
-            fullWidth
-            type='password'
-            placeholder='Password'
-            sx={{ mb: 2 }}
-          />
-          <Button fullWidth variant='contained' color='primary'>
-            Login
+          {loginError && (
+            <Typography variant='body2' textAlign={'center'} color='error' sx={{ mb: 2 }}>
+              {loginErrors.map((err, index) => (
+                <Alert key={index} severity='error' sx={{ mb: 1 }}>
+                  {err}
+                </Alert>
+              ))}
+            </Typography>
+          )}
+          {!isLoggingIn ? (
+            <>
+              <TextField
+                fullWidth
+                placeholder='Username'
+                sx={{ mb: 2 }}
+                value={loginContext.email}
+                onChange={(e) => setLoginContext({ ...loginContext, email: e.target.value })}
+              />
+              <TextField
+                fullWidth
+                type='password'
+                placeholder='Password'
+                sx={{ mb: 2 }}
+                value={loginContext.password}
+                onChange={(e) => setLoginContext({ ...loginContext, password: e.target.value })}
+              />
+            </>
+            ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <CircularProgress />
+            </Box>
+          )}
+          <Button fullWidth variant='contained' color='primary' onClick={handleLogin} disabled={isLoggingIn}>
+            {isLoggingIn ? 'Logging in...' : 'Login'}
           </Button>
           <Typography
             variant='subtitle2'
@@ -101,16 +159,47 @@ function LoginModal({ isOpen, handleClose }) {
         </CustomTabPanel>
 
         <CustomTabPanel value={value} index={1}>
-          <TextField fullWidth placeholder='Email' sx={{ mb: 2 }} />
-          <TextField fullWidth placeholder='Username' sx={{ mb: 2 }} />
-          <TextField
-            fullWidth
-            type='password'
-            placeholder='Password'
-            sx={{ mb: 2 }}
-          />
-          <Button fullWidth variant='contained' color='primary'>
-            Sign Up
+          {registerError && (
+            <Typography variant='body2' textAlign={'center'} color='error' sx={{ mb: 2 }}>
+              {registerErrors.map((err, index) => (
+                <Alert key={index} severity='error' sx={{ mb: 1 }}>
+                  {err}
+                </Alert>
+              ))}
+            </Typography>
+          )}
+          {!isRegistering ? (
+            <>
+              <TextField
+                fullWidth
+                placeholder='Name'
+                sx={{ mb: 2 }}
+                value={registerContext.name}
+                onChange={(e) => setRegisterContext({ ...registerContext, name: e.target.value })}
+              />
+              <TextField
+                fullWidth
+                placeholder='Email'
+                sx={{ mb: 2 }}
+                value={registerContext.email}
+                onChange={(e) => setRegisterContext({ ...registerContext, email: e.target.value })}
+              />
+              <TextField
+                fullWidth
+                type='password'
+                placeholder='Password'
+                sx={{ mb: 2 }}
+                value={registerContext.password}
+                onChange={(e) => setRegisterContext({ ...registerContext, password: e.target.value })}
+              />
+            </>
+          ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <CircularProgress />
+            </Box>
+          )}
+          <Button fullWidth variant='contained' color='primary' onClick={handleRegister} disabled={isRegistering}>
+            {isRegistering ? 'Signing Up...' : 'Sign Up'}
           </Button>
           <Typography
             variant='subtitle2'

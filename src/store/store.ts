@@ -5,19 +5,23 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import userSlice from './slices/userSlice';
 import recipesSlice from './slices/recipesSlice';
 import appSlice from './slices/appSlice';
+import { authApi } from '@/api/authApi';
+import { userApi } from '@/api/userApi';
 
 export const store = configureStore({
   reducer: {
     app: appSlice,
     user: userSlice,
     recipes: recipesSlice,
+    [authApi.reducerPath]: authApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }),
+    }).concat(authApi.middleware, userApi.middleware),
   devTools: import.meta.env.DEV,
 });
 

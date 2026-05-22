@@ -1,3 +1,4 @@
+import { useAppSelector } from '@/store/store';
 import {
   Avatar,
   Button,
@@ -7,11 +8,14 @@ import {
   Typography,
 } from '@mui/material';
 
-function ProfileCard({ expert, onEdit, isMobile }) {
-  const { first_name, last_name, is_expert, avatar, biography, courses_count } =
-    expert;
+function ProfileCard({ user, onEdit, isMobile }) {
+  const { name, first_name, last_name, is_expert, avatar, biography, courses_count } =
+    user;
 
-  const isCurrentUser = true;
+  const currentUser = useAppSelector((state) => state.user.currentUser);
+
+  const displayName = name || `${first_name} ${last_name}`;
+  const isCurrentUser = currentUser?.id === user.id;
 
   return (
     <Card sx={{ height: '100%', borderRadius: '5px' }}>
@@ -31,7 +35,7 @@ function ProfileCard({ expert, onEdit, isMobile }) {
           spacing={2}
         >
           <Typography variant='h5'>
-            {first_name} {last_name}
+            {displayName}
           </Typography>
           <Typography variant='subtitle1' textAlign={'center'}>
             {biography}
