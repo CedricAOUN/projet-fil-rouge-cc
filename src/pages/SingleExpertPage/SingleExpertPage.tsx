@@ -1,41 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Stack, useMediaQuery } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import NotFound from '@/pages/NotFound/NotFound';
 import ProfileCard from '@/components/ProfileCard/ProfileCard';
 import CourseList from '@/components/CourseList/CourseList';
 import EditProfileForm from '@/components/EditProfileForm/EditProfileForm';
-import { fetchCourseByExpertId } from '@/api/api';
-import { Course, User } from '@/api/api.types';
+import { useGetCoursesByExpertIdQuery } from '@/api/courseApi';
 import { useGetUserByIdQuery } from '@/api/userApi';
 
 const SingleExpertPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams<{ id: string }>();
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [courses, setCourses] = useState<Course[] | null>(null);
 
   const { data: singleUser } = useGetUserByIdQuery(id!, { skip: !id });
+  const { data: courses } = useGetCoursesByExpertIdQuery(id!, { skip: !id || !singleUser?.is_expert });
 
   console.log('Fetched user:', singleUser);
-
-  useEffect(() => {
-    if (id) {
-      if (singleUser && singleUser.is_expert) {
-        fetchCourseByExpertId(id).then((data: Course[]) => {
-          if (data) {
-            setCourses(data);
-          }
-        });
-      }
-    }
-  }, [id, singleUser]);
+  console.log(courses);
 
   if (!singleUser) {
     return <NotFound />;
   }
-
-  console.log(courses);
 
   const { is_expert } = singleUser;
 

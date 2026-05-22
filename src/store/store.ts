@@ -7,6 +7,8 @@ import recipesSlice from './slices/recipesSlice';
 import appSlice from './slices/appSlice';
 import { authApi } from '@/api/authApi';
 import { userApi } from '@/api/userApi';
+import { recipeApi } from '@/api/recipeApi';
+import { courseApi } from '@/api/courseApi';
 
 export const store = configureStore({
   reducer: {
@@ -15,13 +17,20 @@ export const store = configureStore({
     recipes: recipesSlice,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [recipeApi.reducerPath]: recipeApi.reducer,
+    [courseApi.reducerPath]: courseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }).concat(authApi.middleware, userApi.middleware),
+    }).concat(
+      authApi.middleware,
+      userApi.middleware,
+      recipeApi.middleware,
+      courseApi.middleware,
+    ),
   devTools: import.meta.env.DEV,
 });
 

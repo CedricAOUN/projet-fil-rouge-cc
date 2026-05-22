@@ -14,8 +14,8 @@ import SingleCoursePage from './pages/SingleCoursePage/SingleCoursePage';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { toggleThemeMode, setThemeMode } from '@/store/slices/appSlice';
-import RecipeSearch from './components/RecipeComponents/RecipeSearch/RecipeSearch';
 import { useGetCurrentUserQuery } from './api/authApi';
+import AdvancedRecipeSearch from './components/AdvancedRecipeSearch/AdvancedRecipeSearch';
 
 function App() {
   const location = useLocation();
@@ -54,11 +54,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header currentTheme={themeMode ? 'dark' : 'light'} onThemeToggle={toggleMode} />
-      <main>
-        <Box sx={{ margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%' }}>
+      <main style={{ height: 'calc(100vh - 120px)' }}>
+        <Box sx={{ margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%', height: '100%' }}>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path='/recipes' element={<RecipeSearch maxHeight={'calc(100dvh - 300px)'} />} />
+            <Route path='/recipes' element={<AdvancedRecipeSearch />} />
             <Route path='/recipe/:id' element={<SingleRecipePage />} />
             <Route path='/recipe/create' element={<RecipeCreateForm />} />
             <Route path='/experts' element={<></>} />
