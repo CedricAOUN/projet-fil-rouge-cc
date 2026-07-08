@@ -33,6 +33,19 @@ export interface AuthResponse {
   token_type: string;
 }
 
+export interface SubscriptionStatusResponse {
+  is_subscribed: boolean;
+  subscription: {
+    type: string;
+    stripe_status: string;
+    stripe_price: string;
+    quantity: number;
+    trial_ends_at: string | null;
+    ends_at: string | null;
+    current_period_end: string;
+  };
+}
+
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
@@ -73,6 +86,25 @@ export const authApi = createApi({
         method: 'GET',
       }),
     }),
+    subscriptionStatus: builder.query<
+      SubscriptionStatusResponse,
+      { userId: string }
+    >({
+      query: ({ userId }) => ({
+        url: `/subscription/${userId}`,
+        method: 'GET',
+      }),
+    }),
+    checkout: builder.mutation<
+      { checkout_url: string },
+      { product: string; interval: string }
+    >({
+      query: (checkoutData) => ({
+        url: `${API_URL}/checkout`, // full absolute path, bypasses authApi's /users baseUrl
+        method: 'POST',
+        body: checkoutData,
+      }),
+    }),
   }),
 });
 
@@ -81,4 +113,6 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useGetCurrentUserQuery,
+  useSubscriptionStatusQuery,
+  useCheckoutMutation,
 } = authApi;

@@ -17,7 +17,8 @@ function RecipeSearch({ showSearch = true, headerSearchRef = null, maxHeight = '
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  const { data: filteredRecipes = [], isLoading, isFetching } = useGetRecipesQuery(debouncedTerm);
+  const { currentData: filteredRecipes = [], isLoading, isFetching } = useGetRecipesQuery(debouncedTerm);
+
 
   useEffect(() => {
     if (Boolean(searchTerm)) {

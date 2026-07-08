@@ -3,6 +3,23 @@ import { Recipe } from '@/types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
+interface RecipeResponse {
+  recipes: Recipe[];
+  total: number;
+  highest_likes: number;
+  lowest_likes: number;
+  all_creators: string[];
+  all_ingredients: string[];
+}
+
+type RecipeSearchParams = {
+  search?: string;
+  chefs?: string[];
+  ingredients?: string[];
+  likeRange?: [number, number];
+  isPremium?: boolean;
+};
+
 export const recipeApi = createApi({
   reducerPath: 'recipeApi',
   baseQuery: fetchBaseQuery({
@@ -17,9 +34,23 @@ export const recipeApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getRecipes: builder.query<Recipe[], string | undefined>({
-      query: (search = '') => `?search=${encodeURIComponent(search)}`,
-      transformResponse: (response: { data: Recipe[] }) => response.data,
+    getRecipes: builder.query<RecipeResponse, RecipeSearchParams>({
+      query: ({
+        search = '',
+        creators = [],
+        ingredients = [],
+        likeRange = [0, Number.MAX_SAFE_INTEGER],
+        isPremium = false,
+      }) => {
+        const params = new URLSearchParams();
+        if (search) params.append('search', search);
+        if (creators.length) params.append('creators', creators.join(','));
+        if (ingredients.length)
+          params.append('ingredients', ingredients.join(','));
+        if (likeRange) params.append('likeRange', likeRange.join(','));
+        if (isPremium) params.append('isPremium', 'true');
+        return `?${params.toString()}`;
+      },
     }),
     getRecipeById: builder.query<Recipe, string>({
       query: (id) => `/${id}`,
