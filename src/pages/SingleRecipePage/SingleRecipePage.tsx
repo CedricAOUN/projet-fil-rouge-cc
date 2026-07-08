@@ -7,19 +7,22 @@ import CommentList from '@/components/CommentList/CommentList';
 import { useParams } from 'react-router-dom';
 import NotFound from '@/pages/NotFound/NotFound';
 import { useGetRecipeByIdQuery } from '@/api/recipeApi';
+import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 
 const SingleRecipePage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams<{ id: string }>();
 
-  const { data: recipe, isLoading, isError } = useGetRecipeByIdQuery(id!, { skip: !id });
+  const { data: recipe, isLoading, isError, error } = useGetRecipeByIdQuery(id!, { skip: !id });
 
   if (isLoading) {
     return <Stack alignItems="center" justifyContent="center" minHeight="200px"><CircularProgress /></Stack>;
   }
 
   if (!recipe || isError) {
-    return <NotFound />;
+    const status = (error as { status?: number })?.status;
+    console.log(status);
+    return <PageErrorHandler errorStatus={status} />;
   }
 
   const {
@@ -32,7 +35,6 @@ const SingleRecipePage: React.FC = () => {
     comments,
   } = recipe;
 
-  console.log({ instructions })
 
   return (
     <Stack gap={2}>

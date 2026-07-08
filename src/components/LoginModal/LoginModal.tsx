@@ -60,6 +60,7 @@ function LoginModal({ isOpen, handleClose }) {
   const handleLogin = () => {
     login({ email: loginContext.email, password: loginContext.password }).unwrap().then(() => {
       handleClose();
+      window.location.reload();
     }).catch(() => {});
   };
 

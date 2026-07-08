@@ -37,7 +37,9 @@ export default function Header({ currentTheme, onThemeToggle }) {
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   const handleLogout = () => {
-    logout().unwrap();
+    logout().unwrap().then(() => {
+      window.location.reload();
+    }).catch(() => {});
   };
 
   const linkStyles = {
