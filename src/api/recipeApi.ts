@@ -56,7 +56,24 @@ export const recipeApi = createApi({
       query: (id) => `/${id}`,
       transformResponse: (response: { data: Recipe }) => response.data,
     }),
+    toggleLikeRecipe: builder.mutation<void, { recipeId: string }>({
+      query: ({ recipeId }) => ({
+        url: `/${recipeId}/like`,
+        method: 'POST',
+      }),
+    }),
+    toggleFavoriteRecipe: builder.mutation<void, { recipeId: string }>({
+      query: ({ recipeId }) => ({
+        url: `/${recipeId}/favorite`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
-export const { useGetRecipesQuery, useGetRecipeByIdQuery } = recipeApi;
+export const {
+  useGetRecipesQuery,
+  useGetRecipeByIdQuery,
+  useToggleLikeRecipeMutation,
+  useToggleFavoriteRecipeMutation,
+} = recipeApi;

@@ -8,18 +8,40 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
+import { RootState } from '@/store';
+import { useSelector } from 'react-redux';
+import { Recipe } from '@/types';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
+type RecipeTitlePaperProps = {
+  recipe: Recipe;
+  onLikeToggle: () => void;
+  onFavoriteToggle: () => void;
+  isLoading: boolean;
+};
+
+function RecipeTitlePaper({
+  recipe,
+  onLikeToggle,
+  onFavoriteToggle,
+  isLoading,
+}) {
   const isMobile = useMediaQuery('(max-width:900px)');
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
-  const [isLiked, setIsLiked] = useState(false); // GET if user liked the post for initial state.
+  const {
+    title,
+    description: desc,
+    image_url: imgUrl,
+    likes: likeObject,
+    favorites: favoritesObject,
+  } = recipe;
 
-  const likesWithUser = isLiked ? likes + 1 : likes;
-
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
-    // POST to update likes.
-  };
+  const isLiked = likeObject.is_liked_by_user;
+  const isFavorited = favoritesObject.is_favorited_by_user;
 
   return (
     <Paper
@@ -29,7 +51,12 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
         padding: 0,
       }}
     >
-      <img className='recipe-img' src={imgUrl} alt={`Image of ${title}`} height={'300px'}/>
+      <img
+        className='recipe-img'
+        src={imgUrl}
+        alt={`Image of ${title}`}
+        height={'300px'}
+      />
       <Box
         sx={{
           display: 'flex',
@@ -48,10 +75,66 @@ function RecipeTitlePaper({ title, desc, likes = 0, imgUrl }) {
           justifyContent='flex-end'
           gap={1}
         >
-          <Button variant='contained' onClick={handleLikeClick}>
-            {isLiked ? 'Unlike' : 'Like'}
-          </Button>
-          <Typography>{likesWithUser}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              minWidth: '100px',
+              border: (theme) =>
+                `2px solid ${isFavorited ? theme.palette.secondary.main : 'grey'}`,
+              borderRadius: '50vh',
+            }}
+          >
+            <Button
+              onClick={onFavoriteToggle}
+              disabled={isLoading || Boolean(!currentUser)}
+              sx={{
+                backgroundColor: 'transparent',
+                borderRadius: '50vh 0 0 50vh',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                },
+              }}
+            >
+              {isFavorited ? (
+                <FavoriteIcon color='secondary' />
+              ) : (
+                <FavoriteBorderIcon />
+              )}
+            </Button>
+            <Typography>{favoritesObject.count}</Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              minWidth: '100px',
+              border: (theme) =>
+                `2px solid ${isLiked ? theme.palette.primary.main : 'grey'}`,
+              borderRadius: '50vh',
+            }}
+          >
+            <Button
+              onClick={onLikeToggle}
+              disabled={isLoading || Boolean(!currentUser)}
+              sx={{
+                backgroundColor: 'transparent',
+                borderRadius: '50vh 0 0 50vh',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                },
+              }}
+            >
+              {isLiked ? (
+                <ThumbUpAltIcon color='primary' />
+              ) : (
+                <ThumbUpOffAltIcon />
+              )}
+            </Button>
+            <Typography>{likeObject.count}</Typography>
+          </Box>
         </Stack>
       </Box>
     </Paper>

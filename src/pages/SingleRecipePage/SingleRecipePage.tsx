@@ -5,18 +5,48 @@ import IngredientList from '@/components/IngredientList/IngredientList';
 import StepByStep from '@/components/StepByStep/StepByStep';
 import CommentList from '@/components/CommentList/CommentList';
 import { useParams } from 'react-router-dom';
-import NotFound from '@/pages/NotFound/NotFound';
-import { useGetRecipeByIdQuery } from '@/api/recipeApi';
+import {
+  useGetRecipeByIdQuery,
+  useToggleFavoriteRecipeMutation,
+  useToggleLikeRecipeMutation,
+} from '@/api/recipeApi';
 import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 
 const SingleRecipePage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams<{ id: string }>();
 
-  const { data: recipe, isLoading, isError, error } = useGetRecipeByIdQuery(id!, { skip: !id });
+  const {
+    data: recipe,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchRecipe,
+  } = useGetRecipeByIdQuery(id!, { skip: !id });
+
+  const [toggleLikeRecipe, { isLoading: isLikeLoading }] =
+    useToggleLikeRecipeMutation();
+  const [toggleFavoriteRecipe, { isLoading: isFavoriteLoading }] =
+    useToggleFavoriteRecipeMutation();
+
+  const handleLikeClick = () => {
+    toggleLikeRecipe({ recipeId: id! }).then(() => {
+      refetchRecipe();
+    });
+  };
+
+  const handleFavoriteClick = () => {
+    toggleFavoriteRecipe({ recipeId: id! }).then(() => {
+      refetchRecipe();
+    });
+  };
 
   if (isLoading) {
-    return <Stack alignItems="center" justifyContent="center" minHeight="200px"><CircularProgress /></Stack>;
+    return (
+      <Stack alignItems='center' justifyContent='center' minHeight='200px'>
+        <CircularProgress />
+      </Stack>
+    );
   }
 
   if (!recipe || isError) {
@@ -24,24 +54,15 @@ const SingleRecipePage: React.FC = () => {
     return <PageErrorHandler errorStatus={status} />;
   }
 
-  const {
-    title,
-    description,
-    image_url,
-    likes,
-    ingredients,
-    instructions,
-    comments,
-  } = recipe;
-
+  const { ingredients, instructions, comments } = recipe;
 
   return (
     <Stack gap={2}>
       <RecipeTitlePaper
-        title={title}
-        desc={description}
-        likes={likes.count}
-        imgUrl={image_url}
+        recipe={recipe}
+        onLikeToggle={handleLikeClick}
+        onFavoriteToggle={handleFavoriteClick}
+        isLoading={isLikeLoading || isFavoriteLoading}
       />
       <Stack direction={isMobile ? 'column' : 'row'} gap={2}>
         <IngredientList ingredients={ingredients} />

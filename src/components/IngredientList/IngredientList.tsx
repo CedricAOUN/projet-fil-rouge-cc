@@ -3,9 +3,7 @@ import { Paper, Stack, Typography } from '@mui/material';
 import React from 'react';
 
 function IngredientList({ ingredients }: { ingredients: Ingredient[] }) {
-  console.log({ ingredients } );
-
-  if(!ingredients || ingredients.length === 0) {
+  if (!ingredients || ingredients.length === 0) {
     return (
       <Paper sx={{ flex: 1 }}>
         <Typography variant='h4'>Ingredients</Typography>

@@ -24,12 +24,20 @@ export interface Recipe {
   id: string;
   title: string;
   description: string;
-  likes: number;
   date: string;
   img_url: string;
   ingredients: Ingredient[];
   instructions: string;
   comments: Comment[];
+  favorites: {
+    count: number;
+    is_favorited_by_user: boolean;
+  };
+  likes: {
+    count: number;
+    is_liked_by_user: boolean;
+  };
+  creator: User;
 }
 
 export type Ingredient = {
