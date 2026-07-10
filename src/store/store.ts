@@ -9,6 +9,7 @@ import { authApi } from '@/api/authApi';
 import { userApi } from '@/api/userApi';
 import { recipeApi } from '@/api/recipeApi';
 import { courseApi } from '@/api/courseApi';
+import { plansApi } from '@/api/plansApi';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [recipeApi.reducerPath]: recipeApi.reducer,
     [courseApi.reducerPath]: courseApi.reducer,
+    [plansApi.reducerPath]: plansApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -30,6 +32,7 @@ export const store = configureStore({
       userApi.middleware,
       recipeApi.middleware,
       courseApi.middleware,
+      plansApi.middleware,
     ),
   devTools: import.meta.env.DEV,
 });

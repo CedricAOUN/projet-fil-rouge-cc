@@ -1,30 +1,60 @@
-import { Box, Button, Checkbox, Stack, TextField, Typography } from '@mui/material'
-import React, { useEffect, useMemo } from 'react'
-import MultiSelectFilter from './MultiSelectFilter'
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Paper,
+  Stack,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material';
+import React, { useEffect, useMemo } from 'react';
+import MultiSelectFilter from './MultiSelectFilter';
 import { useGetRecipesQuery } from '@/api/recipeApi';
 import RecipeCard from '../RecipeComponents/RecipeCard/RecipeCard';
 import RatingSlider from './CustomSlider';
 import CustomSlider from './CustomSlider';
-import useDebounce from '@/utils/useDebounce'
+import useDebounce from '@/utils/useDebounce';
 
 const AdvancedRecipeSearch = () => {
   const [allIngredients, setAllIngredients] = React.useState<string[]>([]);
   const [allCreators, setAllCreators] = React.useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [selectedIngredients, setSelectedIngredients] = React.useState<string[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = React.useState<
+    string[]
+  >([]);
   const [selectedCreators, setSelectedCreators] = React.useState<string[]>([]);
-  const [likeRange, setLikeRange] = React.useState<[number, number]>([0, 10000]);
-  const [isPremiumChecked, setIsPremiumChecked] = React.useState(false);
+  const [likeRange, setLikeRange] = React.useState<[number, number]>([
+    0, 10000,
+  ]);
+  const [recipeType, setRecipeType] = React.useState<
+    'all' | 'premium' | 'free'
+  >('all');
 
-  const debouncedValues = useDebounce({ searchTerm, selectedIngredients, selectedCreators, likeRange, isPremiumChecked }, 500);
+  const debouncedValues = useDebounce(
+    {
+      searchTerm,
+      selectedIngredients,
+      selectedCreators,
+      likeRange,
+      recipeType,
+    },
+    500,
+  );
 
-  const { currentData: data, isLoading, isFetching } = useGetRecipesQuery({ 
-    search: debouncedValues.searchTerm, 
-    ingredients: debouncedValues.selectedIngredients, 
-    creators: debouncedValues.selectedCreators, 
-    likeRange: debouncedValues.likeRange, 
-    isPremium: debouncedValues.isPremiumChecked 
+  const {
+    currentData: data,
+    isLoading,
+    isFetching,
+  } = useGetRecipesQuery({
+    search: debouncedValues.searchTerm,
+    ingredients: debouncedValues.selectedIngredients,
+    creators: debouncedValues.selectedCreators,
+    likeRange: debouncedValues.likeRange,
+    recipeType: debouncedValues.recipeType,
   });
 
   const recipes = data?.recipes || [];
@@ -41,26 +71,65 @@ const AdvancedRecipeSearch = () => {
   return (
     <Stack height={'100%'} direction={'row'} gap={2} flexGrow={1}>
       {/* FILTERS */}
-      <Stack sx={{ backgroundColor: '#143a11', width: '30%', height: '100%', p: 2, borderRadius: '5px' }} gap={3}>
-        <Typography variant='h5' sx={{ padding: '20px' }}>
-          Filters
-        </Typography>
-        <MultiSelectFilter label='By ingredient' options={allIngredients} onChange={(selected) => setSelectedIngredients(selected)} />  
-        <MultiSelectFilter label='By creator' options={allCreators} onChange={(selected) => setSelectedCreators(selected)} />
-        <CustomSlider label='By likes' min={data?.lowest_likes} max={data?.highest_likes} onChange={(value) => setLikeRange(value as [number, number])} />
-        <Stack direction={'row'} alignItems={'center'} gap={1}>
-          <Checkbox checked={isPremiumChecked} onChange={(e) => setIsPremiumChecked(e.target.checked)} />
-          <Typography variant='body2'>Premium</Typography>
+      <Paper sx={{ width: '30%' }} variant='outlined'>
+        <Stack
+          sx={{
+            width: '100%',
+            height: '100%',
+          }}
+          gap={3}
+        >
+          <Typography variant='h5' sx={{ padding: '20px' }}>
+            Filters
+          </Typography>
+          <MultiSelectFilter
+            label='By ingredient'
+            options={allIngredients}
+            onChange={(selected) => setSelectedIngredients(selected)}
+          />
+          <MultiSelectFilter
+            label='By creator'
+            options={allCreators}
+            onChange={(selected) => setSelectedCreators(selected)}
+          />
+          <CustomSlider
+            label='By likes'
+            min={data?.lowest_likes}
+            max={data?.highest_likes}
+            onChange={(value) => setLikeRange(value as [number, number])}
+          />
+          <Stack
+            direction={'row'}
+            alignItems={'center'}
+            gap={1}
+            justifyContent={'center'}
+            paddingX={2}
+          >
+            <ToggleButtonGroup
+              value={recipeType}
+              exclusive
+              onChange={(_, newValue) => setRecipeType(newValue)}
+            >
+              <ToggleButton value={'all'}>All</ToggleButton>
+              <ToggleButton value={'premium'}>Premium</ToggleButton>
+              <ToggleButton value={'free'}>Free</ToggleButton>
+            </ToggleButtonGroup>
+          </Stack>
         </Stack>
-      </Stack>
+      </Paper>
       {/* RESULTS + GENERAL SEARCH BAR */}
       <Stack gap={2} width={'100%'} height={'100%'}>
-        <TextField fullWidth placeholder='Search for recipes...' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-        <Box sx={{ borderRadius: '5px', backgroundColor: '#a52121', width: '100%', height: '100%' }} >
+        <TextField
+          fullWidth
+          placeholder='Search for recipes...'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <Paper variant='outlined' sx={{ flexGrow: 1, height: '100%' }}>
           {isLoading || isFetching ? (
-            <Typography variant='h6' color='white' align='center' paddingTop={5}>
-              Loading recipes...
-            </Typography>
+            <Stack direction={'row'} justifyContent={'center'} p={3}>
+              <CircularProgress size={'50px'} />
+            </Stack>
           ) : (
             <Stack gap={2} padding={2} overflow={'auto'} height={'100%'}>
               {recipes.map((recipe) => (
@@ -70,14 +139,15 @@ const AdvancedRecipeSearch = () => {
                   title={recipe.title}
                   description={recipe.description}
                   image={recipe.image_url}
+                  isPremium={recipe.is_premium}
                 />
               ))}
             </Stack>
           )}
-        </Box>
+        </Paper>
       </Stack>
     </Stack>
-  )
-}
+  );
+};
 
-export default AdvancedRecipeSearch
+export default AdvancedRecipeSearch;

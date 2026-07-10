@@ -21,7 +21,6 @@ const SingleRecipePage: React.FC = () => {
 
   if (!recipe || isError) {
     const status = (error as { status?: number })?.status;
-    console.log(status);
     return <PageErrorHandler errorStatus={status} />;
   }
 

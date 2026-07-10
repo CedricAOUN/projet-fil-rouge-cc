@@ -2,6 +2,11 @@ import { createTheme } from '@mui/material/styles';
 
 // Function to generate a theme based on mode
 const getTheme = (mode) => {
+  // ─── Brand colors – change here to update the entire app ───────────────────
+  const primaryColor = '#CEB600';
+  const secondaryColor = '#FF4E4E';
+  // ───────────────────────────────────────────────────────────────────────────
+
   // Shared values that don't change between light/dark
   const commonSettings = {
     typography: {
@@ -11,6 +16,21 @@ const getTheme = (mode) => {
       button: { textTransform: 'none' },
     },
     components: {
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor:
+              mode === 'light'
+                ? 'rgba(255,255,255,0.75)'
+                : 'rgba(18,18,18,0.75)',
+            backdropFilter: 'blur(14px)',
+            WebkitBackdropFilter: 'blur(14px)',
+            borderBottom: `1px solid ${mode === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.07)'}`,
+            boxShadow: 'none',
+            color: mode === 'light' ? 'rgba(0,0,0,0.87)' : '#f5f5f5',
+          },
+        },
+      },
       MuiLink: {
         styleOverrides: {
           root: {
@@ -18,7 +38,7 @@ const getTheme = (mode) => {
             position: 'relative', // Ensure the pseudo-element positions correctly
             textDecoration: 'none', // Remove default underline
             '&:hover': {
-              color: '#FF4E4E', // Optional: hover color change
+              color: secondaryColor, // Optional: hover color change
             },
             '&::after': {
               content: '""',
@@ -27,7 +47,7 @@ const getTheme = (mode) => {
               left: 0,
               width: '0%',
               height: '2px', // Thickness of the underline
-              backgroundColor: '#FF4E4E', // Underline color
+              backgroundColor: secondaryColor, // Underline color
               transition: 'width 0.3s ease', // Animate the width of the underline
             },
             '&:hover::after': {
@@ -63,16 +83,27 @@ const getTheme = (mode) => {
         styleOverrides: {
           root: {
             borderRadius: '20px',
-            background: '#CEB600', // Use a solid color instead of a gradient for transition
-            color: '#000', // Set text color to white
-            transition: 'background-color 0.3s ease, box-shadow 0.3s ease', // Transition only background-color and box-shadow
+            background: primaryColor,
+            color: '#000',
+            transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
             '&:hover': {
-              background: '#FF4E4E', // Change background color on hover
-              color: '#ffffff', // Ensure text stays white
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Optional: add a subtle shadow on hover
+              background: secondaryColor,
+              color: '#ffffff',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
             },
           },
         },
+        variants: [
+          {
+            props: { variant: 'contained', color: 'primary' },
+            style: {
+              boxShadow: `0 2px 12px ${primaryColor}66`,
+              '&:hover': {
+                boxShadow: `0 4px 16px ${primaryColor}88`,
+              },
+            },
+          },
+        ],
       },
     },
   };

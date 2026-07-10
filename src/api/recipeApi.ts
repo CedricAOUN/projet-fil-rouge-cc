@@ -14,10 +14,10 @@ interface RecipeResponse {
 
 type RecipeSearchParams = {
   search?: string;
-  chefs?: string[];
+  creators?: string[];
   ingredients?: string[];
   likeRange?: [number, number];
-  isPremium?: boolean;
+  recipeType?: 'all' | 'premium' | 'free';
 };
 
 export const recipeApi = createApi({
@@ -40,7 +40,7 @@ export const recipeApi = createApi({
         creators = [],
         ingredients = [],
         likeRange = [0, Number.MAX_SAFE_INTEGER],
-        isPremium = false,
+        recipeType = 'all',
       }) => {
         const params = new URLSearchParams();
         if (search) params.append('search', search);
@@ -48,7 +48,7 @@ export const recipeApi = createApi({
         if (ingredients.length)
           params.append('ingredients', ingredients.join(','));
         if (likeRange) params.append('likeRange', likeRange.join(','));
-        if (isPremium) params.append('isPremium', 'true');
+        if (recipeType) params.append('recipeType', recipeType);
         return `?${params.toString()}`;
       },
     }),

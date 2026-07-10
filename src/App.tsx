@@ -16,6 +16,8 @@ import { RootState } from '@/store';
 import { toggleThemeMode, setThemeMode } from '@/store/slices/appSlice';
 import { useGetCurrentUserQuery } from './api/authApi';
 import AdvancedRecipeSearch from './components/AdvancedRecipeSearch/AdvancedRecipeSearch';
+import BillingFailure from './pages/BillingFailure/BillingFailure';
+import BillingSuccess from './pages/BillingSuccess/BillingSuccess';
 
 function App() {
   const location = useLocation();
@@ -67,6 +69,9 @@ function App() {
             <Route path='/course/:id' element={<SingleCoursePage />} />
             <Route path='/course/create' element={<></>} />
             <Route path='*' element={<NotFound />} />
+            <Route path='/not-found' element={<NotFound />} />
+            <Route path='/billing/success' element={<BillingSuccess />} />
+            <Route path='/billing/cancel' element={<BillingFailure />} />
           </Routes>
         </Box>
       </main>

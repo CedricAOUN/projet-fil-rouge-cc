@@ -33,6 +33,7 @@ export interface Recipe {
   ingredients: Ingredient[];
   instructions: string;
   comments: Comment[];
+  is_premium: boolean;
 }
 
 interface Likes {

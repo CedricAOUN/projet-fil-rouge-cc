@@ -1,4 +1,5 @@
 import {
+  AppBar,
   Avatar,
   Box,
   Button,
@@ -7,6 +8,7 @@ import {
   MenuItem,
   Link as MuiLink,
   Stack,
+  useTheme,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
@@ -18,10 +20,13 @@ import { useAppSelector } from '@/store/store';
 import { AuthUser, useLogoutMutation } from '@/api/authApi';
 
 export default function Header({ currentTheme, onThemeToggle }) {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:900px)');
-  const currentUser: AuthUser | null = useAppSelector((state) => state.user.currentUser);
+  const currentUser: AuthUser | null = useAppSelector(
+    (state) => state.user.currentUser,
+  );
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,141 +42,196 @@ export default function Header({ currentTheme, onThemeToggle }) {
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   const handleLogout = () => {
-    logout().unwrap().then(() => {
-      window.location.reload();
-    }).catch(() => {});
+    logout()
+      .unwrap()
+      .then(() => {
+        window.location.reload();
+      })
+      .catch(() => {});
   };
 
   const linkStyles = {
-    mx: '5px',
+    mx: '2px',
     cursor: 'pointer',
-    fontFamily: 'sans-serif',
-    fontSize: '18px',
+    fontSize: '14px',
+    fontWeight: 500,
     textDecoration: 'none',
+    px: '14px',
+    py: '6px',
+    borderRadius: '20px',
+    transition: 'background 0.2s, color 0.2s',
     '&:hover': {
       textDecoration: 'none',
+      backgroundColor: theme.palette.action.hover,
       '&::after': {
         width: '0%',
       },
     },
+    '&.active': {
+      backgroundColor: `${theme.palette.secondary.main}22`,
+      color: theme.palette.secondary.main,
+    },
   };
 
   return (
-    <header style={{ position: 'sticky', top: 0, zIndex: 1000 }}>
-      <Box
-        sx={{
-          backgroundColor: currentTheme === 'light' ? '#fff' : '#1f1f1f',
-          boxShadow: '0px 8px 14px -3px rgba(0,0,0,0.2)',
-          padding: '20px 15%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <MuiLink
-          component={NavLink}
-          to='/'
+    <>
+      <AppBar position='sticky' component='header'>
+        <Box
           sx={{
-            ...linkStyles,
-            fontSize: isMobile ? '20px' : '30px',
-            width: '100px',
-            display: 'block',
-            color: '#FF4E4E',
+            padding: '10px 8%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
-          <Box component='span' sx={{ color: '#CEB600', fontWeight: 700 }}>
-            Meal
-          </Box>
-          Mosaic
-        </MuiLink>
-
-        {isMobile ? (
-          <Stack direction='row' gap={1}>
-            <IconButton onClick={handleMenuOpen} color='inherit'>
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
+          <MuiLink
+            component={NavLink}
+            to='/'
+            sx={{
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              '&::after': { display: 'none' },
+              '&:hover': { textDecoration: 'none' },
+            }}
+          >
+            <Box
+              sx={{
+                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                borderRadius: '10px',
+                px: '10px',
+                py: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2px',
+              }}
             >
-              <MenuItem>
-                <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
-                  Recipes
-                </MuiLink>
-              </MenuItem>
-              <MenuItem>
-                <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
-                  Experts
-                </MuiLink>
-              </MenuItem>
-              <MenuItem>
-                <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
-                  Premium
-                </MuiLink>
-              </MenuItem>
-              {!currentUser && (
-                <MenuItem
-                  onClick={() => {
-                    handleModalOpen();
-                    handleMenuClose();
-                  }}
-                >
-                  <MuiLink sx={linkStyles}>Sign In</MuiLink>
-                </MenuItem>
-              )}
-              {currentUser && (
+              <Box
+                component='span'
+                sx={{
+                  color: theme.palette.primary.contrastText,
+                  fontWeight: 800,
+                  fontSize: isMobile ? '15px' : '17px',
+                  letterSpacing: '-0.5px',
+                }}
+              >
+                Meal
+              </Box>
+              <Box
+                component='span'
+                sx={{
+                  color: theme.palette.secondary.contrastText,
+                  fontWeight: 400,
+                  fontSize: isMobile ? '15px' : '17px',
+                  letterSpacing: '-0.5px',
+                }}
+              >
+                Mosaic
+              </Box>
+            </Box>
+          </MuiLink>
+
+          {isMobile ? (
+            <Stack direction='row' gap={1}>
+              <IconButton onClick={handleMenuOpen} color='inherit'>
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
                 <MenuItem>
-                  <MuiLink sx={{ ...linkStyles, color: 'error.main' }} onClick={handleLogout}>
-                    Sign Out
+                  <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
+                    Recipes
                   </MuiLink>
                 </MenuItem>
-              )}
-            </Menu>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ThemeModeToggle
-                currentTheme={currentTheme}
-                onThemeToggle={onThemeToggle}
-              />
-            </Box>
-          </Stack>
-        ) : (
-          <Stack direction='row' gap='5px'>
-            <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
-              Recipes
-            </MuiLink>
-            <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
-              Experts
-            </MuiLink>
-            <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
-              Premium
-            </MuiLink>
-          </Stack>
-        )}
+                <MenuItem>
+                  <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
+                    Experts
+                  </MuiLink>
+                </MenuItem>
+                <MenuItem>
+                  <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
+                    Premium
+                  </MuiLink>
+                </MenuItem>
+                {!currentUser && (
+                  <MenuItem
+                    onClick={() => {
+                      handleModalOpen();
+                      handleMenuClose();
+                    }}
+                  >
+                    <MuiLink sx={linkStyles}>Sign In</MuiLink>
+                  </MenuItem>
+                )}
+                {currentUser && (
+                  <MenuItem>
+                    <MuiLink
+                      sx={{ ...linkStyles, color: 'error.main' }}
+                      onClick={handleLogout}
+                    >
+                      Sign Out
+                    </MuiLink>
+                  </MenuItem>
+                )}
+              </Menu>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <ThemeModeToggle
+                  currentTheme={currentTheme}
+                  onThemeToggle={onThemeToggle}
+                />
+              </Box>
+            </Stack>
+          ) : (
+            <Stack direction='row' gap='2px' alignItems='center'>
+              <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
+                Recipes
+              </MuiLink>
+              <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
+                Experts
+              </MuiLink>
+              <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
+                Premium
+              </MuiLink>
+            </Stack>
+          )}
 
-        {!isMobile && (
-          <Stack direction='row' gap='10px' alignItems='center'>
-            {!currentUser && (
-              <Button variant='contained' onClick={handleModalOpen}>
-                Sign In
-              </Button>
-            )}
-            {currentUser && (
-              <Button variant='outlined' color='primary' sx={{ backgroundColor: 'error.main' }} onClick={handleLogout}>
-                Sign Out
-              </Button>
-            )}
-            {currentUser && <Avatar src={currentUser.avatar_url} alt={currentUser.name} />}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ThemeModeToggle
-                currentTheme={currentTheme}
-                onThemeToggle={onThemeToggle}
-              />
-            </Box>
-          </Stack>
-        )}
-      </Box>
+          {!isMobile && (
+            <Stack direction='row' gap='10px' alignItems='center'>
+              {!currentUser && (
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleModalOpen}
+                >
+                  Sign In
+                </Button>
+              )}
+              {currentUser && (
+                <Button
+                  variant='outlined'
+                  color='secondary'
+                  onClick={handleLogout}
+                >
+                  Sign Out
+                </Button>
+              )}
+              {currentUser && (
+                <Avatar src={currentUser.avatar_url} alt={currentUser.name} />
+              )}
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <ThemeModeToggle
+                  currentTheme={currentTheme}
+                  onThemeToggle={onThemeToggle}
+                />
+              </Box>
+            </Stack>
+          )}
+        </Box>
+      </AppBar>
       <LoginModal isOpen={isOpen} handleClose={handleModalClose} />
-    </header>
+    </>
   );
 }

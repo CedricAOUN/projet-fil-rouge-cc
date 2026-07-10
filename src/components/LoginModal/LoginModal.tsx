@@ -123,7 +123,7 @@ function LoginModal({ isOpen, handleClose }) {
             <>
               <TextField
                 fullWidth
-                placeholder='Username'
+                placeholder='Email'
                 sx={{ mb: 2 }}
                 value={loginContext.email}
                 onChange={(e) => setLoginContext({ ...loginContext, email: e.target.value })}
