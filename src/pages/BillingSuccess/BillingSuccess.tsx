@@ -1,5 +1,11 @@
 import React from 'react';
-import { Button, Paper, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { formatPrice, useGetOrderDetailsQuery } from '@/api/plansApi';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -13,8 +19,6 @@ const BillingSuccess = () => {
   const { data, isLoading } = useGetOrderDetailsQuery(stripeSessionId!, {
     skip: !stripeSessionId,
   });
-
-  console.log('Order details:', data);
 
   const price = formatPrice(data?.amount_total, data?.currency);
   const createdAt = data?.created
@@ -40,7 +44,9 @@ const BillingSuccess = () => {
       <Paper>
         <Typography variant='h6'>Order Details:</Typography>
         {isLoading ? (
-          <Typography>Loading...</Typography>
+          <Stack direction={'row'} justifyContent={'center'} p={3}>
+            <CircularProgress size={'50px'} />
+          </Stack>
         ) : (
           <Stack width='100%' padding={2} gap={1}>
             <Typography>User: {data?.customer_details?.email}</Typography>

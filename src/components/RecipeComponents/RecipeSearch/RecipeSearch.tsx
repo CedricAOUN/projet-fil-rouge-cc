@@ -67,7 +67,7 @@ function RecipeSearch({
       )}
       {!(isLoading || isFetching) && (
         <Stack gap={1} overflow={'auto'} maxHeight={maxHeight} padding={1}>
-          {filteredRecipes.map((recipe) => (
+          {filteredRecipes?.map((recipe) => (
             <RecipeCard
               key={recipe.id}
               id={recipe.id}

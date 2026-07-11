@@ -31,7 +31,7 @@ type FormattedPlanDetails = {
 
 export const formatPrice = (amount: number, currency: string): string => {
   const formatedAmount = (amount / 100).toFixed(2);
-  return `${formatedAmount} ${currency.toUpperCase()}`;
+  return `${formatedAmount} ${currency?.toUpperCase()}`;
 };
 
 const formatPlanDetailsResponse = (
