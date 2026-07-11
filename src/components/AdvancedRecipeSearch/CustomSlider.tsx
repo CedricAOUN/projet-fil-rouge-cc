@@ -38,7 +38,7 @@ const CustomSlider = ({
           min={min}
           max={max}
           onChange={handleChange}
-          step={0.1}
+          step={1}
           valueLabelDisplay='auto'
           sx={{ mx: 1, width: 'calc(100% - 16px)' }}
         />

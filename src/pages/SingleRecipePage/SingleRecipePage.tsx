@@ -21,7 +21,6 @@ const SingleRecipePage: React.FC = () => {
     isLoading,
     isError,
     error,
-    refetch: refetchRecipe,
   } = useGetRecipeByIdQuery(id!, { skip: !id });
 
   const [toggleLikeRecipe, { isLoading: isLikeLoading }] =
@@ -30,15 +29,11 @@ const SingleRecipePage: React.FC = () => {
     useToggleFavoriteRecipeMutation();
 
   const handleLikeClick = () => {
-    toggleLikeRecipe({ recipeId: id! }).then(() => {
-      refetchRecipe();
-    });
+    toggleLikeRecipe({ recipeId: id! });
   };
 
   const handleFavoriteClick = () => {
-    toggleFavoriteRecipe({ recipeId: id! }).then(() => {
-      refetchRecipe();
-    });
+    toggleFavoriteRecipe({ recipeId: id! });
   };
 
   if (isLoading) {
@@ -57,7 +52,7 @@ const SingleRecipePage: React.FC = () => {
   const { ingredients, instructions, comments } = recipe;
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} pb={4}>
       <RecipeTitlePaper
         recipe={recipe}
         onLikeToggle={handleLikeClick}
@@ -68,7 +63,7 @@ const SingleRecipePage: React.FC = () => {
         <IngredientList ingredients={ingredients} />
         <StepByStep instructions={instructions} />
       </Stack>
-      <CommentList comments={comments} />
+      <CommentList comments={comments} recipeId={id} />
     </Stack>
   );
 };

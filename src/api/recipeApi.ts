@@ -20,6 +20,15 @@ type RecipeSearchParams = {
   recipeType?: 'all' | 'premium' | 'free';
 };
 
+type Comment = {
+  id: number;
+  content: string;
+  creator_id: number;
+  recipe_id: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export const recipeApi = createApi({
   reducerPath: 'recipeApi',
   baseQuery: fetchBaseQuery({
@@ -33,6 +42,7 @@ export const recipeApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['Recipes'],
   endpoints: (builder) => ({
     getRecipes: builder.query<RecipeResponse, RecipeSearchParams>({
       query: ({
@@ -55,18 +65,61 @@ export const recipeApi = createApi({
     getRecipeById: builder.query<Recipe, string>({
       query: (id) => `/${id}`,
       transformResponse: (response: { data: Recipe }) => response.data,
+      providesTags: (result, error, id) => [{ type: 'Recipes', id }],
     }),
     toggleLikeRecipe: builder.mutation<void, { recipeId: string }>({
       query: ({ recipeId }) => ({
         url: `/${recipeId}/like`,
         method: 'POST',
       }),
+      invalidatesTags: (result, error, { recipeId }) => [
+        { type: 'Recipes', id: recipeId },
+      ],
     }),
     toggleFavoriteRecipe: builder.mutation<void, { recipeId: string }>({
       query: ({ recipeId }) => ({
         url: `/${recipeId}/favorite`,
         method: 'POST',
       }),
+      invalidatesTags: (result, error, { recipeId }) => [
+        { type: 'Recipes', id: recipeId },
+      ],
+    }),
+    addComment: builder.mutation<
+      Comment,
+      { recipeId: string; content: string }
+    >({
+      query: ({ recipeId, content }) => ({
+        method: 'POST',
+        url: `${API_URL}/comments/create`,
+        body: { recipe_id: recipeId, content },
+      }),
+      invalidatesTags: (result, error, { recipeId }) => [
+        { type: 'Recipes', id: recipeId },
+      ],
+    }),
+    editComment: builder.mutation<
+      Comment,
+      { commentId: number; content: string }
+    >({
+      query: ({ commentId, content }) => ({
+        method: 'PUT',
+        url: `${API_URL}/comments/edit/${commentId}`,
+        body: { content },
+      }),
+      invalidatesTags: (result) => [{ type: 'Recipes', id: result.recipe_id }],
+    }),
+    deleteComment: builder.mutation<
+      void,
+      { commentId: number; recipeId: string }
+    >({
+      query: ({ commentId, recipeId }) => ({
+        method: 'DELETE',
+        url: `${API_URL}/comments/delete/${commentId}`,
+      }),
+      invalidatesTags: (_result, _error, { recipeId }) => [
+        { type: 'Recipes', id: recipeId },
+      ],
     }),
   }),
 });
@@ -76,4 +129,7 @@ export const {
   useGetRecipeByIdQuery,
   useToggleLikeRecipeMutation,
   useToggleFavoriteRecipeMutation,
+  useAddCommentMutation,
+  useEditCommentMutation,
+  useDeleteCommentMutation,
 } = recipeApi;
