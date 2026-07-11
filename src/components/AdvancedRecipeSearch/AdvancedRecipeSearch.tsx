@@ -10,7 +10,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import MultiSelectFilter from './MultiSelectFilter';
 import { useGetRecipesQuery } from '@/api/recipeApi';
 import RecipeCard from '../RecipeComponents/RecipeCard/RecipeCard';
@@ -45,11 +45,7 @@ const AdvancedRecipeSearch = () => {
     500,
   );
 
-  const {
-    currentData: data,
-    isLoading,
-    isFetching,
-  } = useGetRecipesQuery({
+  const { data, isLoading, isFetching } = useGetRecipesQuery({
     search: debouncedValues.searchTerm,
     ingredients: debouncedValues.selectedIngredients,
     creators: debouncedValues.selectedCreators,
@@ -59,9 +55,12 @@ const AdvancedRecipeSearch = () => {
 
   const recipes = data?.recipes || [];
 
-  // Initalize values
+  const initialized = useRef(false);
+
+  // Initialize values once when data is first ready
   useEffect(() => {
-    if (data) {
+    if (!initialized.current && data) {
+      initialized.current = true;
       setLikeRange([data.lowest_likes, data.highest_likes]);
       setAllIngredients(data.all_ingredients);
       setAllCreators(data.all_creators);
@@ -92,12 +91,18 @@ const AdvancedRecipeSearch = () => {
             options={allCreators}
             onChange={(selected) => setSelectedCreators(selected)}
           />
-          <CustomSlider
-            label='By likes'
-            min={data?.lowest_likes}
-            max={data?.highest_likes}
-            onChange={(value) => setLikeRange(value as [number, number])}
-          />
+          {isLoading ? (
+            <Stack direction={'row'} justifyContent={'center'} p={3}>
+              <CircularProgress size={'50px'} />
+            </Stack>
+          ) : (
+            <CustomSlider
+              label='By likes'
+              min={data?.lowest_likes || 0}
+              max={data?.highest_likes || 10000}
+              onChange={(value) => setLikeRange(value as [number, number])}
+            />
+          )}
           <Stack
             direction={'row'}
             alignItems={'center'}
