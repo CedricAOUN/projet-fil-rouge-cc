@@ -114,6 +114,12 @@ const AdvancedRecipeSearch = () => {
               value={recipeType}
               exclusive
               onChange={(_, newValue) => setRecipeType(newValue)}
+              sx={{
+                '& .MuiToggleButton-root.Mui-selected': {
+                  backgroundColor: 'primary.main',
+                  color: 'black',
+                },
+              }}
             >
               <ToggleButton value={'all'}>All</ToggleButton>
               <ToggleButton value={'premium'}>Premium</ToggleButton>

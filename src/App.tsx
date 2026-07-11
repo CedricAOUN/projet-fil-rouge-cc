@@ -26,7 +26,7 @@ function App() {
 
   const token = localStorage.getItem('token');
   useGetCurrentUserQuery(undefined, { skip: !token });
-  
+
   const dispatch = useDispatch();
   const themeMode = useSelector((state: RootState) => state.app.themeMode);
 
@@ -49,22 +49,33 @@ function App() {
     };
   }, [dispatch]);
 
-  const theme = useMemo(() => getTheme(themeMode ? 'dark' : 'light'), [themeMode]);
+  const theme = useMemo(
+    () => getTheme(themeMode ? 'dark' : 'light'),
+    [themeMode],
+  );
   const toggleMode = () => dispatch(toggleThemeMode());
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header currentTheme={themeMode ? 'dark' : 'light'} onThemeToggle={toggleMode} />
+      <Header
+        currentTheme={themeMode ? 'dark' : 'light'}
+        onThemeToggle={toggleMode}
+      />
       <main style={{ height: 'calc(100vh - 120px)' }}>
-        <Box sx={{ margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%', height: '100%' }}>
+        <Box
+          sx={{
+            margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%',
+            height: '100%',
+          }}
+        >
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/recipes' element={<AdvancedRecipeSearch />} />
             <Route path='/recipe/:id' element={<SingleRecipePage />} />
             <Route path='/recipe/create' element={<RecipeCreateForm />} />
-            <Route path='/experts' element={<></>} />
-            <Route path='/expert/:id' element={<SingleExpertPage />} />
+            <Route path='/chefs' element={<></>} />
+            <Route path='/user/:id' element={<SingleExpertPage />} />
             <Route path='/premium' element={<PremiumPage />} />
             <Route path='/course/:id' element={<SingleCoursePage />} />
             <Route path='/course/create' element={<></>} />

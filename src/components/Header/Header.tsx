@@ -15,12 +15,14 @@ import { useState } from 'react';
 import { useMediaQuery } from '@mui/material';
 import LoginModal from '@/components/LoginModal/LoginModal';
 import ThemeModeToggle from './ThemeModeToggle';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@/store/store';
 import { AuthUser, useLogoutMutation } from '@/api/authApi';
+import ProfileDropdown from './ProfileDropdown';
 
 export default function Header({ currentTheme, onThemeToggle }) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:900px)');
@@ -49,6 +51,8 @@ export default function Header({ currentTheme, onThemeToggle }) {
       })
       .catch(() => {});
   };
+
+  const navigateToProfile = () => navigate(`/user/${currentUser?.id}`);
 
   const linkStyles = {
     mx: '2px',
@@ -132,7 +136,13 @@ export default function Header({ currentTheme, onThemeToggle }) {
           </MuiLink>
 
           {isMobile ? (
-            <Stack direction='row' gap={1}>
+            <Stack
+              direction='row'
+              gap={1}
+              ml='auto'
+              mr='10px'
+              alignItems='center'
+            >
               <IconButton onClick={handleMenuOpen} color='inherit'>
                 <MenuIcon />
               </IconButton>
@@ -156,33 +166,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
                     Premium
                   </MuiLink>
                 </MenuItem>
-                {!currentUser && (
-                  <MenuItem
-                    onClick={() => {
-                      handleModalOpen();
-                      handleMenuClose();
-                    }}
-                  >
-                    <MuiLink sx={linkStyles}>Sign In</MuiLink>
-                  </MenuItem>
-                )}
-                {currentUser && (
-                  <MenuItem>
-                    <MuiLink
-                      sx={{ ...linkStyles, color: 'error.main' }}
-                      onClick={handleLogout}
-                    >
-                      Sign Out
-                    </MuiLink>
-                  </MenuItem>
-                )}
               </Menu>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <ThemeModeToggle
-                  currentTheme={currentTheme}
-                  onThemeToggle={onThemeToggle}
-                />
-              </Box>
             </Stack>
           ) : (
             <Stack direction='row' gap='2px' alignItems='center'>
@@ -198,37 +182,30 @@ export default function Header({ currentTheme, onThemeToggle }) {
             </Stack>
           )}
 
-          {!isMobile && (
-            <Stack direction='row' gap='10px' alignItems='center'>
-              {!currentUser && (
-                <Button
-                  variant='contained'
-                  color='primary'
-                  onClick={handleModalOpen}
-                >
-                  Sign In
-                </Button>
-              )}
-              {currentUser && (
-                <Button
-                  variant='outlined'
-                  color='secondary'
-                  onClick={handleLogout}
-                >
-                  Sign Out
-                </Button>
-              )}
-              {currentUser && (
-                <Avatar src={currentUser.avatar_url} alt={currentUser.name} />
-              )}
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <ThemeModeToggle
-                  currentTheme={currentTheme}
-                  onThemeToggle={onThemeToggle}
-                />
-              </Box>
-            </Stack>
-          )}
+          <Stack direction='row' gap='10px' alignItems='center'>
+            {!currentUser && (
+              <Button
+                variant='contained'
+                color='primary'
+                size={isMobile ? 'small' : 'medium'}
+                onClick={handleModalOpen}
+              >
+                Sign In
+              </Button>
+            )}
+            {currentUser && (
+              <ProfileDropdown
+                currentUser={currentUser}
+                isMobile={isMobile}
+                onNavigateToProfile={navigateToProfile}
+                onLogout={handleLogout}
+              />
+            )}
+            <ThemeModeToggle
+              currentTheme={currentTheme}
+              onThemeToggle={onThemeToggle}
+            />
+          </Stack>
         </Box>
       </AppBar>
       <LoginModal isOpen={isOpen} handleClose={handleModalClose} />

@@ -79,6 +79,20 @@ const getTheme = (mode) => {
           },
         },
       },
+      MuiMenu: {
+        styleOverrides: {
+          paper: {
+            padding: '5px',
+          },
+        },
+      },
+      MuiAutoComplete: {
+        styleOverrides: {
+          paper: {
+            padding: '5px',
+          },
+        },
+      },
       MuiButton: {
         styleOverrides: {
           root: {
