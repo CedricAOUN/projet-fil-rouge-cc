@@ -9,7 +9,7 @@ export interface AuthUser {
   biography: string | null;
   avatar_url: string | null;
   is_premium: boolean;
-  is_expert: boolean;
+  is_chef: boolean;
   premium_expire: string | null;
   created_at: string;
   updated_at: string;
@@ -86,15 +86,6 @@ export const authApi = createApi({
         method: 'GET',
       }),
     }),
-    subscriptionStatus: builder.query<
-      SubscriptionStatusResponse,
-      { userId: string }
-    >({
-      query: ({ userId }) => ({
-        url: `/subscription/${userId}`,
-        method: 'GET',
-      }),
-    }),
     checkout: builder.mutation<
       { checkout_url: string },
       { product: string; interval: string }
@@ -113,6 +104,5 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useGetCurrentUserQuery,
-  useSubscriptionStatusQuery,
   useCheckoutMutation,
 } = authApi;

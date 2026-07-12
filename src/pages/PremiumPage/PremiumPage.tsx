@@ -11,7 +11,6 @@ import DoneIcon from '@mui/icons-material/Done';
 import React, { useRef, useState } from 'react';
 import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
-import { useSubscriptionStatusQuery } from '@/api/authApi';
 import dayjs from 'dayjs';
 import { PREMIUM_TIERS } from '@/constants/premiumPlans';
 import Checkout from '@/components/Checkout/Checkout';
@@ -19,48 +18,25 @@ import Checkout from '@/components/Checkout/Checkout';
 function PremiumPage() {
   const isMobile = useMediaQuery('(max-width:900px)');
   const paymentSectionRef = useRef(null);
-  const currentUserId = useSelector(
-    (state: RootState) => state.user.currentUser?.id,
-  );
-  const [selectedTier, setSelectedTier] = useState('premium');
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
-  const { data: subscriptionStatus, isLoading: isSubscriberStatusLoading } =
-    useSubscriptionStatusQuery(
-      {
-        userId: currentUserId,
-      },
-      {
-        skip: !currentUserId,
-      },
-    );
-  const isSubscribed = subscriptionStatus?.is_subscribed;
+  const [selectedTier, setSelectedTier] = useState('premium');
 
   const handleTierSelect = (id) => {
     setSelectedTier(id);
     paymentSectionRef.current?.scrollIntoView({ behaviour: 'smooth' });
   };
 
-  if (isSubscriberStatusLoading) {
-    return (
-      <Stack direction={'row'} justifyContent={'center'} p={3}>
-        <CircularProgress size={'50px'} />
-      </Stack>
-    );
-  }
-
-  if (isSubscribed) {
+  if (currentUser?.is_premium) {
     return (
       <Paper
         sx={{ gap: 3, padding: 2, display: 'flex', flexDirection: 'column' }}
       >
         <Typography variant='h1'>Premium</Typography>
         <Typography variant='h6' color='success.main'>
-          You are already a subscribed user. Your subscription will be renewed
-          on{' '}
-          {dayjs(subscriptionStatus?.subscription.current_period_end).format(
-            'MMMM D, YYYY',
-          )}
-          .
+          You are already a {currentUser?.is_chef ? 'Chef' : 'Premium member'}.
+          Your subscription will be renewed on{' '}
+          {dayjs(currentUser?.premium_expire).format('MMMM D, YYYY')}.
         </Typography>
         <Button variant='contained' color='primary'>
           Manage Subscription
@@ -72,16 +48,6 @@ function PremiumPage() {
   return (
     <Stack gap={3}>
       <Typography variant='h1'>Premium</Typography>
-      {isSubscribed && (
-        <Typography variant='h6' color='success.main'>
-          You are already a subscribed user. Your subscription will be renewed
-          on{' '}
-          {dayjs(subscriptionStatus?.subscription.current_period_end).format(
-            'MMMM D, YYYY',
-          )}
-          .
-        </Typography>
-      )}
       <Stack direction={isMobile ? 'column' : 'row'} width='100%' gap={1}>
         {PREMIUM_TIERS.map((tier, index) => (
           <Badge
