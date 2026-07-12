@@ -17,6 +17,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import { useGetCurrentUserQuery } from '@/api/authApi';
 
 type RecipeTitlePaperProps = {
   recipe: Recipe;
@@ -32,7 +33,7 @@ function RecipeTitlePaper({
   isLoading,
 }) {
   const isMobile = useMediaQuery('(max-width:900px)');
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const { data: currentUser } = useGetCurrentUserQuery();
 
   const {
     title,

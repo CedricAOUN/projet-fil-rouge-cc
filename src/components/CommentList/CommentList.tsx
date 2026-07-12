@@ -23,6 +23,7 @@ import { RootState } from '@/store/store';
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import SendIcon from '@mui/icons-material/Send';
 import EditCommentDialog from './EditCommentDialog';
+import { useGetCurrentUserQuery } from '@/api/authApi';
 
 function CommentList({
   comments,
@@ -35,7 +36,7 @@ function CommentList({
   const [idToEdit, setIdToEdit] = useState<number | null>(null);
   const [newCommentContent, setNewCommentContent] = useState<string>('');
   const [editedCommentContent, setEditedCommentContent] = useState<string>('');
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const { data: currentUser } = useGetCurrentUserQuery();
   const currentUserId = currentUser?.id;
   const isPremiumUser = currentUser?.is_premium || false;
 

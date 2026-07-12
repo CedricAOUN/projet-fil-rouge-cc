@@ -10,12 +10,13 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Course, User } from '@/api/api.types';
+import { AuthUser } from '@/api/authApi';
 
-function CourseList({ user, courses }: { user: User; courses: Course[] }) {
+function CourseList({ user, courses }: { user: AuthUser; courses: Course[] }) {
   const currentUserIsPremium = true;
   const isCurrentUser = true;
   const navigate = useNavigate();
-  const { first_name, last_name, is_expert } = user;
+  const { first_name, last_name, is_chef } = user;
 
   const [showMore, setShowMore] = useState(false);
   const filteredCourses = showMore ? courses : courses.slice(0, 3);
@@ -38,7 +39,7 @@ function CourseList({ user, courses }: { user: User; courses: Course[] }) {
         <Typography variant='h5'>
           Courses by {first_name} {last_name}
         </Typography>
-        {isCurrentUser && is_expert && (
+        {isCurrentUser && is_chef && (
           <Button sx={{ ml: 'auto' }} onClick={handleAddClick}>
             Add a course
           </Button>
@@ -66,7 +67,10 @@ function CourseList({ user, courses }: { user: User; courses: Course[] }) {
                   {course.description}
                 </Typography>
               </Stack>
-              <Button sx={{ ml: 'auto' }} onClick={() => handleViewClick(course.id)}>
+              <Button
+                sx={{ ml: 'auto' }}
+                onClick={() => handleViewClick(course.id)}
+              >
                 {currentUserIsPremium ? 'View Course' : 'Get Premium'}
               </Button>
             </Paper>

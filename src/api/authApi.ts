@@ -7,6 +7,8 @@ export interface AuthUser {
   name: string;
   email: string;
   biography: string | null;
+  first_name: string | null;
+  last_name: string | null;
   avatar_url: string | null;
   is_premium: boolean;
   is_chef: boolean;
@@ -14,6 +16,7 @@ export interface AuthUser {
   created_at: string;
   updated_at: string;
   data?: AuthUser; // For nested user data in responses
+  errors?: Record<string, string[]>; // For validation errors
 }
 
 export interface LoginRequest {
@@ -59,6 +62,7 @@ export const authApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['SelfUser', 'User'],
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (credentials) => ({
@@ -80,11 +84,32 @@ export const authApi = createApi({
         method: 'POST',
       }),
     }),
+    updateProfile: builder.mutation<
+      AuthUser,
+      { userId: number; profileData: FormData }
+    >({
+      query: ({ userId, profileData }) => ({
+        url: `edit/${userId}`,
+        method: 'PUT',
+        body: profileData,
+      }),
+      invalidatesTags: (result, error, { userId }) => [
+        'SelfUser',
+        { type: 'User', id: String(userId) },
+      ],
+    }),
     getCurrentUser: builder.query<AuthUser, void>({
       query: () => ({
         url: '/me',
         method: 'GET',
       }),
+      providesTags: ['SelfUser'],
+      transformResponse: (response: { data: AuthUser }) => response.data,
+    }),
+    getUserById: builder.query<AuthUser, string>({
+      query: (id) => `/${id}`,
+      transformResponse: (response: { data: AuthUser }) => response.data,
+      providesTags: (result, error, id) => [{ type: 'User', id: String(id) }],
     }),
     checkout: builder.mutation<
       { checkout_url: string },
@@ -104,5 +129,7 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useGetCurrentUserQuery,
+  useUpdateProfileMutation,
+  useGetUserByIdQuery,
   useCheckoutMutation,
 } = authApi;

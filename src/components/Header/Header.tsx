@@ -16,8 +16,7 @@ import { useMediaQuery } from '@mui/material';
 import LoginModal from '@/components/LoginModal/LoginModal';
 import ThemeModeToggle from './ThemeModeToggle';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '@/store/store';
-import { AuthUser, useLogoutMutation } from '@/api/authApi';
+import { useGetCurrentUserQuery, useLogoutMutation } from '@/api/authApi';
 import ProfileDropdown from './ProfileDropdown';
 
 export default function Header({ currentTheme, onThemeToggle }) {
@@ -26,9 +25,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:900px)');
-  const currentUser: AuthUser | null = useAppSelector(
-    (state) => state.user.currentUser,
-  );
+  const { data: currentUser } = useGetCurrentUserQuery();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);

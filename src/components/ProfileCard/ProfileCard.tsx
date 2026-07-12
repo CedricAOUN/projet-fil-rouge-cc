@@ -1,3 +1,4 @@
+import { useGetCurrentUserQuery } from '@/api/authApi';
 import { RootState, useAppSelector } from '@/store/store';
 import {
   Avatar,
@@ -14,15 +15,13 @@ function ProfileCard({ user, onEdit, isMobile }) {
     name,
     first_name,
     last_name,
-    is_expert,
+    is_chef,
     avatar_url,
     biography,
     courses_count,
   } = user;
 
-  const currentUser = useAppSelector(
-    (state: RootState) => state.user.currentUser,
-  );
+  const { data: currentUser } = useGetCurrentUserQuery();
 
   const displayName = name || `${first_name} ${last_name}`;
   const isCurrentUser = currentUser?.id === user.id;
@@ -32,7 +31,7 @@ function ProfileCard({ user, onEdit, isMobile }) {
       <CardContent
         sx={{
           display: 'flex',
-          flexDirection: isMobile ? 'column' : is_expert ? 'column' : 'row',
+          flexDirection: isMobile ? 'column' : is_chef ? 'column' : 'row',
           alignItems: 'center',
           gap: 4,
         }}

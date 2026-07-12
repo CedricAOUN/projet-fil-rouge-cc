@@ -14,11 +14,12 @@ import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { PREMIUM_TIERS } from '@/constants/premiumPlans';
 import Checkout from '@/components/Checkout/Checkout';
+import { useGetCurrentUserQuery } from '@/api/authApi';
 
 function PremiumPage() {
   const isMobile = useMediaQuery('(max-width:900px)');
   const paymentSectionRef = useRef(null);
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const { data: currentUser } = useGetCurrentUserQuery();
 
   const [selectedTier, setSelectedTier] = useState('premium');
 

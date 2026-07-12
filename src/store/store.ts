@@ -6,7 +6,6 @@ import userSlice from './slices/userSlice';
 import recipesSlice from './slices/recipesSlice';
 import appSlice from './slices/appSlice';
 import { authApi } from '@/api/authApi';
-import { userApi } from '@/api/userApi';
 import { recipeApi } from '@/api/recipeApi';
 import { courseApi } from '@/api/courseApi';
 import { plansApi } from '@/api/plansApi';
@@ -17,7 +16,6 @@ export const store = configureStore({
     user: userSlice,
     recipes: recipesSlice,
     [authApi.reducerPath]: authApi.reducer,
-    [userApi.reducerPath]: userApi.reducer,
     [recipeApi.reducerPath]: recipeApi.reducer,
     [courseApi.reducerPath]: courseApi.reducer,
     [plansApi.reducerPath]: plansApi.reducer,
@@ -29,7 +27,6 @@ export const store = configureStore({
       },
     }).concat(
       authApi.middleware,
-      userApi.middleware,
       recipeApi.middleware,
       courseApi.middleware,
       plansApi.middleware,

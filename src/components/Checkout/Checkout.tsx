@@ -10,15 +10,11 @@ import {
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useGetPlanDetailsQuery } from '@/api/plansApi';
 import { useState } from 'react';
-import { useCheckoutMutation } from '@/api/authApi';
+import { useCheckoutMutation, useGetCurrentUserQuery } from '@/api/authApi';
 import { PREMIUM_TIERS } from '@/constants/premiumPlans';
-import { RootState } from '@/store/store';
-import { useSelector } from 'react-redux';
 
 function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
-  const currentUserId = useSelector(
-    (state: RootState) => state.user.currentUser?.id,
-  );
+  const currentUserId = useGetCurrentUserQuery().data?.id;
   const isLoggedIn = Boolean(currentUserId);
 
   const [selectedBilling, setSelectedBilling] = useState('monthly');

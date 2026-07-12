@@ -1,3 +1,4 @@
+import { useGetCurrentUserQuery } from '@/api/authApi';
 import { RootState } from '@/store/store';
 import { Button, Paper, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -5,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 function RecipeCard({ title, image, description, id, isPremium }) {
   const navigate = useNavigate();
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const { data: currentUser } = useGetCurrentUserQuery();
 
   const canViewRecipe = !isPremium || (isPremium && currentUser?.is_premium);
 

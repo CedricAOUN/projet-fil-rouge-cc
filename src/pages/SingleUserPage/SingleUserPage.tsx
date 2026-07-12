@@ -6,7 +6,7 @@ import ProfileCard from '@/components/ProfileCard/ProfileCard';
 import CourseList from '@/components/CourseList/CourseList';
 import EditProfileForm from '@/components/EditProfileForm/EditProfileForm';
 import { useGetCoursesByExpertIdQuery } from '@/api/courseApi';
-import { useGetUserByIdQuery } from '@/api/userApi';
+import { useGetUserByIdQuery } from '@/api/authApi';
 
 const SingleUserPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
@@ -15,23 +15,21 @@ const SingleUserPage: React.FC = () => {
 
   const { data: singleUser } = useGetUserByIdQuery(id!, { skip: !id });
   const { data: courses } = useGetCoursesByExpertIdQuery(id!, {
-    skip: !id || !singleUser?.is_expert,
+    skip: !id || !singleUser?.is_chef,
   });
 
   if (!singleUser) {
     return <NotFound />;
   }
 
-  const { is_expert } = singleUser;
+  const { is_chef } = singleUser;
 
   return (
     <Stack
       gap={2}
-      direction={isMobile ? 'column' : is_expert && courses ? 'row' : 'column'}
+      direction={isMobile ? 'column' : is_chef && courses ? 'row' : 'column'}
     >
-      <Box
-        maxWidth={isMobile ? '100%' : is_expert && courses ? '300px' : '100%'}
-      >
+      <Box maxWidth={isMobile ? '100%' : is_chef && courses ? '300px' : '100%'}>
         <ProfileCard
           user={singleUser}
           isMobile={isMobile}
@@ -39,13 +37,9 @@ const SingleUserPage: React.FC = () => {
         />
       </Box>
       {editMode ? (
-        <EditProfileForm
-          user={singleUser}
-          onStopEdit={() => setEditMode(false)}
-        />
+        <EditProfileForm onStopEdit={() => setEditMode(false)} />
       ) : (
-        is_expert &&
-        courses && <CourseList user={singleUser} courses={courses} />
+        is_chef && courses && <CourseList user={singleUser} courses={courses} />
       )}
     </Stack>
   );
