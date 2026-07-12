@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/store/store';
+import { RootState, useAppSelector } from '@/store/store';
 import {
   Avatar,
   Button,
@@ -9,10 +9,19 @@ import {
 } from '@mui/material';
 
 function ProfileCard({ user, onEdit, isMobile }) {
-  const { name, first_name, last_name, is_expert, avatar, biography, courses_count } =
-    user;
+  const {
+    name,
+    first_name,
+    last_name,
+    is_expert,
+    avatar_url,
+    biography,
+    courses_count,
+  } = user;
 
-  const currentUser = useAppSelector((state) => state.user.currentUser);
+  const currentUser = useAppSelector(
+    (state: RootState) => state.user.currentUser,
+  );
 
   const displayName = name || `${first_name} ${last_name}`;
   const isCurrentUser = currentUser?.id === user.id;
@@ -27,16 +36,14 @@ function ProfileCard({ user, onEdit, isMobile }) {
           gap: 4,
         }}
       >
-        <Avatar sx={{ height: '100px', width: '100px' }} src={avatar} />
+        <Avatar sx={{ height: '100px', width: '100px' }} src={avatar_url} />
         <Stack
           width={'100%'}
           alignItems={'center'}
           justifyContent={'center'}
           spacing={2}
         >
-          <Typography variant='h5'>
-            {displayName}
-          </Typography>
+          <Typography variant='h5'>{displayName}</Typography>
           <Typography variant='subtitle1' textAlign={'center'}>
             {biography}
           </Typography>

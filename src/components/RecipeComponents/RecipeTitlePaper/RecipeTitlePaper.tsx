@@ -6,6 +6,7 @@ import {
   Paper,
   Stack,
   Typography,
+  Chip,
   useMediaQuery,
 } from '@mui/material';
 import { RootState } from '@/store';
@@ -15,6 +16,7 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 
 type RecipeTitlePaperProps = {
   recipe: Recipe;
@@ -38,6 +40,7 @@ function RecipeTitlePaper({
     image_url: imgUrl,
     likes: likeObject,
     favorites: favoritesObject,
+    is_premium: isPremiumRecipe,
   } = recipe;
 
   const isLiked = likeObject.is_liked_by_user;
@@ -65,6 +68,7 @@ function RecipeTitlePaper({
           padding: '30px',
           flexGrow: 1,
           alignItems: 'space-between',
+          gap: 2,
         }}
       >
         <Typography variant='h3'>{title}</Typography>
@@ -75,6 +79,25 @@ function RecipeTitlePaper({
           justifyContent='flex-end'
           gap={1}
         >
+          {isPremiumRecipe && (
+            <Chip
+              label='Premium'
+              icon={<WorkspacePremiumIcon color='primary' />}
+              sx={{
+                backgroundColor: 'transparent',
+                width: '100%',
+                maxWidth: '300px',
+                height: '40px',
+                border: (theme) => `2px solid ${theme.palette.primary.main}`,
+                mr: 'auto',
+                my: 'auto',
+                borderRadius: '50vh',
+                '& .MuiChip-label': {
+                  color: (theme) => theme.palette.primary.main,
+                },
+              }}
+            />
+          )}
           <Box
             sx={{
               display: 'flex',

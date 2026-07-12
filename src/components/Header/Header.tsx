@@ -157,7 +157,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
                   </MuiLink>
                 </MenuItem>
                 <MenuItem>
-                  <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
+                  <MuiLink component={NavLink} to='/chefs' sx={linkStyles}>
                     Experts
                   </MuiLink>
                 </MenuItem>
@@ -173,7 +173,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
               <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
                 Recipes
               </MuiLink>
-              <MuiLink component={NavLink} to='/experts' sx={linkStyles}>
+              <MuiLink component={NavLink} to='/chefs' sx={linkStyles}>
                 Experts
               </MuiLink>
               <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
