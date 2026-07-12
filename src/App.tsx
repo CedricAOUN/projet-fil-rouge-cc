@@ -8,7 +8,7 @@ import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import getTheme from '@/theme/muiTheme';
 import PremiumPage from '@/pages/PremiumPage/PremiumPage';
 import Home from '@/pages/Home/Home';
-import SingleExpertPage from '@/pages/SingleExpertPage/SingleExpertPage';
+import SingleUserPage from '@/pages/SingleUserPage/SingleUserPage';
 import NotFound from '@/pages/NotFound/NotFound';
 import SingleCoursePage from './pages/SingleCoursePage/SingleCoursePage';
 import { useSelector, useDispatch } from 'react-redux';
@@ -75,7 +75,7 @@ function App() {
             <Route path='/recipe/:id' element={<SingleRecipePage />} />
             <Route path='/recipe/create' element={<RecipeCreateForm />} />
             <Route path='/chefs' element={<></>} />
-            <Route path='/user/:id' element={<SingleExpertPage />} />
+            <Route path='/user/:id' element={<SingleUserPage />} />
             <Route path='/premium' element={<PremiumPage />} />
             <Route path='/course/:id' element={<SingleCoursePage />} />
             <Route path='/course/create' element={<></>} />

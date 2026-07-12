@@ -8,16 +8,15 @@ import EditProfileForm from '@/components/EditProfileForm/EditProfileForm';
 import { useGetCoursesByExpertIdQuery } from '@/api/courseApi';
 import { useGetUserByIdQuery } from '@/api/userApi';
 
-const SingleExpertPage: React.FC = () => {
+const SingleUserPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams<{ id: string }>();
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const { data: singleUser } = useGetUserByIdQuery(id!, { skip: !id });
-  const { data: courses } = useGetCoursesByExpertIdQuery(id!, { skip: !id || !singleUser?.is_expert });
-
-  console.log('Fetched user:', singleUser);
-  console.log(courses);
+  const { data: courses } = useGetCoursesByExpertIdQuery(id!, {
+    skip: !id || !singleUser?.is_expert,
+  });
 
   if (!singleUser) {
     return <NotFound />;
@@ -40,12 +39,16 @@ const SingleExpertPage: React.FC = () => {
         />
       </Box>
       {editMode ? (
-        <EditProfileForm onStopEdit={() => setEditMode(false)} />
+        <EditProfileForm
+          user={singleUser}
+          onStopEdit={() => setEditMode(false)}
+        />
       ) : (
-        is_expert && courses && <CourseList user={singleUser} courses={courses} />
+        is_expert &&
+        courses && <CourseList user={singleUser} courses={courses} />
       )}
     </Stack>
   );
 };
 
-export default SingleExpertPage;
+export default SingleUserPage;
