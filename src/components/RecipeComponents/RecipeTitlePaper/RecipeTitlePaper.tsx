@@ -18,6 +18,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import { useGetCurrentUserQuery } from '@/api/authApi';
+import dayjs from 'dayjs';
 
 type RecipeTitlePaperProps = {
   recipe: Recipe;
@@ -74,6 +75,30 @@ function RecipeTitlePaper({
       >
         <Typography variant='h3'>{title}</Typography>
         <Typography variant='subtitle2'>{desc}</Typography>
+        <Stack direction='row' gap={1} flexWrap='wrap'>
+          <Chip
+            label={`By ${recipe.creator.name}`}
+            color='primary'
+            sx={{
+              flex: 0,
+              width: 'fit-content',
+              '& .MuiChip-label': {
+                color: 'black',
+              },
+            }}
+          ></Chip>
+          <Chip
+            label={`Created on ${dayjs(recipe.created_at).format('MMMM D, YYYY')}`}
+            color='primary'
+            sx={{
+              flex: 0,
+              width: 'fit-content',
+              '& .MuiChip-label': {
+                color: 'black',
+              },
+            }}
+          ></Chip>
+        </Stack>
         <Stack
           direction='row'
           alignItems='center'

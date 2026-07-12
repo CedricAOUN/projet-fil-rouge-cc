@@ -29,6 +29,7 @@ function RecipeCard({ title, image, description, id, isPremium }) {
         p: 0,
         boxShadow: `inset 0 0 0 2px ${borderColor}`,
         borderRadius: '6px',
+        backgroundColor: (theme) => theme.palette.background.darker,
       }}
     >
       <img

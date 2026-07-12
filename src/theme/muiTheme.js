@@ -139,12 +139,13 @@ const getTheme = (mode) => {
         contrastText: '#f5f5f5',
       },
       error: {
-        main: '#d32f2f', // or whatever error color you want
+        main: '#d32f2f',
         contrastText: '#fff',
       },
       background: {
         default: mode === 'light' ? '#f5f5f5' : '#121212',
-        paper: mode === 'light' ? '#f5f5f5' : '#1e1e1e',
+        paper: mode === 'light' ? '#e8e8e8' : '#292929',
+        darker: mode === 'light' ? '#fff' : '#111111',
       },
       text: {
         primary: mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : '#f5f5f5',

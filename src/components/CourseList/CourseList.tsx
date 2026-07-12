@@ -58,7 +58,7 @@ function CourseList({ user, courses }: { user: AuthUser; courses: Course[] }) {
               sx={{
                 display: 'flex',
                 width: '100%',
-                backgroundColor: '#111111',
+                backgroundColor: (theme) => theme.palette.background.darker,
               }}
             >
               <Stack>
