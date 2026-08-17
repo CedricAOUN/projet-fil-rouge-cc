@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { Recipe } from './api.types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -15,6 +16,7 @@ export interface AuthUser {
   premium_expire: string | null;
   created_at: string;
   updated_at: string;
+  favorite_recipes: Partial<Recipe>[];
   data?: AuthUser; // For nested user data in responses
   errors?: Record<string, string[]>; // For validation errors
 }

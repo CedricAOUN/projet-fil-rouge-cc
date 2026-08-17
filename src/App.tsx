@@ -18,6 +18,7 @@ import { useGetCurrentUserQuery } from './api/authApi';
 import AdvancedRecipeSearch from './components/AdvancedRecipeSearch/AdvancedRecipeSearch';
 import BillingFailure from './pages/BillingFailure/BillingFailure';
 import BillingSuccess from './pages/BillingSuccess/BillingSuccess';
+import Favorites from './pages/Favorites/Favorites';
 
 function App() {
   const location = useLocation();
@@ -83,6 +84,7 @@ function App() {
             <Route path='/not-found' element={<NotFound />} />
             <Route path='/billing/success' element={<BillingSuccess />} />
             <Route path='/billing/cancel' element={<BillingFailure />} />
+            <Route path='/favorites' element={<Favorites />} />
           </Routes>
         </Box>
       </main>

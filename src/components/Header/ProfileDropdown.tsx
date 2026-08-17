@@ -8,7 +8,13 @@ import {
   Typography,
 } from '@mui/material';
 
-function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
+function SimpleMenu({
+  isMobile,
+  currentUser,
+  onNavigateToProfile,
+  onNavigateToFavorites,
+  onLogout,
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   function handleClick(event) {
@@ -72,6 +78,11 @@ function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
         <MenuItem onClick={onNavigateToProfile}>
           <Typography textAlign={'center'} width={'100%'}>
             Profile
+          </Typography>
+        </MenuItem>
+        <MenuItem onClick={onNavigateToFavorites}>
+          <Typography textAlign={'center'} width={'100%'}>
+            Favorites
           </Typography>
         </MenuItem>
         <Divider />

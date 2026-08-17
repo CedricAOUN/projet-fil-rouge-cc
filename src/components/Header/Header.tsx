@@ -50,6 +50,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
   };
 
   const navigateToProfile = () => navigate(`/user/${currentUser?.id}`);
+  const navigateToFavorites = () => navigate(`/favorites`);
 
   const linkStyles = {
     mx: '2px',
@@ -195,6 +196,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
                 currentUser={currentUser}
                 isMobile={isMobile}
                 onNavigateToProfile={navigateToProfile}
+                onNavigateToFavorites={navigateToFavorites}
                 onLogout={handleLogout}
               />
             )}
