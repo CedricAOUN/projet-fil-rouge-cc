@@ -79,7 +79,7 @@ function EditProfileForm({ onStopEdit }) {
         sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}
       >
         <TextField
-          label='First name'
+          label='Username'
           fullWidth
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}

@@ -28,13 +28,13 @@ const Favorites = () => {
 
   return (
     <Stack direction={'column'} spacing={2}>
-      <Typography variant='h3'>Your Favorites</Typography>
+      <Typography variant='h1'>Your Favorites</Typography>
       <Stack direction={'row'} gap={2} justifyContent={'center'}>
         {favoriteRecipes?.map((recipe) => (
           <Paper
             sx={{
               display: 'flex',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
               alignItems: 'center',
               flexDirection: 'column',
               gap: 2,
@@ -43,7 +43,12 @@ const Favorites = () => {
             }}
           >
             <Typography>{recipe.title}</Typography>
-            <img src={recipe.image_url} width={'300'} height={'300'} />
+            <img
+              src={recipe.image_url}
+              width={'300'}
+              height={'300'}
+              style={{ objectFit: 'cover' }}
+            />
             <Typography>{recipe.description}</Typography>
             <Button onClick={() => handleGoToRecipe(recipe.id)}>
               View Recipe
