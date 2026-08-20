@@ -50,7 +50,10 @@ const schema: any = yup
         yup
           .object({
             name: yup.string().required('Ingredient name is required'),
-            amount: yup.string().required('Amount is required'),
+            amount: yup
+              .number()
+              .typeError('Amount must be a number')
+              .required('Amount is required'),
             unit: yup
               .string()
               .oneOf(UNIT_VALUES, 'Unit is required')
@@ -75,11 +78,9 @@ function RecipeCreateForm() {
   const { data: edittingRecipe, isLoading: isLoadingExistingRecipe } =
     useGetRecipeByIdQuery(id!, { skip: !id });
 
-  const [imageName, setImageName] = useState<string>('No Image Selected');
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-  const [createRecipe] = useCreateRecipeMutation();
-  const [editRecipe] = useEditRecipeMutation();
+  const [createRecipe, { isLoading: isCreateLoading }] =
+    useCreateRecipeMutation();
+  const [editRecipe, { isLoading: isEditLoading }] = useEditRecipeMutation();
   const formValues = useMemo<RecipeFormData>(
     () => ({
       title: edittingRecipe?.title || '',
@@ -113,6 +114,11 @@ function RecipeCreateForm() {
     control,
     name: 'ingredients',
   });
+
+  const [imageName, setImageName] = useState<string>('No Image Selected');
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    edittingRecipe.image_url || null,
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -150,7 +156,7 @@ function RecipeCreateForm() {
     }
   };
 
-  if (isLoadingExistingRecipe) {
+  if (isLoadingExistingRecipe || isCreateLoading || isEditLoading) {
     return (
       <Stack direction={'row'} justifyContent={'center'} p={3}>
         <CircularProgress size={'50px'} />
@@ -158,7 +164,7 @@ function RecipeCreateForm() {
     );
   }
 
-  if (edittingRecipe?.creator?.id !== currentUser?.id) {
+  if (edittingRecipe && edittingRecipe?.creator?.id !== currentUser?.id) {
     return <PageErrorHandler errorStatus={403} />;
   }
 
@@ -184,7 +190,7 @@ function RecipeCreateForm() {
       />
 
       <Stack>
-        {currentUser?.is_premium && (
+        {currentUser?.is_chef && (
           <Stack direction='row' gap={1} alignItems='center'>
             <Typography>Mark recipe as Premium</Typography>
             <Checkbox {...register('is_premium')} />
@@ -324,7 +330,7 @@ function RecipeCreateForm() {
         color='primary'
         onClick={handleSubmit(onSubmit)}
       >
-        Submit Recipe
+        {edittingRecipe ? 'Confirm' : 'Submit Recipe'}
       </Button>
     </Paper>
   );

@@ -32,7 +32,6 @@ function UnitSelector({ control, index, error }) {
           </Select>
         )}
       />
-      {error && <FormHelperText>{error.message}</FormHelperText>}
     </FormControl>
   );
 }

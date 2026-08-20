@@ -202,6 +202,7 @@ export const recipeApi = createApi({
           url: `${API_URL}/recipes/delete/${id}`,
         };
       },
+      invalidatesTags: ['Recipes'],
     }),
   }),
 });

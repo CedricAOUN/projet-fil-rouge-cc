@@ -26,10 +26,6 @@ const MyRecipes = () => {
 
   const allUserRecipes = data?.recipes;
 
-  if (!currentUser) {
-    return <PageErrorHandler errorStatus={401} />;
-  }
-
   const handleGoToRecipe = (recipeId) => navigate(`/recipe/${recipeId}`);
 
   const handleGoToCreateRecipe = () => navigate('/recipe/create');
@@ -40,6 +36,10 @@ const MyRecipes = () => {
     deleteRecipe(id);
     setRecipeIDToDelete(null);
   };
+
+  if (!currentUser) {
+    return <PageErrorHandler errorStatus={401} />;
+  }
 
   return (
     <Stack direction={'column'} spacing={2} width={'100%'}>
