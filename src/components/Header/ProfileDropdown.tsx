@@ -7,15 +7,12 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-function SimpleMenu({
-  isMobile,
-  currentUser,
-  onNavigateToProfile,
-  onNavigateToFavorites,
-  onLogout,
-}) {
+function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const navigate = useNavigate();
 
   function handleClick(event) {
     if (anchorEl !== event.currentTarget) {
@@ -80,9 +77,14 @@ function SimpleMenu({
             Profile
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onNavigateToFavorites}>
+        <MenuItem onClick={() => navigate('/favorites')}>
           <Typography textAlign={'center'} width={'100%'}>
             Favorites
+          </Typography>
+        </MenuItem>
+        <MenuItem onClick={() => navigate('/my-recipes')}>
+          <Typography textAlign={'center'} width={'100%'}>
+            My Recipes
           </Typography>
         </MenuItem>
         <Divider />

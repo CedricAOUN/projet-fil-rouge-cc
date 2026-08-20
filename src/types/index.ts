@@ -1,6 +1,7 @@
 // Type definitions for the application
 
 import { User } from '@/api/api.types';
+import { AuthUser } from '@/api/authApi';
 
 export interface Course {
   id: number;
@@ -34,6 +35,7 @@ export interface Recipe {
   instructions: string;
   comments: Comment[];
   is_premium: boolean;
+  creator: Partial<AuthUser>;
 }
 
 interface Likes {

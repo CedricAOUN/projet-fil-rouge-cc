@@ -37,6 +37,7 @@ const Favorites = () => {
               justifyContent: 'space-between',
               alignItems: 'center',
               flexDirection: 'column',
+              flexWrap: 'wrap',
               gap: 2,
               maxWidth: 500,
               width: 500,

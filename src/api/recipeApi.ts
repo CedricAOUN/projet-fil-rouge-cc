@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Recipe } from '@/types';
+import { deleteRecipe } from '@/store';
+import { method } from 'lodash';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -27,6 +29,20 @@ type Comment = {
   recipe_id: number;
   created_at: string;
   updated_at: string;
+};
+
+type CreateRecipeFormData = {
+  title: string;
+  description?: string | null;
+  instructions: string;
+  duration?: number | null;
+  image?: File | null;
+  is_premium?: boolean;
+  ingredients?: {
+    name: string;
+    amount: string;
+    unit?: string;
+  }[];
 };
 
 export const recipeApi = createApi({
@@ -61,6 +77,7 @@ export const recipeApi = createApi({
         if (recipeType) params.append('recipeType', recipeType);
         return `?${params.toString()}`;
       },
+      providesTags: ['Recipes'],
     }),
     getRecipeById: builder.query<Recipe, string>({
       query: (id) => `/${id}`,
@@ -121,6 +138,71 @@ export const recipeApi = createApi({
         { type: 'Recipes', id: recipeId },
       ],
     }),
+    createRecipe: builder.mutation<Recipe, CreateRecipeFormData>({
+      query: (data) => {
+        const body = new FormData();
+        body.append('title', data.title);
+        body.append('description', data.description ?? '');
+        body.append('instructions', data.instructions);
+        body.append('is_premium', data.is_premium ? '1' : '0');
+
+        data.ingredients?.forEach(({ name, amount, unit }, index) => {
+          body.append(`ingredients[${index}][name]`, name);
+          body.append(`ingredients[${index}][quantity]`, amount);
+          body.append(`ingredients[${index}][unit]`, unit ?? '');
+        });
+
+        if (data.image) {
+          body.append('image_file', data.image);
+        }
+
+        return {
+          method: 'POST',
+          url: `${API_URL}/recipes/create`,
+          body,
+        };
+      },
+      transformResponse: (response: { data: Recipe }) => response.data,
+      invalidatesTags: ['Recipes'],
+    }),
+    editRecipe: builder.mutation<
+      Recipe,
+      { data: CreateRecipeFormData; id: string }
+    >({
+      query: ({ data, id }) => {
+        const body = new FormData();
+        body.append('title', data.title);
+        body.append('description', data.description ?? '');
+        body.append('instructions', data.instructions);
+        body.append('is_premium', data.is_premium ? '1' : '0');
+
+        data.ingredients?.forEach(({ name, amount, unit }, index) => {
+          body.append(`ingredients[${index}][name]`, name);
+          body.append(`ingredients[${index}][quantity]`, amount);
+          body.append(`ingredients[${index}][unit]`, unit ?? '');
+        });
+
+        if (data.image) {
+          body.append('image_file', data.image);
+        }
+
+        return {
+          method: 'PUT',
+          url: `${API_URL}/recipes/edit/${id}`,
+          body,
+        };
+      },
+      transformResponse: (response: { data: Recipe }) => response.data,
+      invalidatesTags: ['Recipes'],
+    }),
+    deleteRecipe: builder.mutation<void, string>({
+      query: (id) => {
+        return {
+          method: 'DELETE',
+          url: `${API_URL}/recipes/delete/${id}`,
+        };
+      },
+    }),
   }),
 });
 
@@ -132,4 +214,7 @@ export const {
   useAddCommentMutation,
   useEditCommentMutation,
   useDeleteCommentMutation,
+  useCreateRecipeMutation,
+  useEditRecipeMutation,
+  useDeleteRecipeMutation,
 } = recipeApi;

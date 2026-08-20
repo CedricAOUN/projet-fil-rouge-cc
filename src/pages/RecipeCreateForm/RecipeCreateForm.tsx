@@ -1,51 +1,102 @@
-import React, { useState, useRef } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import {
   Button,
+  Checkbox,
   Paper,
   Stack,
   TextField,
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ImageIcon from '@mui/icons-material/Image';
 import UnitSelector from '@/components/UnitSelector/UnitSelector';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { UNIT_VALUES } from '@/constants/recipeFormConstants';
 import './recipeCreateForm.css';
+import {
+  useCreateRecipeMutation,
+  useEditRecipeMutation,
+  useGetRecipeByIdQuery,
+} from '@/api/recipeApi';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useGetCurrentUserQuery } from '@/api/authApi';
+import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 
-const schema = yup.object().shape({
-  title: yup.string().required('Title is required'),
-  description: yup.string().optional(),
-  instructions: yup.string().required('Instructions are required'),
-  duration: yup
-    .number()
-    .typeError('Please enter a valid number for duration')
-    .positive('Duration must be positive')
-    .optional(),
-  ingredients: yup
-    .array()
-    .of(
-      yup.object().shape({
-        name: yup.string().required('Ingredient name is required'),
-        amount: yup.string().required('Amount is required'),
-        unit: yup.string().oneOf(UNIT_VALUES, 'Unit is required'),
-      })
-    )
-    .min(1, 'At least one ingredient is required'),
-  image: yup.mixed<File>().nullable(),
-});
+type RecipeFormData = {
+  title: string;
+  description: string;
+  instructions: string;
+  is_premium: boolean;
+  ingredients: {
+    name: string;
+    amount: string;
+    unit: string;
+  }[];
+  image: File | null;
+};
 
-type RecipeFormData = yup.InferType<typeof schema>;
+const schema: any = yup
+  .object({
+    title: yup.string().required('Title is required'),
+    description: yup.string().defined(),
+    instructions: yup.string().required('Instructions are required'),
+    is_premium: yup.boolean().defined(),
+    ingredients: yup
+      .array()
+      .of(
+        yup
+          .object({
+            name: yup.string().required('Ingredient name is required'),
+            amount: yup.string().required('Amount is required'),
+            unit: yup
+              .string()
+              .oneOf(UNIT_VALUES, 'Unit is required')
+              .required(),
+          })
+          .required(),
+      )
+      .min(1, 'At least one ingredient is required')
+      .required(),
+    image: yup.mixed<File>().nullable().defined(),
+  })
+  .required();
 
 function RecipeCreateForm() {
+  const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:900px)');
+  const currentUser = useGetCurrentUserQuery().data;
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Existing Recipe (for editting)
+  const { id } = useParams<{ id: string }>();
+  const { data: edittingRecipe } = useGetRecipeByIdQuery(id!, { skip: !id });
+
+  console.log(edittingRecipe);
 
   const [imageName, setImageName] = useState<string>('No Image Selected');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [createRecipe] = useCreateRecipeMutation();
+  const [editRecipe] = useEditRecipeMutation();
+  const formValues = useMemo<RecipeFormData>(
+    () => ({
+      title: edittingRecipe?.title || '',
+      description: edittingRecipe?.description || '',
+      instructions: edittingRecipe?.instructions || '',
+      is_premium: edittingRecipe?.is_premium || false,
+      ingredients: edittingRecipe?.ingredients?.length
+        ? edittingRecipe.ingredients.map((ingredient) => ({
+            name: ingredient.name,
+            amount: String(ingredient.quantity ?? ''),
+            unit: ingredient.unit || 'unit',
+          }))
+        : [{ name: '', amount: '', unit: 'unit' }],
+      image: null,
+    }),
+    [edittingRecipe],
+  );
 
   const {
     register,
@@ -53,16 +104,9 @@ function RecipeCreateForm() {
     formState: { errors },
     control,
     setValue,
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      title: '',
-      description: '',
-      instructions: '',
-      duration: 0,
-      ingredients: [{ name: '', amount: '', unit: 'unit' }],
-      image: null,
-    },
+  } = useForm<RecipeFormData>({
+    resolver: yupResolver(schema) as Resolver<RecipeFormData>,
+    values: formValues,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -94,10 +138,21 @@ function RecipeCreateForm() {
     }
   };
 
-  const onSubmit = (data: yup.InferType<typeof schema>) => {
-    console.log('Recipe Data:', data);
-    // Send data to backend here
+  const onSubmit = (data: RecipeFormData) => {
+    if (edittingRecipe) {
+      editRecipe({ data, id })
+        .unwrap()
+        .then((res) => navigate(`/recipe/${res.id}`));
+    } else {
+      createRecipe(data)
+        .unwrap()
+        .then((res) => navigate(`/recipe/${res.id}`));
+    }
   };
+
+  if (edittingRecipe?.creator?.id !== currentUser?.id) {
+    return <PageErrorHandler errorStatus={403} />;
+  }
 
   return (
     <Paper sx={{ display: 'flex', flexDirection: 'column', gap: '20px', p: 3 }}>
@@ -121,21 +176,12 @@ function RecipeCreateForm() {
       />
 
       <Stack>
-        <Stack direction='row' gap={1} alignItems='center'>
-          <AccessTimeIcon />
-          <TextField
-            {...register('duration')}
-            placeholder='Duration'
-            size='small'
-            type='number'
-            required
-            error={!!errors.duration}
-          />
-          <Typography variant='subtitle2'>Minutes</Typography>
-        </Stack>
-        <Typography variant='subtitle2' color='error'>
-          {errors.duration?.message}
-        </Typography>
+        {currentUser?.is_premium && (
+          <Stack direction='row' gap={1} alignItems='center'>
+            <Typography>Mark recipe as Premium</Typography>
+            <Checkbox {...register('is_premium')} />
+          </Stack>
+        )}
       </Stack>
 
       <Stack direction='row' alignItems='center' gap='7px'>
@@ -218,8 +264,8 @@ function RecipeCreateForm() {
               <Typography>X</Typography>
 
               <UnitSelector
-                error={!!errors.ingredients?.[index]?.unit}
-                register={register}
+                error={errors.ingredients?.[index]?.unit}
+                control={control}
                 index={index}
               />
 

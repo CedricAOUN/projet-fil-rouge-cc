@@ -40,15 +40,6 @@ function CommentList({
   const currentUserId = currentUser?.id;
   const isPremiumUser = currentUser?.is_premium || false;
 
-  if (!comments || comments.length === 0) {
-    return (
-      <Paper>
-        <Typography variant='h4'>Comments</Typography>
-        <Typography variant='subtitle1'>No comments available.</Typography>
-      </Paper>
-    );
-  }
-
   const [addComment, { isLoading: isAdding }] = useAddCommentMutation();
   const [editComment, { isLoading: isEditing }] = useEditCommentMutation();
   const [deleteComment, { isLoading: isDeleting }] = useDeleteCommentMutation();
@@ -65,6 +56,34 @@ function CommentList({
   const handleDeleteComment = async (commentId: number) => {
     deleteComment({ commentId, recipeId });
   };
+
+  if (!comments || comments.length === 0) {
+    return (
+      <Box display={'flex'} flexDirection={'column'} gap={2}>
+        <Typography variant='h4'>Comments</Typography>
+        {isPremiumUser && (
+          <Stack direction='row' alignItems='center' gap={2}>
+            <TextField
+              label='Add a comment'
+              multiline
+              fullWidth
+              value={newCommentContent}
+              onChange={(e) => setNewCommentContent(e.target.value)}
+            ></TextField>
+            <Button
+              color='primary'
+              onClick={() => handleAddComment(newCommentContent)}
+            >
+              <SendIcon></SendIcon>
+            </Button>
+          </Stack>
+        )}
+        <Typography variant='subtitle1' textAlign={'center'}>
+          No comments available.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Stack gap={2}>

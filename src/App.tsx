@@ -19,6 +19,7 @@ import AdvancedRecipeSearch from './components/AdvancedRecipeSearch/AdvancedReci
 import BillingFailure from './pages/BillingFailure/BillingFailure';
 import BillingSuccess from './pages/BillingSuccess/BillingSuccess';
 import Favorites from './pages/Favorites/Favorites';
+import MyRecipes from './pages/MyRecipes/MyRecipes';
 
 function App() {
   const location = useLocation();
@@ -75,6 +76,7 @@ function App() {
             <Route path='/recipes' element={<AdvancedRecipeSearch />} />
             <Route path='/recipe/:id' element={<SingleRecipePage />} />
             <Route path='/recipe/create' element={<RecipeCreateForm />} />
+            <Route path='/recipe/edit/:id' element={<RecipeCreateForm />} />
             <Route path='/chefs' element={<></>} />
             <Route path='/user/:id' element={<SingleUserPage />} />
             <Route path='/premium' element={<PremiumPage />} />
@@ -85,6 +87,7 @@ function App() {
             <Route path='/billing/success' element={<BillingSuccess />} />
             <Route path='/billing/cancel' element={<BillingFailure />} />
             <Route path='/favorites' element={<Favorites />} />
+            <Route path='/my-recipes' element={<MyRecipes />} />
           </Routes>
         </Box>
       </main>

@@ -25,7 +25,7 @@ export interface Recipe {
   title: string;
   description: string;
   date: string;
-  img_url: string;
+  image_url: string;
   ingredients: Ingredient[];
   instructions: string;
   comments: Comment[];

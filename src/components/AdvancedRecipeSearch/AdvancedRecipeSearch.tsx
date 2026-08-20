@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  Checkbox,
   CircularProgress,
   Paper,
   Stack,
@@ -10,15 +8,17 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MultiSelectFilter from './MultiSelectFilter';
 import { useGetRecipesQuery } from '@/api/recipeApi';
 import RecipeCard from '../RecipeComponents/RecipeCard/RecipeCard';
-import RatingSlider from './CustomSlider';
 import CustomSlider from './CustomSlider';
 import useDebounce from '@/utils/useDebounce';
+import { useNavigate } from 'react-router-dom';
 
 const AdvancedRecipeSearch = () => {
+  const navigate = useNavigate();
+
   const [allIngredients, setAllIngredients] = React.useState<string[]>([]);
   const [allCreators, setAllCreators] = React.useState<string[]>([]);
 
@@ -68,13 +68,25 @@ const AdvancedRecipeSearch = () => {
   }, [data]);
 
   return (
-    <Stack height={'100%'} direction={'row'} gap={2} flexGrow={1}>
+    <Stack
+      height={'100%'}
+      maxHeight={'100%'}
+      minHeight={0}
+      direction={'row'}
+      gap={2}
+      flexGrow={1}
+      overflow={'hidden'}
+    >
       {/* FILTERS */}
-      <Paper sx={{ width: '30%' }} variant='outlined'>
+      <Paper
+        sx={{ width: '30%', height: '100%', overflow: 'hidden' }}
+        variant='outlined'
+      >
         <Stack
           sx={{
             width: '100%',
             height: '100%',
+            minHeight: 0,
           }}
           gap={3}
         >
@@ -129,20 +141,36 @@ const AdvancedRecipeSearch = () => {
         </Stack>
       </Paper>
       {/* RESULTS + GENERAL SEARCH BAR */}
-      <Stack gap={2} width={'100%'} height={'100%'}>
-        <TextField
-          fullWidth
-          placeholder='Search for recipes...'
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <Paper variant='outlined' sx={{ flexGrow: 1, height: '100%' }}>
+      <Stack gap={2} width={'100%'} height={'100%'} minHeight={0} minWidth={0}>
+        <Stack direction={'row'} alignItems={'center'} gap={2} flexShrink={0}>
+          <TextField
+            fullWidth
+            placeholder='Search for recipes...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Button onClick={() => navigate('/recipe/create')}>New Recipe</Button>
+        </Stack>
+        <Paper
+          variant='outlined'
+          sx={{
+            flexGrow: 1,
+            minHeight: 0,
+            overflow: 'hidden',
+          }}
+        >
           {isLoading || isFetching ? (
             <Stack direction={'row'} justifyContent={'center'} p={3}>
               <CircularProgress size={'50px'} />
             </Stack>
           ) : (
-            <Stack gap={2} padding={2} overflow={'auto'} height={'100%'}>
+            <Stack
+              gap={2}
+              padding={2}
+              overflow={'auto'}
+              height={'100%'}
+              sx={{ boxSizing: 'border-box' }}
+            >
               {recipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
