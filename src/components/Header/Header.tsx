@@ -155,8 +155,8 @@ export default function Header({ currentTheme, onThemeToggle }) {
                   </MuiLink>
                 </MenuItem>
                 <MenuItem>
-                  <MuiLink component={NavLink} to='/chefs' sx={linkStyles}>
-                    Experts
+                  <MuiLink component={NavLink} to='/courses' sx={linkStyles}>
+                    Courses
                   </MuiLink>
                 </MenuItem>
                 <MenuItem>
@@ -171,8 +171,8 @@ export default function Header({ currentTheme, onThemeToggle }) {
               <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
                 Recipes
               </MuiLink>
-              <MuiLink component={NavLink} to='/chefs' sx={linkStyles}>
-                Experts
+              <MuiLink component={NavLink} to='/courses' sx={linkStyles}>
+                Courses
               </MuiLink>
               <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
                 Premium
@@ -196,7 +196,6 @@ export default function Header({ currentTheme, onThemeToggle }) {
                 currentUser={currentUser}
                 isMobile={isMobile}
                 onNavigateToProfile={navigateToProfile}
-                onNavigateToFavorites={navigateToFavorites}
                 onLogout={handleLogout}
               />
             )}

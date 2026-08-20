@@ -20,6 +20,7 @@ import BillingFailure from './pages/BillingFailure/BillingFailure';
 import BillingSuccess from './pages/BillingSuccess/BillingSuccess';
 import Favorites from './pages/Favorites/Favorites';
 import MyRecipes from './pages/MyRecipes/MyRecipes';
+import CoursesPage from './pages/CoursesPage/CoursesPage';
 
 function App() {
   const location = useLocation();
@@ -77,7 +78,7 @@ function App() {
             <Route path='/recipe/:id' element={<SingleRecipePage />} />
             <Route path='/recipe/create' element={<RecipeCreateForm />} />
             <Route path='/recipe/edit/:id' element={<RecipeCreateForm />} />
-            <Route path='/chefs' element={<></>} />
+            <Route path='/courses' element={<CoursesPage />} />
             <Route path='/user/:id' element={<SingleUserPage />} />
             <Route path='/premium' element={<PremiumPage />} />
             <Route path='/course/:id' element={<SingleCoursePage />} />

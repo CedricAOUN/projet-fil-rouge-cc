@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Recipe } from './api.types';
+import { method } from 'lodash';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -123,6 +124,13 @@ export const authApi = createApi({
         body: checkoutData,
       }),
     }),
+    getChefs: builder.query<any, { query: string }>({
+      query: ({ query }) => {
+        const params = new URLSearchParams();
+        params.append('search', query);
+        return `/chefs?${params.toString()}`;
+      },
+    }),
   }),
 });
 
@@ -134,4 +142,5 @@ export const {
   useUpdateProfileMutation,
   useGetUserByIdQuery,
   useCheckoutMutation,
+  useGetChefsQuery,
 } = authApi;
