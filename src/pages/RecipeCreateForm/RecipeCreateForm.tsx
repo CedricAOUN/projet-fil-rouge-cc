@@ -2,6 +2,7 @@ import React, { useMemo, useState, useRef } from 'react';
 import {
   Button,
   Checkbox,
+  CircularProgress,
   Paper,
   Stack,
   TextField,
@@ -71,9 +72,8 @@ function RecipeCreateForm() {
 
   // Existing Recipe (for editting)
   const { id } = useParams<{ id: string }>();
-  const { data: edittingRecipe } = useGetRecipeByIdQuery(id!, { skip: !id });
-
-  console.log(edittingRecipe);
+  const { data: edittingRecipe, isLoading: isLoadingExistingRecipe } =
+    useGetRecipeByIdQuery(id!, { skip: !id });
 
   const [imageName, setImageName] = useState<string>('No Image Selected');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -149,6 +149,14 @@ function RecipeCreateForm() {
         .then((res) => navigate(`/recipe/${res.id}`));
     }
   };
+
+  if (isLoadingExistingRecipe) {
+    return (
+      <Stack direction={'row'} justifyContent={'center'} p={3}>
+        <CircularProgress size={'50px'} />
+      </Stack>
+    );
+  }
 
   if (edittingRecipe?.creator?.id !== currentUser?.id) {
     return <PageErrorHandler errorStatus={403} />;

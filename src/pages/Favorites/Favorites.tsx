@@ -32,6 +32,7 @@ const Favorites = () => {
       <Stack direction={'row'} gap={2} justifyContent={'center'}>
         {favoriteRecipes?.map((recipe) => (
           <Paper
+            key={recipe.id}
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
