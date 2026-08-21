@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Stack, useMediaQuery } from '@mui/material';
+import { Box, CircularProgress, Stack, useMediaQuery } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import NotFound from '@/pages/NotFound/NotFound';
 import ProfileCard from '@/components/ProfileCard/ProfileCard';
@@ -13,10 +13,21 @@ const SingleUserPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [editMode, setEditMode] = useState<boolean>(false);
 
-  const { data: singleUser } = useGetUserByIdQuery(id!, { skip: !id });
+  const { data: singleUser, isLoading: isUserLoading } = useGetUserByIdQuery(
+    id!,
+    { skip: !id },
+  );
   const { data: courses } = useGetCoursesByExpertIdQuery(id!, {
     skip: !id || !singleUser?.is_chef,
   });
+
+  if (isUserLoading) {
+    return (
+      <Stack direction={'row'} justifyContent={'center'} p={3}>
+        <CircularProgress size={'50px'} />
+      </Stack>
+    );
+  }
 
   if (!singleUser) {
     return <NotFound />;

@@ -117,7 +117,7 @@ function RecipeCreateForm() {
 
   const [imageName, setImageName] = useState<string>('No Image Selected');
   const [imagePreview, setImagePreview] = useState<string | null>(
-    edittingRecipe.image_url || null,
+    edittingRecipe?.image_url || null,
   );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
