@@ -1,4 +1,5 @@
 import { useGetChefsQuery } from '@/api/authApi';
+import { useGetCoursesQuery } from '@/api/courseApi';
 import ChefsList from '@/components/ChefsList/ChefsList';
 import CourseList from '@/components/CourseList/CourseList';
 import useDebounce from '@/utils/useDebounce';
@@ -19,8 +20,12 @@ const CoursesPage = () => {
   const { data: chefs, isLoading: isChefsLoading } = useGetChefsQuery({
     query: debouncedQuery,
   });
+  const { data: courses, isLoading: isCoursesLoading } = useGetCoursesQuery({
+    query: debouncedQuery,
+  });
 
-  const isLoading = isChefsLoading || debouncedQuery != query;
+  const isLoading =
+    isChefsLoading || isCoursesLoading || debouncedQuery != query;
 
   const handleSwitchMode = (newMode) => {
     setMode(newMode);
@@ -52,7 +57,7 @@ const CoursesPage = () => {
         </Stack>
       )}
       {mode == 'chef' && !isLoading && <ChefsList chefs={chefs?.data} />}
-      {/* {mode == 'course' && <CourseList />} */}
+      {mode == 'course' && !isLoading && <CourseList courses={courses} />}
     </Stack>
   );
 };

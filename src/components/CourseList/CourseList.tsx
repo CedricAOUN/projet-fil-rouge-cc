@@ -10,19 +10,16 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Course, User } from '@/api/api.types';
-import { AuthUser } from '@/api/authApi';
+import { AuthUser, useGetCurrentUserQuery } from '@/api/authApi';
 
-function CourseList({ user, courses }: { user: AuthUser; courses: Course[] }) {
-  const currentUserIsPremium = true;
-  const isCurrentUser = true;
+function CourseList({ courses }: { courses: Course[] }) {
+  const currentUser = useGetCurrentUserQuery()?.data;
+
+  const isCurrentUserPremium = currentUser?.is_premium;
   const navigate = useNavigate();
-  const { first_name, last_name, is_chef } = user;
-
-  const [showMore, setShowMore] = useState(false);
-  const filteredCourses = showMore ? courses : courses.slice(0, 3);
 
   const handleViewClick = (courseId) => {
-    if (currentUserIsPremium) {
+    if (isCurrentUserPremium) {
       navigate(`/course/${courseId}`);
     } else {
       navigate(`/premium`);
@@ -35,24 +32,14 @@ function CourseList({ user, courses }: { user: AuthUser; courses: Course[] }) {
 
   return (
     <Paper sx={{ width: '100%' }}>
-      <Stack direction={'row'}>
-        <Typography variant='h5'>
-          Courses by {first_name} {last_name}
-        </Typography>
-        {isCurrentUser && is_chef && (
-          <Button sx={{ ml: 'auto' }} onClick={handleAddClick}>
-            Add a course
-          </Button>
-        )}
-      </Stack>
       <List
         sx={{
           width: '100%',
           maxHeight: '320px',
-          overflow: showMore ? 'auto' : 'hidden',
+          overflow: 'auto',
         }}
       >
-        {filteredCourses.map((course, index) => (
+        {courses?.map((course, index) => (
           <ListItem key={index}>
             <Paper
               sx={{
@@ -63,27 +50,20 @@ function CourseList({ user, courses }: { user: AuthUser; courses: Course[] }) {
             >
               <Stack>
                 <Typography>{course.title}</Typography>
-                <Typography variant='subtitle2'>
-                  {course.description}
+                <Typography variant='subtitle2' color='primary'>
+                  By {course?.created_by?.name}
                 </Typography>
               </Stack>
               <Button
                 sx={{ ml: 'auto' }}
                 onClick={() => handleViewClick(course.id)}
               >
-                {currentUserIsPremium ? 'View Course' : 'Get Premium'}
+                {isCurrentUserPremium ? 'View Course' : 'Get Premium'}
               </Button>
             </Paper>
           </ListItem>
         ))}
       </List>
-      {!showMore && courses.length > 3 && (
-        <Stack width={'100%'}>
-          <Link onClick={() => setShowMore(true)} sx={{ mx: 'auto' }}>
-            Show more courses
-          </Link>
-        </Stack>
-      )}
     </Paper>
   );
 }

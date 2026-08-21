@@ -22,11 +22,18 @@ export const courseApi = createApi({
       transformResponse: (response: { data: Course }) => response.data,
     }),
     getCoursesByExpertId: builder.query<Course[], string>({
-      query: (expertId) => `?created_by_expert_id=${expertId}`,
+      query: (expertId) => `?creator_id=${expertId}`,
+      transformResponse: (response: { data: Course[] }) => response.data,
+    }),
+    getCourses: builder.query<Course[], { query: string }>({
+      query: ({ query }) => `/list?search=${query}`,
       transformResponse: (response: { data: Course[] }) => response.data,
     }),
   }),
 });
 
-export const { useGetCourseByIdQuery, useGetCoursesByExpertIdQuery } =
-  courseApi;
+export const {
+  useGetCourseByIdQuery,
+  useGetCoursesByExpertIdQuery,
+  useGetCoursesQuery,
+} = courseApi;

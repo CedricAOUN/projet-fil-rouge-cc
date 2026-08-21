@@ -1,13 +1,21 @@
 import { useGetCourseByIdQuery } from '@/api/courseApi';
-import React from 'react'
+import React from 'react';
 import { useParams } from 'react-router-dom';
+import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 
 const SingleCoursePage = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { data: course, isLoading } = useGetCourseByIdQuery(id!, { skip: !id });
+  const {
+    data: course,
+    isLoading,
+    error,
+  } = useGetCourseByIdQuery(id!, { skip: !id });
 
-  console.log(course);
+  if (error) {
+    // @ts-ignore
+    return <PageErrorHandler errorStatus={error.status} />;
+  }
 
   return (
     <div>
@@ -22,7 +30,7 @@ const SingleCoursePage = () => {
         <p>Loading...</p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default SingleCoursePage
+export default SingleCoursePage;

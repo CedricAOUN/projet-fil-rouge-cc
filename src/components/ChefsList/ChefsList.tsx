@@ -15,15 +15,8 @@ import { AuthUser, useGetCurrentUserQuery } from '@/api/authApi';
 function ChefsList({ chefs }: { chefs: AuthUser[] }) {
   const navigate = useNavigate();
 
-  const currentUser = useGetCurrentUserQuery().data;
-  const currentUserIsPremium = currentUser.is_premium;
-
   const handleViewClick = (chefId) => {
-    if (currentUserIsPremium) {
-      navigate(`/user/${chefId}`);
-    } else {
-      navigate('/premium');
-    }
+    navigate(`/user/${chefId}`);
   };
 
   return (
@@ -52,7 +45,7 @@ function ChefsList({ chefs }: { chefs: AuthUser[] }) {
                 sx={{ ml: 'auto' }}
                 onClick={() => handleViewClick(chef.id)}
               >
-                {currentUserIsPremium ? 'View Courses' : 'Get Premium'}
+                {'View Courses'}
               </Button>
             </Paper>
           </ListItem>

@@ -39,7 +39,7 @@ const SingleUserPage: React.FC = () => {
       {editMode ? (
         <EditProfileForm onStopEdit={() => setEditMode(false)} />
       ) : (
-        is_chef && courses && <CourseList user={singleUser} courses={courses} />
+        is_chef && courses && <CourseList courses={courses} />
       )}
     </Stack>
   );

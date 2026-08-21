@@ -1,10 +1,12 @@
+import { AuthUser } from './authApi';
+
 // Define or import Course type before using it
 export type Course = {
   id: number;
   title: string;
   description: string;
   video_url: string;
-  created_by_id: string;
+  created_by: Partial<AuthUser>;
   created_on: string;
 };
 
