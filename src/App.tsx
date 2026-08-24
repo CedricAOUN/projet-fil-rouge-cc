@@ -83,6 +83,7 @@ function App() {
             <Route path='/user/:id' element={<SingleUserPage />} />
             <Route path='/premium' element={<PremiumPage />} />
             <Route path='/course/:id' element={<SingleCoursePage />} />
+            <Route path='/course/edit/:id' element={<CourseCreateForm />} />
             <Route path='/course/create' element={<CourseCreateForm />} />
             <Route path='*' element={<NotFound />} />
             <Route path='/not-found' element={<NotFound />} />

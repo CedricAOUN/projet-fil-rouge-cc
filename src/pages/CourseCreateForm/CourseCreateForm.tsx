@@ -1,7 +1,12 @@
-import { useCreateCourseMutation } from '@/api/courseApi';
+import {
+  useCreateCourseMutation,
+  useEditCourseMutation,
+  useGetCourseByIdQuery,
+} from '@/api/courseApi';
 import {
   Box,
   Button,
+  CircularProgress,
   darken,
   Paper,
   Stack,
@@ -9,13 +14,37 @@ import {
   Typography,
 } from '@mui/material';
 import MDEditor, { commands } from '@uiw/react-md-editor';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
+import { Controller, Resolver, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 const MAX_VIDEO_SIZE = 200 * 1024 * 1024;
+
+type CourseFormData = {
+  title: string;
+  content: string;
+  video?: File;
+};
+
+const schema = yup
+  .object({
+    title: yup.string().required('Title is required'),
+    content: yup.string().required('Content is required'),
+    video: yup
+      .mixed<File>()
+      .test(
+        'fileSize',
+        'The video must not be larger than 200 MB.',
+        (file) => !file || file.size <= MAX_VIDEO_SIZE,
+      )
+      .optional(),
+  })
+  .required();
 
 const headingGroup = commands.group(
   [
@@ -41,13 +70,38 @@ const headingGroup = commands.group(
 const CourseCreateForm = () => {
   const navigate = useNavigate();
 
+  const { id } = useParams<{ id: string }>();
+  const { data: edittingCourse, isLoading: isLoadingExistingCourse } =
+    useGetCourseByIdQuery(id!, { skip: !id });
+
   const currentUser = useGetCurrentUserQuery().data;
   const isCurrentUserChef = currentUser?.is_chef;
 
-  const [title, setTitle] = useState('');
-  const [mdContent, setMdContent] = useState('');
-  const [video, setVideo] = useState<File>();
-  const [videoError, setVideoError] = useState('');
+  const currentUserOwnsCourse =
+    currentUser?.id == edittingCourse?.created_by?.id;
+
+  const formValues = useMemo<CourseFormData>(
+    () => ({
+      title: edittingCourse?.title || '',
+      content: edittingCourse?.content || '',
+      video: undefined,
+    }),
+    [edittingCourse],
+  );
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<CourseFormData>({
+    resolver: yupResolver(schema) as Resolver<CourseFormData>,
+    values: formValues,
+  });
+
+  const mdContent = watch('content');
   const customCommands = [
     commands.bold,
     commands.italic,
@@ -62,22 +116,36 @@ const CourseCreateForm = () => {
     commands.orderedListCommand,
   ];
 
-  const [createCourse] = useCreateCourseMutation();
+  const [createCourse, { isLoading: isCreateLoading }] =
+    useCreateCourseMutation();
+  const [editCourse, { isLoading: isEditLoading }] = useEditCourseMutation();
 
-  const handleSubmit = () => {
-    createCourse({ title, content: mdContent, video })
-      .unwrap()
-      .then((res) => {
-        navigate(`/course/${res.id}`);
-      });
+  const onSubmit = (data: CourseFormData) => {
+    const request = edittingCourse
+      ? editCourse({ ...data, id: Number(id) })
+      : createCourse(data);
+
+    request.unwrap().then((res) => {
+      navigate(`/course/${res.id}`);
+    });
   };
 
-  if (!isCurrentUserChef) {
+  if (isLoadingExistingCourse || isCreateLoading || isEditLoading) {
+    return (
+      <Stack direction='row' justifyContent='center' p={3}>
+        <CircularProgress size='50px' />
+      </Stack>
+    );
+  }
+
+  if (!isCurrentUserChef || (edittingCourse && !currentUserOwnsCourse)) {
     return <PageErrorHandler errorStatus={403} />;
   }
 
   return (
     <Paper
+      component='form'
+      onSubmit={handleSubmit(onSubmit)}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -86,51 +154,54 @@ const CourseCreateForm = () => {
     >
       <Typography variant='h3'>Create a course</Typography>
       <TextField
-        title='title'
+        {...register('title')}
         placeholder='Title'
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        required
+        error={!!errors.title}
+        helperText={errors.title?.message}
       />
       <Stack spacing={1}>
         <Typography variant='h4'>Course video</Typography>
         <input
           type='file'
           accept='.mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv'
-          aria-describedby={videoError ? 'video-error' : undefined}
+          aria-describedby={errors.video ? 'video-error' : undefined}
           onChange={(event) => {
             const selectedVideo = event.target.files?.[0];
-
-            if (selectedVideo && selectedVideo.size > MAX_VIDEO_SIZE) {
-              setVideo(undefined);
-              setVideoError('The video must not be larger than 200 MB.');
-              event.target.value = '';
-              return;
-            }
-
-            setVideo(selectedVideo);
-            setVideoError('');
+            setValue('video', selectedVideo, { shouldValidate: true });
           }}
         />
-        {videoError && (
+        {errors.video && (
           <Typography id='video-error' variant='body2' color='error'>
-            {videoError}
+            {errors.video.message}
           </Typography>
         )}
-        {video && (
+        {watch('video') && (
           <Typography variant='body2' color='text.secondary'>
-            Selected: {video.name}
+            Selected: {watch('video')?.name}
           </Typography>
         )}
       </Stack>
       <Typography variant='h4'>Course content editor</Typography>
-      <MDEditor
-        value={mdContent}
-        onChange={setMdContent}
-        height={400}
-        commands={customCommands}
-        extraCommands={[]}
-        preview='edit'
+      <Controller
+        name='content'
+        control={control}
+        render={({ field }) => (
+          <MDEditor
+            value={field.value}
+            onChange={(value) => field.onChange(value ?? '')}
+            height={400}
+            commands={customCommands}
+            extraCommands={[]}
+            preview='edit'
+          />
+        )}
       />
+      {errors.content && (
+        <Typography variant='body2' color='error'>
+          {errors.content.message}
+        </Typography>
+      )}
       <Typography variant='h4'>Preview</Typography>
       <Box
         sx={{
@@ -144,8 +215,8 @@ const CourseCreateForm = () => {
             : 'Write something in the editor to preview it here !'}
         </ReactMarkdown>
       </Box>
-      <Button fullWidth onClick={handleSubmit}>
-        Submit
+      <Button fullWidth type='submit'>
+        {edittingCourse ? 'Confirm' : 'Submit'}
       </Button>
     </Paper>
   );
