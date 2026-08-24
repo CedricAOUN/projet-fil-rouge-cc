@@ -21,6 +21,7 @@ import BillingSuccess from './pages/BillingSuccess/BillingSuccess';
 import Favorites from './pages/Favorites/Favorites';
 import MyRecipes from './pages/MyRecipes/MyRecipes';
 import CoursesPage from './pages/CoursesPage/CoursesPage';
+import CourseCreateForm from './pages/CourseCreateForm/CourseCreateForm';
 
 function App() {
   const location = useLocation();
@@ -82,7 +83,7 @@ function App() {
             <Route path='/user/:id' element={<SingleUserPage />} />
             <Route path='/premium' element={<PremiumPage />} />
             <Route path='/course/:id' element={<SingleCoursePage />} />
-            <Route path='/course/create' element={<></>} />
+            <Route path='/course/create' element={<CourseCreateForm />} />
             <Route path='*' element={<NotFound />} />
             <Route path='/not-found' element={<NotFound />} />
             <Route path='/billing/success' element={<BillingSuccess />} />

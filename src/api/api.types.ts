@@ -5,6 +5,7 @@ export type Course = {
   id: number;
   title: string;
   description: string;
+  content: string;
   video_url: string;
   created_by: Partial<AuthUser>;
   created_on: string;

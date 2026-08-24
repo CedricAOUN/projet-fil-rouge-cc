@@ -29,6 +29,30 @@ export const courseApi = createApi({
       query: ({ query }) => `/list?search=${query}`,
       transformResponse: (response: { data: Course[] }) => response.data,
     }),
+    createCourse: builder.mutation<
+      Course,
+      { title: string; content?: string; video?: File }
+    >({
+      query: ({ title, content, video }) => {
+        const body = new FormData();
+        body.append('title', title);
+
+        if (content) {
+          body.append('content', content);
+        }
+
+        if (video) {
+          body.append('video', video);
+        }
+
+        return {
+          method: 'POST',
+          url: '/create',
+          body,
+        };
+      },
+      transformResponse: (res: { data: Course }) => res.data,
+    }),
   }),
 });
 
@@ -36,4 +60,5 @@ export const {
   useGetCourseByIdQuery,
   useGetCoursesByExpertIdQuery,
   useGetCoursesQuery,
+  useCreateCourseMutation,
 } = courseApi;
