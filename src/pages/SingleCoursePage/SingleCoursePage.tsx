@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import ReactPlayer from 'react-player';
+import { useGetCurrentUserQuery } from '@/api/authApi';
 
 const SingleCoursePage = () => {
   const { id } = useParams<{ id: string }>();

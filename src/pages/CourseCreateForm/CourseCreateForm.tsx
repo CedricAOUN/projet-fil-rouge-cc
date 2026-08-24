@@ -12,6 +12,8 @@ import MDEditor, { commands } from '@uiw/react-md-editor';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import { useGetCurrentUserQuery } from '@/api/authApi';
+import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 
 const MAX_VIDEO_SIZE = 200 * 1024 * 1024;
 
@@ -38,6 +40,9 @@ const headingGroup = commands.group(
 
 const CourseCreateForm = () => {
   const navigate = useNavigate();
+
+  const currentUser = useGetCurrentUserQuery().data;
+  const isCurrentUserChef = currentUser?.is_chef;
 
   const [title, setTitle] = useState('');
   const [mdContent, setMdContent] = useState('');
@@ -66,6 +71,10 @@ const CourseCreateForm = () => {
         navigate(`/course/${res.id}`);
       });
   };
+
+  if (!isCurrentUserChef) {
+    return <PageErrorHandler errorStatus={403} />;
+  }
 
   return (
     <Paper

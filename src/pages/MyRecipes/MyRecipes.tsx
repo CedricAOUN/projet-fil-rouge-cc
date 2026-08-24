@@ -108,7 +108,7 @@ const MyRecipes = () => {
         title='Delete confirmation'
         message='Are you sure you want to delete this recipe ?'
         onClose={() => setRecipeIDToDelete(null)}
-        open={recipeIDToDelete}
+        open={Boolean(recipeIDToDelete)}
         onConfirm={() => handleDeleteRecipe(recipeIDToDelete)}
       />
     </Stack>

@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+  const isCurrentUserChef = currentUser?.is_chef;
+
   const navigate = useNavigate();
 
   function handleClick(event) {
@@ -87,6 +89,13 @@ function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
             My Recipes
           </Typography>
         </MenuItem>
+        {isCurrentUserChef && (
+          <MenuItem onClick={() => navigate('/course/create')}>
+            <Typography textAlign={'center'} width={'100%'}>
+              Create a course
+            </Typography>
+          </MenuItem>
+        )}
         <Divider />
         <MenuItem onClick={onLogout}>
           <Typography textAlign={'center'} width={'100%'} color={'error'}>

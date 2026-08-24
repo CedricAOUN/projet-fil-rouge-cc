@@ -6,13 +6,24 @@ import {
   Stack,
   Typography,
   Link,
+  IconButton,
 } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Course, User } from '@/api/api.types';
 import { AuthUser, useGetCurrentUserQuery } from '@/api/authApi';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
+import { useDeleteCourseMutation } from '@/api/courseApi';
 
-function CourseList({ courses }: { courses: Course[] }) {
+function CourseList({
+  courses,
+  allowModfications,
+}: {
+  courses: Course[];
+  allowModfications: boolean;
+}) {
   const currentUser = useGetCurrentUserQuery()?.data;
 
   const isCurrentUserPremium = currentUser?.is_premium;
@@ -26,8 +37,11 @@ function CourseList({ courses }: { courses: Course[] }) {
     }
   };
 
-  const handleAddClick = () => {
-    navigate(`/courses/create`);
+  const [deleteCourse] = useDeleteCourseMutation();
+  const [courseIDToDelete, setCourseIDToDelete] = useState<number>();
+  const handleDeleteCourse = (id) => {
+    deleteCourse({ id });
+    setCourseIDToDelete(null);
   };
 
   return (
@@ -54,16 +68,38 @@ function CourseList({ courses }: { courses: Course[] }) {
                   By {course?.created_by?.name}
                 </Typography>
               </Stack>
-              <Button
-                sx={{ ml: 'auto' }}
-                onClick={() => handleViewClick(course.id)}
-              >
-                {isCurrentUserPremium ? 'View Course' : 'Get Premium'}
-              </Button>
+              <Stack direction={'row'} sx={{ ml: 'auto' }}>
+                {allowModfications && (
+                  <>
+                    <IconButton
+                      color='warning'
+                      onClick={() => navigate(`/recipe/edit/${course.id}`)}
+                    >
+                      <EditIcon></EditIcon>
+                    </IconButton>
+                    <IconButton
+                      color='error'
+                      onClick={() => setCourseIDToDelete(course.id)}
+                    >
+                      <DeleteIcon></DeleteIcon>
+                    </IconButton>
+                  </>
+                )}
+                <Button onClick={() => handleViewClick(course.id)}>
+                  {isCurrentUserPremium ? 'View Course' : 'Get Premium'}
+                </Button>
+              </Stack>
             </Paper>
           </ListItem>
         ))}
       </List>
+      <ConfirmationModal
+        title='Delete confirmation'
+        message='Are you sure you want to delete this course ?'
+        onClose={() => setCourseIDToDelete(null)}
+        open={Boolean(courseIDToDelete)}
+        onConfirm={() => handleDeleteCourse(courseIDToDelete)}
+      />
     </Paper>
   );
 }

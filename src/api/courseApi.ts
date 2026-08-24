@@ -5,6 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const courseApi = createApi({
   reducerPath: 'courseApi',
+  tagTypes: ['Courses'],
   baseQuery: fetchBaseQuery({
     baseUrl: `${API_URL}/courses`,
     prepareHeaders: (headers) => {
@@ -24,10 +25,14 @@ export const courseApi = createApi({
     getCoursesByExpertId: builder.query<Course[], string>({
       query: (expertId) => `?creator_id=${expertId}`,
       transformResponse: (response: { data: Course[] }) => response.data,
+      providesTags: (_result, _error, expertId) => [
+        { type: 'Courses', id: `EXPERT-${expertId}` },
+      ],
     }),
     getCourses: builder.query<Course[], { query: string }>({
       query: ({ query }) => `/list?search=${query}`,
       transformResponse: (response: { data: Course[] }) => response.data,
+      providesTags: ['Courses'],
     }),
     createCourse: builder.mutation<
       Course,
@@ -52,6 +57,41 @@ export const courseApi = createApi({
         };
       },
       transformResponse: (res: { data: Course }) => res.data,
+      invalidatesTags: ['Courses'],
+    }),
+    editCourse: builder.mutation<
+      Course,
+      { title: string; content?: string; video?: File; id: number }
+    >({
+      query: ({ title, content, video, id }) => {
+        const body = new FormData();
+        body.append('title', title);
+
+        if (content) {
+          body.append('content', content);
+        }
+
+        if (video) {
+          body.append('video', video);
+        }
+
+        return {
+          method: 'PUT',
+          url: `/edit/${id}`,
+          body,
+        };
+      },
+      transformResponse: (res: { data: Course }) => res.data,
+      invalidatesTags: ['Courses'],
+    }),
+    deleteCourse: builder.mutation<void, { id: number }>({
+      query: ({ id }) => {
+        return {
+          method: 'DELETE',
+          url: `/delete/${id}`,
+        };
+      },
+      invalidatesTags: ['Courses'],
     }),
   }),
 });
@@ -61,4 +101,6 @@ export const {
   useGetCoursesByExpertIdQuery,
   useGetCoursesQuery,
   useCreateCourseMutation,
+  useEditCourseMutation,
+  useDeleteCourseMutation,
 } = courseApi;

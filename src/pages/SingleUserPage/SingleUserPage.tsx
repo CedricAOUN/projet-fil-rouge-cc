@@ -6,7 +6,7 @@ import ProfileCard from '@/components/ProfileCard/ProfileCard';
 import CourseList from '@/components/CourseList/CourseList';
 import EditProfileForm from '@/components/EditProfileForm/EditProfileForm';
 import { useGetCoursesByExpertIdQuery } from '@/api/courseApi';
-import { useGetUserByIdQuery } from '@/api/authApi';
+import { useGetCurrentUserQuery, useGetUserByIdQuery } from '@/api/authApi';
 
 const SingleUserPage: React.FC = () => {
   const isMobile = useMediaQuery('(max-width:900px)');
@@ -20,6 +20,9 @@ const SingleUserPage: React.FC = () => {
   const { data: courses } = useGetCoursesByExpertIdQuery(id!, {
     skip: !id || !singleUser?.is_chef,
   });
+
+  const currentUser = useGetCurrentUserQuery()?.data;
+  const isCurrentUserProfileOwner = parseInt(id) == currentUser?.id;
 
   if (isUserLoading) {
     return (
@@ -50,7 +53,13 @@ const SingleUserPage: React.FC = () => {
       {editMode ? (
         <EditProfileForm onStopEdit={() => setEditMode(false)} />
       ) : (
-        is_chef && courses && <CourseList courses={courses} />
+        is_chef &&
+        courses && (
+          <CourseList
+            courses={courses}
+            allowModfications={isCurrentUserProfileOwner}
+          />
+        )
       )}
     </Stack>
   );
