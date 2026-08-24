@@ -73,7 +73,7 @@ function CourseList({
                   <>
                     <IconButton
                       color='warning'
-                      onClick={() => navigate(`/recipe/edit/${course.id}`)}
+                      onClick={() => navigate(`/course/edit/${course.id}`)}
                     >
                       <EditIcon></EditIcon>
                     </IconButton>
