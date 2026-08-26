@@ -19,6 +19,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 import dayjs from 'dayjs';
+import AskAIButton from '@/components/AskAIButton/AskAIButton';
 
 type RecipeTitlePaperProps = {
   recipe: Recipe;
@@ -124,6 +125,7 @@ function RecipeTitlePaper({
               }}
             />
           )}
+          {currentUser?.is_premium && <AskAIButton recipe={recipe} />}
           <Box
             sx={{
               display: 'flex',

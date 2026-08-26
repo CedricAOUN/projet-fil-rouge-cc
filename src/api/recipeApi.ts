@@ -204,6 +204,15 @@ export const recipeApi = createApi({
       },
       invalidatesTags: ['Recipes'],
     }),
+    askAI: builder.query<string, { id: string }>({
+      query: ({ id }) => {
+        return {
+          method: 'GET',
+          url: `${API_URL}/recipes/${id}/ai`,
+        };
+      },
+      transformResponse: (res: any) => res.data.suggestion,
+    }),
   }),
 });
 
@@ -218,4 +227,5 @@ export const {
   useCreateRecipeMutation,
   useEditRecipeMutation,
   useDeleteRecipeMutation,
+  useAskAIQuery,
 } = recipeApi;
