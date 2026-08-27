@@ -63,6 +63,20 @@ const userSlice = createSlice({
         state.currentUser = null;
         localStorage.removeItem('token');
       })
+      // Google login and account linking
+      .addMatcher(authApi.endpoints.googleLogin.matchPending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addMatcher(authApi.endpoints.googleLogin.matchFulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentUser = action.payload.user;
+        state.isAuthenticated = true;
+        localStorage.setItem('token', action.payload.access_token);
+      })
+      .addMatcher(authApi.endpoints.googleLogin.matchRejected, (state) => {
+        state.isLoading = false;
+      })
       // getCurrentUser - Persist user session on app load
       .addMatcher(authApi.endpoints.getCurrentUser.matchPending, (state) => {
         state.isLoading = true;
@@ -84,7 +98,5 @@ const userSlice = createSlice({
       });
   },
 });
-
-export const {} = userSlice.actions;
 
 export default userSlice.reducer;

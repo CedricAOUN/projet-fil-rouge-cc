@@ -39,7 +39,7 @@ function PremiumPage() {
           Your subscription will be renewed on{' '}
           {dayjs(currentUser?.premium_expire).format('MMMM D, YYYY')}.
         </Typography>
-        <Button variant='contained' color='primary'>
+        <Button variant='contained' color='primary' disabled>
           Manage Subscription
         </Button>
       </Paper>

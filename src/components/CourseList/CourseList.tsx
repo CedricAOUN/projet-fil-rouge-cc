@@ -19,10 +19,10 @@ import { useDeleteCourseMutation } from '@/api/courseApi';
 
 function CourseList({
   courses,
-  allowModfications,
+  allowModfications = false,
 }: {
   courses: Course[];
-  allowModfications: boolean;
+  allowModfications?: boolean;
 }) {
   const currentUser = useGetCurrentUserQuery()?.data;
 

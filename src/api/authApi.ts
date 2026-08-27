@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Recipe } from './api.types';
-import { method } from 'lodash';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -31,6 +30,11 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+}
+
+export interface GoogleLoginRequest {
+  credential: string;
+  password?: string;
 }
 
 export interface AuthResponse {
@@ -81,6 +85,13 @@ export const authApi = createApi({
         body: userData,
       }),
     }),
+    googleLogin: builder.mutation<AuthResponse, GoogleLoginRequest>({
+      query: (credentials) => ({
+        url: '/google',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
     logout: builder.mutation<void, void>({
       query: () => ({
         url: '/logout',
@@ -124,7 +135,7 @@ export const authApi = createApi({
         body: checkoutData,
       }),
     }),
-    getChefs: builder.query<any, { query: string }>({
+    getChefs: builder.query<{ data: AuthUser[] }, { query: string }>({
       query: ({ query }) => {
         const params = new URLSearchParams();
         params.append('search', query);
@@ -137,6 +148,7 @@ export const authApi = createApi({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useGoogleLoginMutation,
   useLogoutMutation,
   useGetCurrentUserQuery,
   useUpdateProfileMutation,

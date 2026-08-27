@@ -10,11 +10,25 @@ import {
   Paper,
   CircularProgress,
   Alert,
+  Divider,
 } from '@mui/material';
 import './LoginModal.css';
 import { Close } from '@mui/icons-material';
-import { useLoginMutation, useRegisterMutation } from '@/api/authApi';
+import {
+  useGoogleLoginMutation,
+  useLoginMutation,
+  useRegisterMutation,
+} from '@/api/authApi';
 import { formatErrors } from '@/utils/formUtils';
+import GoogleSignInButton from './GoogleSignInButton';
+
+type ApiError = {
+  status?: number;
+  data?: {
+    code?: string;
+    message?: string;
+  };
+};
 
 function a11yProps(index) {
   return {
@@ -48,6 +62,9 @@ function LoginModal({ isOpen, handleClose }) {
     email: '',
     password: '',
   });
+  const [pendingGoogleCredential, setPendingGoogleCredential] = useState<string | null>(null);
+  const [linkPassword, setLinkPassword] = useState('');
+  const [googleError, setGoogleError] = useState<string | null>(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -55,6 +72,7 @@ function LoginModal({ isOpen, handleClose }) {
   const [ login, { error: loginError, isLoading: isLoggingIn } ] = useLoginMutation();
 
   const [ register, { error: registerError, isLoading: isRegistering } ] = useRegisterMutation();
+  const [googleLogin, { isLoading: isGoogleLoading }] = useGoogleLoginMutation();
 
 
   const handleLogin = () => {
@@ -70,6 +88,32 @@ function LoginModal({ isOpen, handleClose }) {
     }).catch(() => {});
   };
 
+  const completeGoogleLogin = (credential: string, password?: string) => {
+    setGoogleError(null);
+    googleLogin({ credential, ...(password ? { password } : {}) })
+      .unwrap()
+      .then(() => {
+        setPendingGoogleCredential(null);
+        setLinkPassword('');
+        handleClose();
+        window.location.reload();
+      })
+      .catch((error: ApiError) => {
+        if (error.status === 409 && error.data?.code === 'account_link_required') {
+          setPendingGoogleCredential(credential);
+          return;
+        }
+
+        setGoogleError(error.data?.message ?? 'Google sign-in failed. Please try again.');
+      });
+  };
+
+  const cancelGoogleLink = () => {
+    setPendingGoogleCredential(null);
+    setLinkPassword('');
+    setGoogleError(null);
+  };
+
   const loginErrors = formatErrors(loginError, 'array');
   const registerErrors = formatErrors(registerError, 'array');
 
@@ -83,6 +127,8 @@ function LoginModal({ isOpen, handleClose }) {
         sx={{
           p: 4,
           width: 400,
+          maxHeight: '90vh',
+          overflowY: 'auto',
           position: 'relative',
         }}
       >
@@ -215,6 +261,51 @@ function LoginModal({ isOpen, handleClose }) {
             Already have an account?
           </Typography>
         </CustomTabPanel>
+
+        <Box sx={{ px: 3, pb: 3 }}>
+          <Divider sx={{ mb: 2 }}>or</Divider>
+          {googleError && <Alert severity='error' sx={{ mb: 2 }}>{googleError}</Alert>}
+          {pendingGoogleCredential ? (
+            <Box>
+              <Alert severity='info' sx={{ mb: 2 }}>
+                This email already has an account. Enter its password once to link Google sign-in.
+              </Alert>
+              <TextField
+                fullWidth
+                type='password'
+                label='Existing account password'
+                value={linkPassword}
+                onChange={(event) => setLinkPassword(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && linkPassword) {
+                    completeGoogleLogin(pendingGoogleCredential, linkPassword);
+                  }
+                }}
+                disabled={isGoogleLoading}
+                sx={{ mb: 2 }}
+              />
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  fullWidth
+                  variant='contained'
+                  disabled={!linkPassword || isGoogleLoading}
+                  onClick={() => completeGoogleLogin(pendingGoogleCredential, linkPassword)}
+                >
+                  {isGoogleLoading ? 'Linking...' : 'Link account'}
+                </Button>
+                <Button fullWidth variant='outlined' onClick={cancelGoogleLink} disabled={isGoogleLoading}>
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: 44 }}>
+              {isGoogleLoading
+                ? <CircularProgress size={32} />
+                : <GoogleSignInButton onCredential={completeGoogleLogin} />}
+            </Box>
+          )}
+        </Box>
       </Paper>
     </Modal>
   );
