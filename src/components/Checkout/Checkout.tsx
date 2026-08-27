@@ -45,9 +45,9 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
   const selectedPlanStripeId = selectedPlan?.stripePriceMap[selectedBilling];
 
   const { data: planDetails, isLoading: isPlanDetailsLoading } =
-    useGetPlanDetailsQuery(selectedPlanStripeId, {
-      skip: !selectedPlanStripeId,
-    });
+    useGetPlanDetailsQuery(selectedPlanStripeId);
+
+  console.log({ selectedPlanStripeId });
 
   return (
     <>
@@ -111,7 +111,9 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
               <Checkbox
                 checked={hasAcceptedTerms}
                 onChange={(event) =>
-                  setAcceptedTermsFor(event.target.checked ? currentTermsKey : null)
+                  setAcceptedTermsFor(
+                    event.target.checked ? currentTermsKey : null,
+                  )
                 }
               />
             }
@@ -125,7 +127,8 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
                   rel='noreferrer'
                 >
                   conditions générales de vente et d’abonnement
-                </MuiLink>.
+                </MuiLink>
+                .
               </Typography>
             }
           />

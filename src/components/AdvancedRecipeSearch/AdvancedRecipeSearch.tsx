@@ -72,14 +72,18 @@ const AdvancedRecipeSearch = () => {
       height={'100%'}
       maxHeight={'100%'}
       minHeight={0}
-      direction={'row'}
+      direction={{ xs: 'column', lg: 'row' }}
       gap={2}
       flexGrow={1}
       overflow={'hidden'}
     >
       {/* FILTERS */}
       <Paper
-        sx={{ width: '30%', height: '100%', overflow: 'hidden' }}
+        sx={{
+          width: { xs: '100%', lg: '30%' },
+          height: 'auto',
+          overflow: 'hidden',
+        }}
         variant='outlined'
       >
         <Stack
@@ -180,6 +184,11 @@ const AdvancedRecipeSearch = () => {
                   isPremium={recipe.is_premium}
                 />
               ))}
+              {recipes?.length == 0 && (
+                <Typography>
+                  No recipes match your search. Please try something else !
+                </Typography>
+              )}
             </Stack>
           )}
         </Paper>
