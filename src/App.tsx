@@ -79,7 +79,7 @@ function App() {
         <Box component='main' sx={{ flex: 1, pb: isHomePage ? 0 : '10px' }}>
           <Box
             sx={{
-              margin: isMobile ? '15px' : isHomePage ? 0 : '15px 15%',
+              margin: isHomePage ? 0 : isMobile ? '15px' : '15px 15%',
               minHeight: isHomePage ? undefined : 'calc(100vh - 190px)',
             }}
           >

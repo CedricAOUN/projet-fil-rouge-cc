@@ -20,6 +20,8 @@ function RecipeCard({ title, image, description, id, isPremium }) {
 
   const borderColor = isPremium ? 'gold' : 'gray';
 
+  const dynamicFontSize = { xs: 14, md: 18, lg: 24 };
+
   return (
     <Paper
       sx={{
@@ -41,17 +43,22 @@ function RecipeCard({ title, image, description, id, isPremium }) {
           borderRadius: '6px 0 0 6px',
           borderRight: `3px solid ${borderColor}`,
           objectFit: 'cover',
+          minWidth: '100px',
         }}
       />
       <Stack sx={{ flexGrow: 1, minWidth: 0, p: 1 }}>
-        <Typography variant='h5'>{title}</Typography>
+        <Typography variant='h5' fontSize={{ xs: 14, md: 16, lg: 24 }}>
+          {title}
+        </Typography>
         <Typography
           variant='subtitle1'
+          fontSize={{ xs: 12, md: 14, lg: 18 }}
           sx={{
             maxWidth: '100%',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            maxHeight: '100%',
           }}
         >
           {description}
@@ -63,8 +70,10 @@ function RecipeCard({ title, image, description, id, isPremium }) {
         sx={{
           alignSelf: 'stretch',
           borderRadius: '0 6px 6px 0',
-          width: '150px',
+          width: '120px',
+          minWidth: '120px',
           textWrap: 'wrap',
+          fontSize: { xs: 12, md: 16 },
         }}
       >
         {canViewRecipe ? 'View' : 'Upgrade to Premium'}

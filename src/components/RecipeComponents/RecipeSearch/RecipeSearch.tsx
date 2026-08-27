@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import RecipeCard from '@/components/RecipeComponents/RecipeCard/RecipeCard';
 import { CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { setSearchQuery, useAppSelector } from '@/store';
@@ -25,7 +25,7 @@ function RecipeSearch({
   const filteredRecipes = currentData?.recipes;
 
   useEffect(() => {
-    if (Boolean(searchTerm)) {
+    if (searchTerm) {
       searchRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -35,7 +35,7 @@ function RecipeSearch({
       window.scrollTo({ top: 0, behavior: 'smooth' });
       headerSearchRef?.current?.focus();
     }
-  }, [searchTerm]);
+  }, [headerSearchRef, searchTerm]);
 
   const handleSearch = (event) => {
     dispatch(setSearchQuery(event.target.value));
@@ -50,16 +50,18 @@ function RecipeSearch({
       borderRadius={2}
       bgcolor={(theme) => theme.palette.background.paper}
     >
-      <>
-        <Typography variant='h5' marginBottom={2}>
-          Find a recipe
-        </Typography>
-        <TextField
-          inputRef={searchRef}
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-      </>
+      {showSearch && (
+        <>
+          <Typography variant='h5' marginBottom={2}>
+            Refine your search
+          </Typography>
+          <TextField
+            inputRef={searchRef}
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </>
+      )}
       {(isLoading || isFetching) && (
         <Stack direction={'row'} justifyContent={'center'} p={3}>
           <CircularProgress size={'50px'} />
