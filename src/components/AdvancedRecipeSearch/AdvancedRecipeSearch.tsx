@@ -149,7 +149,6 @@ const AdvancedRecipeSearch = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button onClick={() => navigate('/recipe/create')}>New Recipe</Button>
         </Stack>
         <Paper
           variant='outlined'

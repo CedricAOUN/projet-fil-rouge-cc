@@ -66,7 +66,7 @@ function App() {
         currentTheme={themeMode ? 'dark' : 'light'}
         onThemeToggle={toggleMode}
       />
-      <main style={{ height: 'calc(100vh - 120px)' }}>
+      <main style={{ height: 'calc(100vh - 120px)', paddingBottom: '10px' }}>
         <Box
           sx={{
             margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%',

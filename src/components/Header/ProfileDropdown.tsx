@@ -13,6 +13,7 @@ function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const isCurrentUserChef = currentUser?.is_chef;
+  const isCurrentUserPremium = currentUser?.is_premium;
 
   const navigate = useNavigate();
 
@@ -89,6 +90,13 @@ function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
             My Recipes
           </Typography>
         </MenuItem>
+        {isCurrentUserPremium && (
+          <MenuItem onClick={() => navigate('/recipe/create')}>
+            <Typography textAlign={'center'} width={'100%'}>
+              Create a recipe
+            </Typography>
+          </MenuItem>
+        )}
         {isCurrentUserChef && (
           <MenuItem onClick={() => navigate('/course/create')}>
             <Typography textAlign={'center'} width={'100%'}>
