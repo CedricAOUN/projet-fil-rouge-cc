@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   Box,
@@ -62,30 +62,44 @@ function LoginModal({ isOpen, handleClose }) {
     email: '',
     password: '',
   });
-  const [pendingGoogleCredential, setPendingGoogleCredential] = useState<string | null>(null);
+  const [pendingGoogleCredential, setPendingGoogleCredential] = useState<
+    string | null
+  >(null);
   const [linkPassword, setLinkPassword] = useState('');
   const [googleError, setGoogleError] = useState<string | null>(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const [ login, { error: loginError, isLoading: isLoggingIn } ] = useLoginMutation();
+  const [login, { error: loginError, isLoading: isLoggingIn }] =
+    useLoginMutation();
 
-  const [ register, { error: registerError, isLoading: isRegistering } ] = useRegisterMutation();
-  const [googleLogin, { isLoading: isGoogleLoading }] = useGoogleLoginMutation();
-
+  const [register, { error: registerError, isLoading: isRegistering }] =
+    useRegisterMutation();
+  const [googleLogin, { isLoading: isGoogleLoading }] =
+    useGoogleLoginMutation();
 
   const handleLogin = () => {
-    login({ email: loginContext.email, password: loginContext.password }).unwrap().then(() => {
-      handleClose();
-      window.location.reload();
-    }).catch(() => {});
+    login({ email: loginContext.email, password: loginContext.password })
+      .unwrap()
+      .then(() => {
+        handleClose();
+        window.location.reload();
+      })
+      .catch(() => {});
   };
 
   const handleRegister = () => {
-    register({ name: registerContext.name, email: registerContext.email, password: registerContext.password }).unwrap().then(() => {
-      handleClose();
-    }).catch(() => {});
+    register({
+      name: registerContext.name,
+      email: registerContext.email,
+      password: registerContext.password,
+    })
+      .unwrap()
+      .then(() => {
+        handleClose();
+      })
+      .catch(() => {});
   };
 
   const completeGoogleLogin = (credential: string, password?: string) => {
@@ -99,12 +113,17 @@ function LoginModal({ isOpen, handleClose }) {
         window.location.reload();
       })
       .catch((error: ApiError) => {
-        if (error.status === 409 && error.data?.code === 'account_link_required') {
+        if (
+          error.status === 409 &&
+          error.data?.code === 'account_link_required'
+        ) {
           setPendingGoogleCredential(credential);
           return;
         }
 
-        setGoogleError(error.data?.message ?? 'Google sign-in failed. Please try again.');
+        setGoogleError(
+          error.data?.message ?? 'Google sign-in failed. Please try again.',
+        );
       });
   };
 
@@ -116,6 +135,22 @@ function LoginModal({ isOpen, handleClose }) {
 
   const loginErrors = formatErrors(loginError, 'array');
   const registerErrors = formatErrors(registerError, 'array');
+
+  // Handle Enter Key
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        handleLogin();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    // cleanup: remove listener when component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [loginContext]);
 
   return (
     <Modal
@@ -157,7 +192,12 @@ function LoginModal({ isOpen, handleClose }) {
 
         <CustomTabPanel value={value} index={0}>
           {loginError && (
-            <Typography variant='body2' textAlign={'center'} color='error' sx={{ mb: 2 }}>
+            <Typography
+              variant='body2'
+              textAlign={'center'}
+              color='error'
+              sx={{ mb: 2 }}
+            >
               {loginErrors.map((err, index) => (
                 <Alert key={index} severity='error' sx={{ mb: 1 }}>
                   {err}
@@ -172,7 +212,9 @@ function LoginModal({ isOpen, handleClose }) {
                 placeholder='Email'
                 sx={{ mb: 2 }}
                 value={loginContext.email}
-                onChange={(e) => setLoginContext({ ...loginContext, email: e.target.value })}
+                onChange={(e) =>
+                  setLoginContext({ ...loginContext, email: e.target.value })
+                }
               />
               <TextField
                 fullWidth
@@ -180,15 +222,23 @@ function LoginModal({ isOpen, handleClose }) {
                 placeholder='Password'
                 sx={{ mb: 2 }}
                 value={loginContext.password}
-                onChange={(e) => setLoginContext({ ...loginContext, password: e.target.value })}
+                onChange={(e) =>
+                  setLoginContext({ ...loginContext, password: e.target.value })
+                }
               />
             </>
-            ) : (
+          ) : (
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
               <CircularProgress />
             </Box>
           )}
-          <Button fullWidth variant='contained' color='primary' onClick={handleLogin} disabled={isLoggingIn}>
+          <Button
+            fullWidth
+            variant='contained'
+            color='primary'
+            onClick={handleLogin}
+            disabled={isLoggingIn}
+          >
             {isLoggingIn ? 'Logging in...' : 'Login'}
           </Button>
           <Typography
@@ -207,7 +257,12 @@ function LoginModal({ isOpen, handleClose }) {
 
         <CustomTabPanel value={value} index={1}>
           {registerError && (
-            <Typography variant='body2' textAlign={'center'} color='error' sx={{ mb: 2 }}>
+            <Typography
+              variant='body2'
+              textAlign={'center'}
+              color='error'
+              sx={{ mb: 2 }}
+            >
               {registerErrors.map((err, index) => (
                 <Alert key={index} severity='error' sx={{ mb: 1 }}>
                   {err}
@@ -222,14 +277,24 @@ function LoginModal({ isOpen, handleClose }) {
                 placeholder='Name'
                 sx={{ mb: 2 }}
                 value={registerContext.name}
-                onChange={(e) => setRegisterContext({ ...registerContext, name: e.target.value })}
+                onChange={(e) =>
+                  setRegisterContext({
+                    ...registerContext,
+                    name: e.target.value,
+                  })
+                }
               />
               <TextField
                 fullWidth
                 placeholder='Email'
                 sx={{ mb: 2 }}
                 value={registerContext.email}
-                onChange={(e) => setRegisterContext({ ...registerContext, email: e.target.value })}
+                onChange={(e) =>
+                  setRegisterContext({
+                    ...registerContext,
+                    email: e.target.value,
+                  })
+                }
               />
               <TextField
                 fullWidth
@@ -237,7 +302,12 @@ function LoginModal({ isOpen, handleClose }) {
                 placeholder='Password'
                 sx={{ mb: 2 }}
                 value={registerContext.password}
-                onChange={(e) => setRegisterContext({ ...registerContext, password: e.target.value })}
+                onChange={(e) =>
+                  setRegisterContext({
+                    ...registerContext,
+                    password: e.target.value,
+                  })
+                }
               />
             </>
           ) : (
@@ -245,7 +315,13 @@ function LoginModal({ isOpen, handleClose }) {
               <CircularProgress />
             </Box>
           )}
-          <Button fullWidth variant='contained' color='primary' onClick={handleRegister} disabled={isRegistering}>
+          <Button
+            fullWidth
+            variant='contained'
+            color='primary'
+            onClick={handleRegister}
+            disabled={isRegistering}
+          >
             {isRegistering ? 'Signing Up...' : 'Sign Up'}
           </Button>
           <Typography
@@ -264,11 +340,16 @@ function LoginModal({ isOpen, handleClose }) {
 
         <Box sx={{ px: 3, pb: 3 }}>
           <Divider sx={{ mb: 2 }}>or</Divider>
-          {googleError && <Alert severity='error' sx={{ mb: 2 }}>{googleError}</Alert>}
+          {googleError && (
+            <Alert severity='error' sx={{ mb: 2 }}>
+              {googleError}
+            </Alert>
+          )}
           {pendingGoogleCredential ? (
             <Box>
               <Alert severity='info' sx={{ mb: 2 }}>
-                This email already has an account. Enter its password once to link Google sign-in.
+                This email already has an account. Enter its password once to
+                link Google sign-in.
               </Alert>
               <TextField
                 fullWidth
@@ -289,20 +370,31 @@ function LoginModal({ isOpen, handleClose }) {
                   fullWidth
                   variant='contained'
                   disabled={!linkPassword || isGoogleLoading}
-                  onClick={() => completeGoogleLogin(pendingGoogleCredential, linkPassword)}
+                  onClick={() =>
+                    completeGoogleLogin(pendingGoogleCredential, linkPassword)
+                  }
                 >
                   {isGoogleLoading ? 'Linking...' : 'Link account'}
                 </Button>
-                <Button fullWidth variant='outlined' onClick={cancelGoogleLink} disabled={isGoogleLoading}>
+                <Button
+                  fullWidth
+                  variant='outlined'
+                  onClick={cancelGoogleLink}
+                  disabled={isGoogleLoading}
+                >
                   Cancel
                 </Button>
               </Box>
             </Box>
           ) : (
-            <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: 44 }}>
-              {isGoogleLoading
-                ? <CircularProgress size={32} />
-                : <GoogleSignInButton onCredential={completeGoogleLogin} />}
+            <Box
+              sx={{ display: 'flex', justifyContent: 'center', minHeight: 44 }}
+            >
+              {isGoogleLoading ? (
+                <CircularProgress size={32} />
+              ) : (
+                <GoogleSignInButton onCredential={completeGoogleLogin} />
+              )}
             </Box>
           )}
         </Box>
