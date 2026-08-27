@@ -1,6 +1,9 @@
 import {
   Button,
   CircularProgress,
+  Checkbox,
+  FormControlLabel,
+  Link as MuiLink,
   MenuItem,
   Paper,
   Select,
@@ -12,15 +15,21 @@ import { useGetPlanDetailsQuery } from '@/api/plansApi';
 import { useState } from 'react';
 import { useCheckoutMutation, useGetCurrentUserQuery } from '@/api/authApi';
 import { PREMIUM_TIERS } from '@/constants/premiumPlans';
+import { Link as RouterLink } from 'react-router-dom';
 
 function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
   const currentUserId = useGetCurrentUserQuery().data?.id;
   const isLoggedIn = Boolean(currentUserId);
 
   const [selectedBilling, setSelectedBilling] = useState('monthly');
+  const [acceptedTermsFor, setAcceptedTermsFor] = useState<string | null>(null);
+  const currentTermsKey = `${selectedTier}:${selectedBilling}`;
+  const hasAcceptedTerms = acceptedTermsFor === currentTermsKey;
 
   const [checkout, { isLoading: isCheckoutLoading }] = useCheckoutMutation();
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
+    if (!hasAcceptedTerms) return;
+
     checkout({ product: selectedTier, interval: selectedBilling })
       .unwrap()
       .then((response) => {
@@ -71,7 +80,9 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
             fullWidth
             size='small'
             value={selectedBilling}
-            onChange={(e) => setSelectedBilling(e.target.value)}
+            onChange={(e) => {
+              setSelectedBilling(e.target.value);
+            }}
           >
             <MenuItem value='monthly'>Monthly</MenuItem>
             <MenuItem value='6_months'>Every 6 Months</MenuItem>
@@ -90,16 +101,44 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
                 Equivalent to {planDetails?.monthlyPrice ?? 'N/A'}/month
               </Typography>
               <Typography variant='body2' color='text.secondary'>
-                You will be charged based on the selected billing cycle. You can
-                cancel anytime.
+                You will be charged based on the selected billing cycle. This
+                student version does not yet provide self-service cancellation.
               </Typography>
             </>
           )}
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={hasAcceptedTerms}
+                onChange={(event) =>
+                  setAcceptedTermsFor(event.target.checked ? currentTermsKey : null)
+                }
+              />
+            }
+            label={
+              <Typography variant='body2'>
+                J’ai lu et j’accepte les{' '}
+                <MuiLink
+                  component={RouterLink}
+                  to='/conditions-vente'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  conditions générales de vente et d’abonnement
+                </MuiLink>.
+              </Typography>
+            }
+          />
           <Button
             variant='contained'
             color='primary'
             onClick={handleCheckout}
-            disabled={isCheckoutLoading || isPlanDetailsLoading || !isLoggedIn}
+            disabled={
+              isCheckoutLoading ||
+              isPlanDetailsLoading ||
+              !isLoggedIn ||
+              !hasAcceptedTerms
+            }
           >
             {isCheckoutLoading
               ? 'Processing...'

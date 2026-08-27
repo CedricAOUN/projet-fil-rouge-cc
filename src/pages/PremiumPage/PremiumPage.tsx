@@ -40,7 +40,7 @@ function PremiumPage() {
           {dayjs(currentUser?.premium_expire).format('MMMM D, YYYY')}.
         </Typography>
         <Button variant='contained' color='primary' disabled>
-          Manage Subscription
+          Subscription management is not yet available
         </Button>
       </Paper>
     );

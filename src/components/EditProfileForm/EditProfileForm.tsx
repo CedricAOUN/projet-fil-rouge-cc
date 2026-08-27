@@ -144,7 +144,12 @@ function EditProfileForm({ onStopEdit }) {
       >
         <Typography variant='h5'>Advanced Options</Typography>
         <Button>Change Password</Button>
-        <Button>Delete Account</Button>
+        <Typography variant='body2' color='text.secondary'>
+          Account deletion is not yet available in this student version. To
+          request deletion, use the contact address listed in the privacy
+          policy.
+        </Typography>
+        <Button disabled>Delete Account</Button>
       </Paper>
     </>
   );

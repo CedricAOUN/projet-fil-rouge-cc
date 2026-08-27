@@ -22,11 +22,20 @@ import Favorites from './pages/Favorites/Favorites';
 import MyRecipes from './pages/MyRecipes/MyRecipes';
 import CoursesPage from './pages/CoursesPage/CoursesPage';
 import CourseCreateForm from './pages/CourseCreateForm/CourseCreateForm';
+import Footer from './components/Footer/Footer';
+import PrivacyPolicy from './pages/LegalPages/PrivacyPolicy';
+import TermsOfUse from './pages/LegalPages/TermsOfUse';
+import TermsOfSale from './pages/LegalPages/TermsOfSale';
+import LegalNotice from './pages/LegalPages/LegalNotice';
 
 function App() {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isMobile = useMediaQuery('(max-width: 900px)');
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname]);
 
   const token = localStorage.getItem('token');
   useGetCurrentUserQuery(undefined, { skip: !token });
@@ -62,38 +71,45 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header
-        currentTheme={themeMode ? 'dark' : 'light'}
-        onThemeToggle={toggleMode}
-      />
-      <main style={{ height: 'calc(100vh - 120px)', paddingBottom: '10px' }}>
-        <Box
-          sx={{
-            margin: isMobile ? '15px' : isHomePage ? '' : '15px 15%',
-            height: '100%',
-          }}
-        >
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/recipes' element={<AdvancedRecipeSearch />} />
-            <Route path='/recipe/:id' element={<SingleRecipePage />} />
-            <Route path='/recipe/create' element={<RecipeCreateForm />} />
-            <Route path='/recipe/edit/:id' element={<RecipeCreateForm />} />
-            <Route path='/courses' element={<CoursesPage />} />
-            <Route path='/user/:id' element={<SingleUserPage />} />
-            <Route path='/premium' element={<PremiumPage />} />
-            <Route path='/course/:id' element={<SingleCoursePage />} />
-            <Route path='/course/edit/:id' element={<CourseCreateForm />} />
-            <Route path='/course/create' element={<CourseCreateForm />} />
-            <Route path='*' element={<NotFound />} />
-            <Route path='/not-found' element={<NotFound />} />
-            <Route path='/billing/success' element={<BillingSuccess />} />
-            <Route path='/billing/cancel' element={<BillingFailure />} />
-            <Route path='/favorites' element={<Favorites />} />
-            <Route path='/my-recipes' element={<MyRecipes />} />
-          </Routes>
+      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header
+          currentTheme={themeMode ? 'dark' : 'light'}
+          onThemeToggle={toggleMode}
+        />
+        <Box component='main' sx={{ flex: 1, pb: isHomePage ? 0 : '10px' }}>
+          <Box
+            sx={{
+              margin: isMobile ? '15px' : isHomePage ? 0 : '15px 15%',
+              minHeight: isHomePage ? undefined : 'calc(100vh - 190px)',
+            }}
+          >
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/recipes' element={<AdvancedRecipeSearch />} />
+              <Route path='/recipe/:id' element={<SingleRecipePage />} />
+              <Route path='/recipe/create' element={<RecipeCreateForm />} />
+              <Route path='/recipe/edit/:id' element={<RecipeCreateForm />} />
+              <Route path='/courses' element={<CoursesPage />} />
+              <Route path='/user/:id' element={<SingleUserPage />} />
+              <Route path='/premium' element={<PremiumPage />} />
+              <Route path='/course/:id' element={<SingleCoursePage />} />
+              <Route path='/course/edit/:id' element={<CourseCreateForm />} />
+              <Route path='/course/create' element={<CourseCreateForm />} />
+              <Route path='/billing/success' element={<BillingSuccess />} />
+              <Route path='/billing/cancel' element={<BillingFailure />} />
+              <Route path='/favorites' element={<Favorites />} />
+              <Route path='/my-recipes' element={<MyRecipes />} />
+              <Route path='/confidentialite' element={<PrivacyPolicy />} />
+              <Route path='/conditions-utilisation' element={<TermsOfUse />} />
+              <Route path='/conditions-vente' element={<TermsOfSale />} />
+              <Route path='/mentions-legales' element={<LegalNotice />} />
+              <Route path='/not-found' element={<NotFound />} />
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </Box>
         </Box>
-      </main>
+        <Footer />
+      </Box>
     </ThemeProvider>
   );
 }

@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Alert,
   Divider,
+  Link as MuiLink,
 } from '@mui/material';
 import './LoginModal.css';
 import { Close } from '@mui/icons-material';
@@ -21,6 +22,7 @@ import {
 } from '@/api/authApi';
 import { formatErrors } from '@/utils/formUtils';
 import GoogleSignInButton from './GoogleSignInButton';
+import { Link as RouterLink } from 'react-router-dom';
 
 type ApiError = {
   status?: number;
@@ -324,6 +326,26 @@ function LoginModal({ isOpen, handleClose }) {
           >
             {isRegistering ? 'Signing Up...' : 'Sign Up'}
           </Button>
+          <Typography variant='caption' color='text.secondary' display='block' sx={{ mt: 1.5 }}>
+            En créant un compte, vous acceptez les{' '}
+            <MuiLink
+              component={RouterLink}
+              to='/conditions-utilisation'
+              target='_blank'
+              rel='noreferrer'
+            >
+              conditions d’utilisation
+            </MuiLink>{' '}
+            et reconnaissez avoir pris connaissance de la{' '}
+            <MuiLink
+              component={RouterLink}
+              to='/confidentialite'
+              target='_blank'
+              rel='noreferrer'
+            >
+              politique de confidentialité
+            </MuiLink>.
+          </Typography>
           <Typography
             variant='subtitle2'
             onClick={() => setValue(0)}
