@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Course } from '@/api/api.types';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/api/config';
 
 export const courseApi = createApi({
   reducerPath: 'courseApi',
@@ -19,7 +18,7 @@ export const courseApi = createApi({
   }),
   endpoints: (builder) => ({
     getCourseById: builder.query<Course, string>({
-      query: (id) => `/${id}`,
+      query: (id) => `${id}`,
       transformResponse: (response: { data: Course }) => response.data,
     }),
     getCoursesByExpertId: builder.query<Course[], string>({
@@ -30,7 +29,7 @@ export const courseApi = createApi({
       ],
     }),
     getCourses: builder.query<Course[], { query: string }>({
-      query: ({ query }) => `/list?search=${query}`,
+      query: ({ query }) => `list?search=${query}`,
       transformResponse: (response: { data: Course[] }) => response.data,
       providesTags: ['Courses'],
     }),
@@ -52,7 +51,7 @@ export const courseApi = createApi({
 
         return {
           method: 'POST',
-          url: '/create',
+          url: 'create',
           body,
         };
       },
@@ -77,7 +76,7 @@ export const courseApi = createApi({
 
         return {
           method: 'PUT',
-          url: `/edit/${id}`,
+          url: `edit/${id}`,
           body,
         };
       },
@@ -88,7 +87,7 @@ export const courseApi = createApi({
       query: ({ id }) => {
         return {
           method: 'DELETE',
-          url: `/delete/${id}`,
+          url: `delete/${id}`,
         };
       },
       invalidatesTags: ['Courses'],

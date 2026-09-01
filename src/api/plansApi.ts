@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/api/config';
 
 type PlanDetailsResponse = {
   id: string;
@@ -55,19 +54,19 @@ const formatPlanDetailsResponse = (
 export const plansApi = createApi({
   reducerPath: 'plansApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${API_URL}`,
+    baseUrl: API_URL,
   }),
   tagTypes: ['PlanDetails'],
   endpoints: (builder) => ({
     getOrderDetails: builder.query({
       query: (sessionId: string) => ({
-        url: `/stripe/order-details/${sessionId}`,
+        url: `stripe/order-details/${sessionId}`,
         method: 'GET',
       }),
     }),
     getPlanDetails: builder.query({
       query: (planId: string) => ({
-        url: '/stripe/plan-details',
+        url: 'stripe/plan-details',
         method: 'POST',
         body: { plan_id: planId },
       }),

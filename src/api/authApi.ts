@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Recipe } from './api.types';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/api/config';
 
 export interface AuthUser {
   id: number;
@@ -73,28 +72,28 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (credentials) => ({
-        url: '/login',
+        url: 'login',
         method: 'POST',
         body: credentials,
       }),
     }),
     register: builder.mutation<AuthResponse, RegisterRequest>({
       query: (userData) => ({
-        url: '/register',
+        url: 'register',
         method: 'POST',
         body: userData,
       }),
     }),
     googleLogin: builder.mutation<AuthResponse, GoogleLoginRequest>({
       query: (credentials) => ({
-        url: '/google',
+        url: 'google',
         method: 'POST',
         body: credentials,
       }),
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: '/logout',
+        url: 'logout',
         method: 'POST',
       }),
     }),
@@ -114,14 +113,14 @@ export const authApi = createApi({
     }),
     getCurrentUser: builder.query<AuthUser, void>({
       query: () => ({
-        url: '/me',
+        url: 'me',
         method: 'GET',
       }),
       providesTags: ['SelfUser'],
       transformResponse: (response: { data: AuthUser }) => response.data,
     }),
     getUserById: builder.query<AuthUser, string>({
-      query: (id) => `/${id}`,
+      query: (id) => `${id}`,
       transformResponse: (response: { data: AuthUser }) => response.data,
       providesTags: (result, error, id) => [{ type: 'User', id: String(id) }],
     }),
@@ -139,7 +138,7 @@ export const authApi = createApi({
       query: ({ query }) => {
         const params = new URLSearchParams();
         params.append('search', query);
-        return `/chefs?${params.toString()}`;
+        return `chefs?${params.toString()}`;
       },
     }),
   }),

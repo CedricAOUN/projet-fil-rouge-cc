@@ -2,8 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Recipe } from '@/types';
 import { deleteRecipe } from '@/store';
 import { method } from 'lodash';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+import { API_URL } from '@/api/config';
 
 interface RecipeResponse {
   recipes: Recipe[];
@@ -80,13 +79,13 @@ export const recipeApi = createApi({
       providesTags: ['Recipes'],
     }),
     getRecipeById: builder.query<Recipe, string>({
-      query: (id) => `/${id}`,
+      query: (id) => `${id}`,
       transformResponse: (response: { data: Recipe }) => response.data,
       providesTags: (result, error, id) => [{ type: 'Recipes', id }],
     }),
     toggleLikeRecipe: builder.mutation<void, { recipeId: string }>({
       query: ({ recipeId }) => ({
-        url: `/${recipeId}/like`,
+        url: `${recipeId}/like`,
         method: 'POST',
       }),
       invalidatesTags: (result, error, { recipeId }) => [
@@ -95,7 +94,7 @@ export const recipeApi = createApi({
     }),
     toggleFavoriteRecipe: builder.mutation<void, { recipeId: string }>({
       query: ({ recipeId }) => ({
-        url: `/${recipeId}/favorite`,
+        url: `${recipeId}/favorite`,
         method: 'POST',
       }),
       invalidatesTags: (result, error, { recipeId }) => [
