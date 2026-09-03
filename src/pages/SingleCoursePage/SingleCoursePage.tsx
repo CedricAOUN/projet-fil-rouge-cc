@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import ReactPlayer from 'react-player';
-import { useGetCurrentUserQuery } from '@/api/authApi';
 
 const SingleCoursePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,7 +43,7 @@ const SingleCoursePage = () => {
       {course?.video_url && (
         <>
           <Divider></Divider>
-          <Stack alignItems={'center'} py={2} px={'15%'}>
+          <Stack alignItems={'center'} py={2} px={'15%'} maxHeight={'50vh'}>
             <ReactPlayer
               src={course.video_url}
               controls
