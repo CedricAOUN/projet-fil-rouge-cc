@@ -4,8 +4,10 @@ import { Provider } from 'react-redux';
 import '@/index.css';
 import App from '@/App';
 import { BrowserRouter } from 'react-router-dom';
+import { initAnalytics } from '@/analytics';
 import { store } from '@/store';
 
+initAnalytics();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
@@ -13,5 +15,5 @@ createRoot(document.getElementById('root')!).render(
         <App />
       </BrowserRouter>
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );
