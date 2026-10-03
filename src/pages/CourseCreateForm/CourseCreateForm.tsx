@@ -152,7 +152,7 @@ const CourseCreateForm = () => {
         gap: 2,
       }}
     >
-      <Typography variant='h3'>Create a course</Typography>
+      <Typography variant='h3' component='h1'>Create a course</Typography>
       <TextField
         {...register('title')}
         placeholder='Title'
@@ -161,7 +161,7 @@ const CourseCreateForm = () => {
         helperText={errors.title?.message}
       />
       <Stack spacing={1}>
-        <Typography variant='h4'>Course video</Typography>
+        <Typography variant='h4' component='h2'>Course video</Typography>
         <input
           type='file'
           accept='.mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv'
@@ -182,7 +182,7 @@ const CourseCreateForm = () => {
           </Typography>
         )}
       </Stack>
-      <Typography variant='h4'>Course content editor</Typography>
+      <Typography variant='h4' component='h2'>Course content editor</Typography>
       <Controller
         name='content'
         control={control}
@@ -202,7 +202,7 @@ const CourseCreateForm = () => {
           {errors.content.message}
         </Typography>
       )}
-      <Typography variant='h4'>Preview</Typography>
+      <Typography variant='h4' component='h2'>Preview</Typography>
       <Box
         sx={{
           background: (theme) => darken(theme.palette.background.paper, 0.4),

@@ -34,7 +34,7 @@ const SingleCoursePage = () => {
 
   return (
     <Paper>
-      <Typography variant='h3' textAlign={'center'}>
+      <Typography variant='h3' component='h1' textAlign={'center'}>
         {course?.title}
       </Typography>
       <Typography variant='subtitle2' color='primary' textAlign={'center'}>

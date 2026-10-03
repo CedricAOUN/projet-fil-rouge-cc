@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /recipe/create
+Disallow: /recipe/edit/
+Disallow: /course/create
+Disallow: /course/edit/
+Disallow: /billing/
+Disallow: /favorites
+Disallow: /my-recipes

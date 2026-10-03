@@ -68,132 +68,143 @@ const AdvancedRecipeSearch = () => {
   }, [data]);
 
   return (
-    <Stack
-      height={'100%'}
-      maxHeight={'100%'}
-      minHeight={0}
-      direction={{ xs: 'column', lg: 'row' }}
-      gap={2}
-      flexGrow={1}
-      overflow={'hidden'}
-    >
-      {/* FILTERS */}
-      <Paper
-        sx={{
-          width: { xs: '100%', lg: '30%' },
-          height: 'auto',
-          overflow: 'hidden',
-        }}
-        variant='outlined'
+    <>
+      <Typography variant='h1' gutterBottom>
+        Recipes
+      </Typography>
+      <Stack
+        height={'100%'}
+        maxHeight={'100%'}
+        minHeight={0}
+        direction={{ xs: 'column', lg: 'row' }}
+        gap={2}
+        flexGrow={1}
+        overflow={'hidden'}
       >
-        <Stack
-          sx={{
-            width: '100%',
-            height: '100%',
-            minHeight: 0,
-          }}
-          gap={3}
-        >
-          <Typography variant='h5' sx={{ padding: '20px' }}>
-            Filters
-          </Typography>
-          <MultiSelectFilter
-            label='By ingredient'
-            options={allIngredients}
-            onChange={(selected) => setSelectedIngredients(selected)}
-          />
-          <MultiSelectFilter
-            label='By creator'
-            options={allCreators}
-            onChange={(selected) => setSelectedCreators(selected)}
-          />
-          {isLoading ? (
-            <Stack direction={'row'} justifyContent={'center'} p={3}>
-              <CircularProgress size={'50px'} />
-            </Stack>
-          ) : (
-            <CustomSlider
-              label='By likes'
-              min={data?.lowest_likes || 0}
-              max={data?.highest_likes || 10000}
-              onChange={(value) => setLikeRange(value as [number, number])}
-            />
-          )}
-          <Stack
-            direction={'row'}
-            alignItems={'center'}
-            gap={1}
-            justifyContent={'center'}
-            paddingX={2}
-          >
-            <ToggleButtonGroup
-              value={recipeType}
-              exclusive
-              onChange={(_, newValue) => setRecipeType(newValue)}
-              sx={{
-                '& .MuiToggleButton-root.Mui-selected': {
-                  backgroundColor: 'primary.main',
-                  color: 'black',
-                },
-              }}
-            >
-              <ToggleButton value={'all'}>All</ToggleButton>
-              <ToggleButton value={'premium'}>Premium</ToggleButton>
-              <ToggleButton value={'free'}>Free</ToggleButton>
-            </ToggleButtonGroup>
-          </Stack>
-        </Stack>
-      </Paper>
-      {/* RESULTS + GENERAL SEARCH BAR */}
-      <Stack gap={2} width={'100%'} height={'100%'} minHeight={0} minWidth={0}>
-        <Stack direction={'row'} alignItems={'center'} gap={2} flexShrink={0}>
-          <TextField
-            fullWidth
-            placeholder='Search for recipes...'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Stack>
+        {/* FILTERS */}
         <Paper
-          variant='outlined'
           sx={{
-            flexGrow: 1,
-            minHeight: 0,
+            width: { xs: '100%', lg: '30%' },
+            height: 'auto',
             overflow: 'hidden',
           }}
+          variant='outlined'
         >
-          {isLoading || isFetching ? (
-            <Stack direction={'row'} justifyContent={'center'} p={3}>
-              <CircularProgress size={'50px'} />
-            </Stack>
-          ) : (
+          <Stack
+            sx={{
+              width: '100%',
+              height: '100%',
+              minHeight: 0,
+            }}
+            gap={3}
+          >
+            <Typography variant='h5' component='h2' sx={{ padding: '20px' }}>
+              Filters
+            </Typography>
+            <MultiSelectFilter
+              label='By ingredient'
+              options={allIngredients}
+              onChange={(selected) => setSelectedIngredients(selected)}
+            />
+            <MultiSelectFilter
+              label='By creator'
+              options={allCreators}
+              onChange={(selected) => setSelectedCreators(selected)}
+            />
+            {isLoading ? (
+              <Stack direction={'row'} justifyContent={'center'} p={3}>
+                <CircularProgress size={'50px'} />
+              </Stack>
+            ) : (
+              <CustomSlider
+                label='By likes'
+                min={data?.lowest_likes || 0}
+                max={data?.highest_likes || 10000}
+                onChange={(value) => setLikeRange(value as [number, number])}
+              />
+            )}
             <Stack
-              gap={2}
-              padding={2}
-              overflow={'auto'}
-              height={'100%'}
-              sx={{ boxSizing: 'border-box' }}
+              direction={'row'}
+              alignItems={'center'}
+              gap={1}
+              justifyContent={'center'}
+              paddingX={2}
             >
-              {recipes.map((recipe) => (
-                <RecipeCard
-                  key={recipe.id}
-                  id={recipe.id}
-                  title={recipe.title}
-                  description={recipe.description}
-                  image={recipe.image_url}
-                  isPremium={recipe.is_premium}
-                />
-              ))}
-              {recipes?.length == 0 && (
-                <Typography>
-                  No recipes match your search. Please try something else !
-                </Typography>
-              )}
+              <ToggleButtonGroup
+                value={recipeType}
+                exclusive
+                onChange={(_, newValue) => setRecipeType(newValue)}
+                sx={{
+                  '& .MuiToggleButton-root.Mui-selected': {
+                    backgroundColor: 'primary.main',
+                    color: 'black',
+                  },
+                }}
+              >
+                <ToggleButton value={'all'}>All</ToggleButton>
+                <ToggleButton value={'premium'}>Premium</ToggleButton>
+                <ToggleButton value={'free'}>Free</ToggleButton>
+              </ToggleButtonGroup>
             </Stack>
-          )}
+          </Stack>
         </Paper>
+        {/* RESULTS + GENERAL SEARCH BAR */}
+        <Stack
+          gap={2}
+          width={'100%'}
+          height={'100%'}
+          minHeight={0}
+          minWidth={0}
+        >
+          <Stack direction={'row'} alignItems={'center'} gap={2} flexShrink={0}>
+            <TextField
+              fullWidth
+              placeholder='Search for recipes...'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Stack>
+          <Paper
+            variant='outlined'
+            sx={{
+              flexGrow: 1,
+              minHeight: 0,
+              overflow: 'hidden',
+            }}
+          >
+            {isLoading || isFetching ? (
+              <Stack direction={'row'} justifyContent={'center'} p={3}>
+                <CircularProgress size={'50px'} />
+              </Stack>
+            ) : (
+              <Stack
+                gap={2}
+                padding={2}
+                overflow={'auto'}
+                height={'100%'}
+                sx={{ boxSizing: 'border-box' }}
+              >
+                {recipes.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    id={recipe.id}
+                    title={recipe.title}
+                    description={recipe.description}
+                    image={recipe.image_url}
+                    isPremium={recipe.is_premium}
+                  />
+                ))}
+                {recipes?.length == 0 && (
+                  <Typography>
+                    No recipes match your search. Please try something else !
+                  </Typography>
+                )}
+              </Stack>
+            )}
+          </Paper>
+        </Stack>
       </Stack>
-    </Stack>
+    </>
   );
 };
 

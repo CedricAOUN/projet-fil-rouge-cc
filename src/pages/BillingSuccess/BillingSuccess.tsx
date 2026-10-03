@@ -37,12 +37,12 @@ const BillingSuccess = () => {
         }}
       >
         <Typography variant='h1'>Payment Successful</Typography>
-        <Typography variant='h6'>
+        <Typography variant='h6' component='p'>
           Thank you for your payment. Your subscription has been activated.
         </Typography>
       </Paper>
       <Paper>
-        <Typography variant='h6'>Order Details:</Typography>
+        <Typography variant='h6' component='h2'>Order Details:</Typography>
         {isLoading ? (
           <Stack direction={'row'} justifyContent={'center'} p={3}>
             <CircularProgress size={'50px'} />

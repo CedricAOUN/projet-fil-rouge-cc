@@ -5,7 +5,7 @@ function StepByStep({ instructions }) {
 
   return (
     <Paper sx={{ flex: 1, p: 2 }}>
-      <Typography variant='h4' gutterBottom>Steps</Typography>
+      <Typography variant='h4' component='h2' gutterBottom>Steps</Typography>
       <Stack gap={2}>
         <Typography variant='body1'>
           {instructions}

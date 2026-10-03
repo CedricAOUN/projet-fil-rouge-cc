@@ -41,7 +41,7 @@ function AskAIButton({ recipe }) {
           justifyContent={'space-between'}
         >
           <SmartToyIcon color='primary'></SmartToyIcon>
-          <Typography variant='h5' color='primary'>
+          <Typography variant='h5' component='h2' color='primary'>
             AI Assisted Steps
           </Typography>
           <IconButton onClick={() => setIsOpen(false)}>

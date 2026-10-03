@@ -47,7 +47,7 @@ function RecipeCard({ title, image, description, id, isPremium }) {
         }}
       />
       <Stack sx={{ flexGrow: 1, minWidth: 0, p: 1 }}>
-        <Typography variant='h5' fontSize={{ xs: 14, md: 16, lg: 24 }}>
+        <Typography variant='h5' component='h3' fontSize={{ xs: 14, md: 16, lg: 24 }}>
           {title}
         </Typography>
         <Typography

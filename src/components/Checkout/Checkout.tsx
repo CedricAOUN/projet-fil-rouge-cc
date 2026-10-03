@@ -51,7 +51,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
 
   return (
     <>
-      <Typography variant='h1' ref={paymentSectionRef}>
+      <Typography variant='h1' component='h2' ref={paymentSectionRef}>
         Plan Selection
       </Typography>
       <Stack direction='row' width='100%' gap={2} mb={5} flexWrap='wrap'>
@@ -65,7 +65,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
         >
           <Stack direction='row' alignItems={'center'} gap={1}>
             <ReceiptIcon />
-            <Typography variant='h6'>Subscription information</Typography>
+            <Typography variant='h6' component='h3'>Subscription information</Typography>
           </Stack>
           <Select
             fullWidth

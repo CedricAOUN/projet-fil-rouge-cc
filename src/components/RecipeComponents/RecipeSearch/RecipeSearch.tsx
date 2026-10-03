@@ -52,7 +52,7 @@ function RecipeSearch({
     >
       {showSearch && (
         <>
-          <Typography variant='h5' marginBottom={2}>
+          <Typography variant='h5' component='h3' marginBottom={2}>
             Refine your search
           </Typography>
           <TextField

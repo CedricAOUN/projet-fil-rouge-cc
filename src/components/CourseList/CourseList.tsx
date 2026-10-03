@@ -46,6 +46,7 @@ function CourseList({
 
   return (
     <Paper sx={{ width: '100%' }}>
+      <Typography component='h2' variant='h4'>Courses</Typography>
       <List
         sx={{
           width: '100%',
@@ -63,7 +64,7 @@ function CourseList({
               }}
             >
               <Stack>
-                <Typography>{course.title}</Typography>
+                <Typography component='h3'>{course.title}</Typography>
                 <Typography variant='subtitle2' color='primary'>
                   By {course?.created_by?.name}
                 </Typography>

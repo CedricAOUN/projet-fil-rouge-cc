@@ -63,9 +63,10 @@ const MyRecipes = () => {
               width: 500,
             }}
           >
-            <Typography>{recipe.title}</Typography>
+            <Typography component='h2'>{recipe.title}</Typography>
             <img
               src={recipe.image_url}
+              alt={recipe.title || "Recipe"}
               width={'300'}
               height={'300'}
               style={{ objectFit: 'cover' }}

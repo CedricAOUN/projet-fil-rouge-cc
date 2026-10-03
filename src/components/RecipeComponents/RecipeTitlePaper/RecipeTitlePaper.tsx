@@ -74,7 +74,7 @@ function RecipeTitlePaper({
           gap: 2,
         }}
       >
-        <Typography variant='h3'>{title}</Typography>
+        <Typography variant='h3' component='h1'>{title}</Typography>
         <Typography variant='subtitle2'>{desc}</Typography>
         <Stack direction='row' gap={1} flexWrap='wrap'>
           <Chip

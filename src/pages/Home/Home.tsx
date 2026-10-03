@@ -207,7 +207,7 @@ function RecipeBoard() {
       >
         Today&apos;s kitchen note
       </Typography>
-      <Typography variant='h4' fontWeight={800} mt={0.5} mb={3}>
+      <Typography variant='h4' component='h2' fontWeight={800} mt={0.5} mb={3}>
         Good food starts with a little curiosity.
       </Typography>
       <Stack divider={<Box sx={{ borderTop: 1, borderColor: 'divider' }} />}>
@@ -261,7 +261,7 @@ function CoursesCard() {
           <MenuBookRoundedIcon />
         </Box>
         <Box flex={1}>
-          <Typography variant='h4' fontWeight={800} gutterBottom>
+          <Typography variant='h4' component='h2' fontWeight={800} gutterBottom>
             Learn from passionate chefs
           </Typography>
           <Typography color='text.secondary'>

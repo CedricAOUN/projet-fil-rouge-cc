@@ -30,7 +30,7 @@ function PremiumCard() {
           <WorkspacePremiumRoundedIcon />
         </Box>
         <Box flex={1}>
-          <Typography variant='h4' fontWeight={800} gutterBottom>
+          <Typography variant='h4' component='h2' fontWeight={800} gutterBottom>
             Take your cooking further
           </Typography>
           <Typography color='text.secondary'>

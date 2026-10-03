@@ -60,7 +60,7 @@ function CommentList({
   if (!comments || comments.length === 0) {
     return (
       <Box display={'flex'} flexDirection={'column'} gap={2}>
-        <Typography variant='h4'>Comments</Typography>
+        <Typography variant='h4' component='h2'>Comments</Typography>
         {isPremiumUser && (
           <Stack direction='row' alignItems='center' gap={2}>
             <TextField
@@ -87,7 +87,7 @@ function CommentList({
 
   return (
     <Stack gap={2}>
-      <Typography variant='h4'>Comments</Typography>
+      <Typography variant='h4' component='h2'>Comments</Typography>
       {isPremiumUser && (
         <Stack direction='row' alignItems='center' gap={2}>
           <TextField
@@ -120,7 +120,7 @@ function CommentList({
             />
             <Stack>
               <Stack direction='row'>
-                <Typography variant='h6' fontWeight='bold'>
+                <Typography variant='h6' component='p' fontWeight='bold'>
                   {comment.creator.name}:
                 </Typography>
               </Stack>

@@ -127,6 +127,7 @@ function EditProfileForm({ onStopEdit }) {
             <Avatar
               sx={{ height: '100px', width: '100px' }}
               src={imagePreview}
+              alt='Preview of your profile photo'
             ></Avatar>
           </Box>
         )}
@@ -142,7 +143,7 @@ function EditProfileForm({ onStopEdit }) {
       <Paper
         sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}
       >
-        <Typography variant='h5'>Advanced Options</Typography>
+        <Typography variant='h5' component='h2'>Advanced Options</Typography>
         <Button>Change Password</Button>
         <Typography variant='body2' color='text.secondary'>
           Account deletion is not yet available in this student version. To

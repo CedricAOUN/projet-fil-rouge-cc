@@ -170,7 +170,8 @@ function RecipeCreateForm() {
 
   return (
     <Paper sx={{ display: 'flex', flexDirection: 'column', gap: '20px', p: 3 }}>
-      <Typography variant='h4'>General</Typography>
+      <Typography variant='h1'>{id ? 'Edit recipe' : 'Create a recipe'}</Typography>
+      <Typography variant='h4' component='h2'>General</Typography>
 
       <TextField
         {...register('title')}
@@ -211,7 +212,7 @@ function RecipeCreateForm() {
         >
           <Typography textAlign='center'>{imageName}</Typography>
           {imagePreview && (
-            <img className='image-preview' src={imagePreview} alt='Preview' />
+            <img className='image-preview' src={imagePreview} alt='Preview of your recipe photo' />
           )}
 
           <Button variant='contained' component='label'>
@@ -237,7 +238,7 @@ function RecipeCreateForm() {
         </Stack>
       </Stack>
 
-      <Typography variant='h4'>Ingredients</Typography>
+      <Typography variant='h4' component='h2'>Ingredients</Typography>
       {errors.ingredients && (
         <Typography color='error'>{errors.ingredients.message}</Typography>
       )}
@@ -315,7 +316,7 @@ function RecipeCreateForm() {
         +
       </Button>
 
-      <Typography variant='h4'>Instructions</Typography>
+      <Typography variant='h4' component='h2'>Instructions</Typography>
       <TextField
         {...register('instructions')}
         placeholder='Instructions'

@@ -16,7 +16,7 @@ function BillingFailure() {
         }}
       >
         <Typography variant='h1'>Payment Failed</Typography>
-        <Typography variant='h6'>
+        <Typography variant='h6' component='p'>
           Unfortunately, your payment could not be processed. Please try again
           or contact support for assistance.
         </Typography>

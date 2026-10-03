@@ -9,6 +9,7 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
 
@@ -34,6 +35,7 @@ const CoursesPage = () => {
 
   return (
     <Stack width={'100%'} alignItems={'center'} gap={1}>
+      <Typography variant='h1'>Cooking courses</Typography>
       <ToggleButtonGroup value={mode}>
         <ToggleButton
           value={'course'}

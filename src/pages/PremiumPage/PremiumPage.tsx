@@ -34,7 +34,7 @@ function PremiumPage() {
         sx={{ gap: 3, padding: 2, display: 'flex', flexDirection: 'column' }}
       >
         <Typography variant='h1'>Premium</Typography>
-        <Typography variant='h6' color='success.main'>
+        <Typography variant='h6' component='p' color='success.main'>
           You are already a {currentUser?.is_chef ? 'Chef' : 'Premium member'}.
           Your subscription will be renewed on{' '}
           {dayjs(currentUser?.premium_expire).format('MMMM D, YYYY')}.
@@ -74,7 +74,7 @@ function PremiumPage() {
               }}
             >
               {/* Title */}
-              <Typography variant='h4' fontWeight={700}>
+              <Typography variant='h4' component='h2' fontWeight={700}>
                 {tier?.title}
               </Typography>
 
@@ -82,7 +82,7 @@ function PremiumPage() {
               <Stack justifyContent={'center'} height='100%' gap={1}>
                 {tier?.prevPrice && (
                   <Typography
-                    variant='h2'
+                    variant='h2' component='p'
                     fontSize={50}
                     color='text.disabled'
                     sx={{ textDecoration: 'line-through' }}
@@ -91,7 +91,7 @@ function PremiumPage() {
                   </Typography>
                 )}
                 <Typography
-                  variant='h2'
+                  variant='h2' component='p'
                   fontSize={50}
                   mb={tier?.price === 0 ? '60px' : undefined}
                 >
