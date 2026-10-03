@@ -86,7 +86,7 @@ const userSlice = createSlice({
         authApi.endpoints.getCurrentUser.matchFulfilled,
         (state, action) => {
           state.isLoading = false;
-          state.currentUser = action.payload.data;
+          state.currentUser = action.payload;
           state.isAuthenticated = true;
         },
       )

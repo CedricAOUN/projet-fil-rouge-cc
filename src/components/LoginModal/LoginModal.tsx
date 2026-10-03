@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   Box,
@@ -39,7 +39,7 @@ function a11yProps(index) {
   };
 }
 
-function CustomTabPanel({ children, value, index }) {
+function CustomTabPanel({ children, value, index, onSubmit }) {
   return (
     <div
       role='tabpanel'
@@ -47,7 +47,11 @@ function CustomTabPanel({ children, value, index }) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && (
+        <Box component='form' onSubmit={onSubmit} sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
     </div>
   );
 }
@@ -63,7 +67,22 @@ function LoginModal({ isOpen, handleClose }) {
     name: '',
     email: '',
     password: '',
+    password_confirmation: '',
   });
+  const [registrationAttempted, setRegistrationAttempted] = useState(false);
+  const passwordRequirements =
+    'Use at least 12 characters, with uppercase and lowercase letters, a number, and a symbol.';
+  const passwordIsValid =
+    Array.from(registerContext.password).length >= 12 &&
+    /\p{Ll}/u.test(registerContext.password) &&
+    /\p{Lu}/u.test(registerContext.password) &&
+    /\p{N}/u.test(registerContext.password) &&
+    /[\p{Z}\p{S}\p{P}]/u.test(registerContext.password);
+  const passwordsMatch =
+    registerContext.password === registerContext.password_confirmation;
+  const showConfirmationError =
+    (registrationAttempted || registerContext.password_confirmation.length > 0) &&
+    (!registerContext.password_confirmation || !passwordsMatch);
   const [pendingGoogleCredential, setPendingGoogleCredential] = useState<
     string | null
   >(null);
@@ -82,6 +101,7 @@ function LoginModal({ isOpen, handleClose }) {
     useGoogleLoginMutation();
 
   const handleLogin = () => {
+    if (isLoggingIn) return;
     login({ email: loginContext.email, password: loginContext.password })
       .unwrap()
       .then(() => {
@@ -92,14 +112,23 @@ function LoginModal({ isOpen, handleClose }) {
   };
 
   const handleRegister = () => {
+    setRegistrationAttempted(true);
+    if (
+      isRegistering ||
+      !passwordIsValid ||
+      !passwordsMatch ||
+      !registerContext.password_confirmation
+    ) return;
     register({
       name: registerContext.name,
       email: registerContext.email,
       password: registerContext.password,
+      password_confirmation: registerContext.password_confirmation,
     })
       .unwrap()
       .then(() => {
         handleClose();
+        window.location.reload();
       })
       .catch(() => {});
   };
@@ -137,22 +166,6 @@ function LoginModal({ isOpen, handleClose }) {
 
   const loginErrors = formatErrors(loginError, 'array');
   const registerErrors = formatErrors(registerError, 'array');
-
-  // Handle Enter Key
-  useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (event.key === 'Enter') {
-        handleLogin();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-
-    // cleanup: remove listener when component unmounts
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [loginContext]);
 
   return (
     <Modal
@@ -192,7 +205,14 @@ function LoginModal({ isOpen, handleClose }) {
           </Tabs>
         </Box>
 
-        <CustomTabPanel value={value} index={0}>
+        <CustomTabPanel
+          value={value}
+          index={0}
+          onSubmit={(event: React.FormEvent) => {
+            event.preventDefault();
+            handleLogin();
+          }}
+        >
           {loginError && (
             <Typography
               variant='body2'
@@ -212,6 +232,9 @@ function LoginModal({ isOpen, handleClose }) {
               <TextField
                 fullWidth
                 placeholder='Email'
+                type='email'
+                autoComplete='email'
+                required
                 sx={{ mb: 2 }}
                 value={loginContext.email}
                 onChange={(e) =>
@@ -222,6 +245,8 @@ function LoginModal({ isOpen, handleClose }) {
                 fullWidth
                 type='password'
                 placeholder='Password'
+                autoComplete='current-password'
+                required
                 sx={{ mb: 2 }}
                 value={loginContext.password}
                 onChange={(e) =>
@@ -238,7 +263,7 @@ function LoginModal({ isOpen, handleClose }) {
             fullWidth
             variant='contained'
             color='primary'
-            onClick={handleLogin}
+            type='submit'
             disabled={isLoggingIn}
           >
             {isLoggingIn ? 'Logging in...' : 'Login'}
@@ -257,7 +282,14 @@ function LoginModal({ isOpen, handleClose }) {
           </Typography>
         </CustomTabPanel>
 
-        <CustomTabPanel value={value} index={1}>
+        <CustomTabPanel
+          value={value}
+          index={1}
+          onSubmit={(event: React.FormEvent) => {
+            event.preventDefault();
+            handleRegister();
+          }}
+        >
           {registerError && (
             <Typography
               variant='body2'
@@ -277,6 +309,10 @@ function LoginModal({ isOpen, handleClose }) {
               <TextField
                 fullWidth
                 placeholder='Name'
+                label='Name'
+                autoComplete='username'
+                required
+                slotProps={{ htmlInput: { maxLength: 20 } }}
                 sx={{ mb: 2 }}
                 value={registerContext.name}
                 onChange={(e) =>
@@ -289,6 +325,10 @@ function LoginModal({ isOpen, handleClose }) {
               <TextField
                 fullWidth
                 placeholder='Email'
+                label='Email'
+                type='email'
+                autoComplete='email'
+                required
                 sx={{ mb: 2 }}
                 value={registerContext.email}
                 onChange={(e) =>
@@ -304,10 +344,32 @@ function LoginModal({ isOpen, handleClose }) {
                 placeholder='Password'
                 sx={{ mb: 2 }}
                 value={registerContext.password}
+                label='Password'
+                autoComplete='new-password'
+                required
+                error={registrationAttempted && !passwordIsValid}
+                helperText={passwordRequirements}
                 onChange={(e) =>
                   setRegisterContext({
                     ...registerContext,
                     password: e.target.value,
+                  })
+                }
+              />
+              <TextField
+                fullWidth
+                type='password'
+                label='Confirm password'
+                autoComplete='new-password'
+                required
+                sx={{ mb: 2 }}
+                value={registerContext.password_confirmation}
+                error={showConfirmationError}
+                helperText={showConfirmationError ? 'Passwords must match.' : undefined}
+                onChange={(e) =>
+                  setRegisterContext({
+                    ...registerContext,
+                    password_confirmation: e.target.value,
                   })
                 }
               />
@@ -321,7 +383,7 @@ function LoginModal({ isOpen, handleClose }) {
             fullWidth
             variant='contained'
             color='primary'
-            onClick={handleRegister}
+            type='submit'
             disabled={isRegistering}
           >
             {isRegistering ? 'Signing Up...' : 'Sign Up'}
