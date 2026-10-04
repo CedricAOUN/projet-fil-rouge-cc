@@ -11,13 +11,14 @@ import {
   useTheme,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useMediaQuery } from '@mui/material';
-import LoginModal from '@/components/LoginModal/LoginModal';
 import ThemeModeToggle from './ThemeModeToggle';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useGetCurrentUserQuery, useLogoutMutation } from '@/api/authApi';
 import ProfileDropdown from './ProfileDropdown';
+
+const LoginModal = lazy(() => import('@/components/LoginModal/LoginModal'));
 
 export default function Header({ currentTheme, onThemeToggle }) {
   const theme = useTheme();
@@ -141,7 +142,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
               mr='10px'
               alignItems='center'
             >
-              <IconButton onClick={handleMenuOpen} color='inherit'>
+              <IconButton onClick={handleMenuOpen} color='inherit' aria-label='Open menu' aria-haspopup='menu' aria-expanded={Boolean(anchorEl)}>
                 <MenuIcon />
               </IconButton>
               <Menu
@@ -206,7 +207,11 @@ export default function Header({ currentTheme, onThemeToggle }) {
           </Stack>
         </Box>
       </AppBar>
-      <LoginModal isOpen={isOpen} handleClose={handleModalClose} />
+      {isOpen && (
+        <Suspense fallback={null}>
+          <LoginModal isOpen={isOpen} handleClose={handleModalClose} />
+        </Suspense>
+      )}
     </>
   );
 }

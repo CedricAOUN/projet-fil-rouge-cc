@@ -1,32 +1,33 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, lazy, Suspense } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import '@/App.css';
 import Header from '@/components/Header/Header';
-import SingleRecipePage from '@/pages/SingleRecipePage/SingleRecipePage';
-import RecipeCreateForm from '@/pages/RecipeCreateForm/RecipeCreateForm';
 import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import getTheme from '@/theme/muiTheme';
-import PremiumPage from '@/pages/PremiumPage/PremiumPage';
 import Home from '@/pages/Home/Home';
-import SingleUserPage from '@/pages/SingleUserPage/SingleUserPage';
-import NotFound from '@/pages/NotFound/NotFound';
-import SingleCoursePage from './pages/SingleCoursePage/SingleCoursePage';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { toggleThemeMode, setThemeMode } from '@/store/slices/appSlice';
 import { useGetCurrentUserQuery } from './api/authApi';
-import AdvancedRecipeSearch from './components/AdvancedRecipeSearch/AdvancedRecipeSearch';
-import BillingFailure from './pages/BillingFailure/BillingFailure';
-import BillingSuccess from './pages/BillingSuccess/BillingSuccess';
-import Favorites from './pages/Favorites/Favorites';
-import MyRecipes from './pages/MyRecipes/MyRecipes';
-import CoursesPage from './pages/CoursesPage/CoursesPage';
-import CourseCreateForm from './pages/CourseCreateForm/CourseCreateForm';
 import Footer from './components/Footer/Footer';
-import PrivacyPolicy from './pages/LegalPages/PrivacyPolicy';
-import TermsOfUse from './pages/LegalPages/TermsOfUse';
-import TermsOfSale from './pages/LegalPages/TermsOfSale';
-import LegalNotice from './pages/LegalPages/LegalNotice';
+
+const SingleRecipePage = lazy(() => import('@/pages/SingleRecipePage/SingleRecipePage'));
+const RecipeCreateForm = lazy(() => import('@/pages/RecipeCreateForm/RecipeCreateForm'));
+const PremiumPage = lazy(() => import('@/pages/PremiumPage/PremiumPage'));
+const SingleUserPage = lazy(() => import('@/pages/SingleUserPage/SingleUserPage'));
+const NotFound = lazy(() => import('@/pages/NotFound/NotFound'));
+const SingleCoursePage = lazy(() => import('./pages/SingleCoursePage/SingleCoursePage'));
+const AdvancedRecipeSearch = lazy(() => import('./components/AdvancedRecipeSearch/AdvancedRecipeSearch'));
+const BillingFailure = lazy(() => import('./pages/BillingFailure/BillingFailure'));
+const BillingSuccess = lazy(() => import('./pages/BillingSuccess/BillingSuccess'));
+const Favorites = lazy(() => import('./pages/Favorites/Favorites'));
+const MyRecipes = lazy(() => import('./pages/MyRecipes/MyRecipes'));
+const CoursesPage = lazy(() => import('./pages/CoursesPage/CoursesPage'));
+const CourseCreateForm = lazy(() => import('./pages/CourseCreateForm/CourseCreateForm'));
+const PrivacyPolicy = lazy(() => import('./pages/LegalPages/PrivacyPolicy'));
+const TermsOfUse = lazy(() => import('./pages/LegalPages/TermsOfUse'));
+const TermsOfSale = lazy(() => import('./pages/LegalPages/TermsOfSale'));
+const LegalNotice = lazy(() => import('./pages/LegalPages/LegalNotice'));
 
 function App() {
   const location = useLocation();
@@ -83,29 +84,31 @@ function App() {
               minHeight: isHomePage ? undefined : 'calc(100vh - 190px)',
             }}
           >
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/recipes' element={<AdvancedRecipeSearch />} />
-              <Route path='/recipe/:id' element={<SingleRecipePage />} />
-              <Route path='/recipe/create' element={<RecipeCreateForm />} />
-              <Route path='/recipe/edit/:id' element={<RecipeCreateForm />} />
-              <Route path='/courses' element={<CoursesPage />} />
-              <Route path='/user/:id' element={<SingleUserPage />} />
-              <Route path='/premium' element={<PremiumPage />} />
-              <Route path='/course/:id' element={<SingleCoursePage />} />
-              <Route path='/course/edit/:id' element={<CourseCreateForm />} />
-              <Route path='/course/create' element={<CourseCreateForm />} />
-              <Route path='/billing/success' element={<BillingSuccess />} />
-              <Route path='/billing/cancel' element={<BillingFailure />} />
-              <Route path='/favorites' element={<Favorites />} />
-              <Route path='/my-recipes' element={<MyRecipes />} />
-              <Route path='/confidentialite' element={<PrivacyPolicy />} />
-              <Route path='/conditions-utilisation' element={<TermsOfUse />} />
-              <Route path='/conditions-vente' element={<TermsOfSale />} />
-              <Route path='/mentions-legales' element={<LegalNotice />} />
-              <Route path='/not-found' element={<NotFound />} />
-              <Route path='*' element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<Box role='status' sx={{ p: 3 }}>Loading page…</Box>}>
+              <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/recipes' element={<AdvancedRecipeSearch />} />
+                <Route path='/recipe/:id' element={<SingleRecipePage />} />
+                <Route path='/recipe/create' element={<RecipeCreateForm />} />
+                <Route path='/recipe/edit/:id' element={<RecipeCreateForm />} />
+                <Route path='/courses' element={<CoursesPage />} />
+                <Route path='/user/:id' element={<SingleUserPage />} />
+                <Route path='/premium' element={<PremiumPage />} />
+                <Route path='/course/:id' element={<SingleCoursePage />} />
+                <Route path='/course/edit/:id' element={<CourseCreateForm />} />
+                <Route path='/course/create' element={<CourseCreateForm />} />
+                <Route path='/billing/success' element={<BillingSuccess />} />
+                <Route path='/billing/cancel' element={<BillingFailure />} />
+                <Route path='/favorites' element={<Favorites />} />
+                <Route path='/my-recipes' element={<MyRecipes />} />
+                <Route path='/confidentialite' element={<PrivacyPolicy />} />
+                <Route path='/conditions-utilisation' element={<TermsOfUse />} />
+                <Route path='/conditions-vente' element={<TermsOfSale />} />
+                <Route path='/mentions-legales' element={<LegalNotice />} />
+                <Route path='/not-found' element={<NotFound />} />
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </Box>
         </Box>
         <Footer />

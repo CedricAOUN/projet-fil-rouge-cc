@@ -1,4 +1,5 @@
 const GA_ID = import.meta.env.VITE_GA_ID as string | undefined;
+let initialized = false;
 
 declare global {
   interface Window {
@@ -8,12 +9,8 @@ declare global {
 }
 
 export function initAnalytics() {
-  if (!GA_ID || !import.meta.env.PROD) return;
-
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-  document.head.appendChild(script);
+  if (!GA_ID || !import.meta.env.PROD || initialized) return;
+  initialized = true;
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () {
@@ -21,6 +18,23 @@ export function initAnalytics() {
   };
   window.gtag('js', new Date());
   window.gtag('config', GA_ID);
+
+  // Queue events immediately, but download Analytics after the initial page load.
+  const loadScript = () => {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+    document.head.appendChild(script);
+  };
+  const scheduleScript = () => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadScript, { timeout: 3000 });
+    } else {
+      setTimeout(loadScript, 1000);
+    }
+  };
+  if (document.readyState === 'complete') scheduleScript();
+  else window.addEventListener('load', scheduleScript, { once: true });
 }
 
 export function trackPageView(path: string) {

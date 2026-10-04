@@ -1,7 +1,6 @@
 import { useGetCurrentUserQuery } from '@/api/authApi';
-import { RootState } from '@/store/store';
+import { recipeThumbnail } from '@/utils/recipeImage';
 import { Button, Paper, Stack, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 function RecipeCard({ title, image, description, id, isPremium }) {
@@ -19,8 +18,11 @@ function RecipeCard({ title, image, description, id, isPremium }) {
   };
 
   const borderColor = isPremium ? 'gold' : 'gray';
+  const thumbnail = recipeThumbnail(image, 200);
+  const thumbnailSet = thumbnail !== image
+    ? `${recipeThumbnail(image, 100)} 100w, ${thumbnail} 200w, ${recipeThumbnail(image, 300)} 300w`
+    : undefined;
 
-  const dynamicFontSize = { xs: 14, md: 18, lg: 24 };
 
   return (
     <Paper
@@ -35,10 +37,14 @@ function RecipeCard({ title, image, description, id, isPremium }) {
       }}
     >
       <img
-        src={image}
+        src={thumbnail}
+        srcSet={thumbnailSet}
+        sizes='100px'
+        loading='lazy'
+        decoding='async'
         alt={title}
-        width={'100px'}
-        height={'80px'}
+        width={100}
+        height={80}
         style={{
           borderRadius: '6px 0 0 6px',
           borderRight: `3px solid ${borderColor}`,
@@ -52,6 +58,7 @@ function RecipeCard({ title, image, description, id, isPremium }) {
         </Typography>
         <Typography
           variant='subtitle1'
+          component='p'
           fontSize={{ xs: 12, md: 14, lg: 18 }}
           sx={{
             maxWidth: '100%',
