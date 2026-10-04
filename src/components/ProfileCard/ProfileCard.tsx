@@ -36,14 +36,20 @@ function ProfileCard({ user, onEdit, isMobile }) {
           gap: 4,
         }}
       >
-        <Avatar sx={{ height: '100px', width: '100px' }} src={avatar_url} alt={`Profile photo of ${displayName}`} />
+        <Avatar
+          sx={{ height: '100px', width: '100px' }}
+          src={avatar_url}
+          alt={`Profile photo of ${displayName}`}
+        />
         <Stack
           width={'100%'}
           alignItems={'center'}
           justifyContent={'center'}
           spacing={2}
         >
-          <Typography variant='h5' component='h1'>{displayName}</Typography>
+          <Typography variant='h5' component='h1'>
+            {displayName}
+          </Typography>
           <Typography variant='subtitle1' textAlign={'center'}>
             {biography}
           </Typography>

@@ -23,6 +23,7 @@ const SingleUserPage: React.FC = () => {
 
   const currentUser = useGetCurrentUserQuery()?.data;
   const isCurrentUserProfileOwner = parseInt(id) == currentUser?.id;
+  const hasCourses = courses?.length > 0;
 
   if (isUserLoading) {
     return (
@@ -41,9 +42,11 @@ const SingleUserPage: React.FC = () => {
   return (
     <Stack
       gap={2}
-      direction={isMobile ? 'column' : is_chef && courses ? 'row' : 'column'}
+      direction={isMobile ? 'column' : is_chef && hasCourses ? 'row' : 'column'}
     >
-      <Box maxWidth={isMobile ? '100%' : is_chef && courses ? '300px' : '100%'}>
+      <Box
+        maxWidth={isMobile ? '100%' : is_chef && hasCourses ? '300px' : '100%'}
+      >
         <ProfileCard
           user={singleUser}
           isMobile={isMobile}
@@ -54,7 +57,7 @@ const SingleUserPage: React.FC = () => {
         <EditProfileForm onStopEdit={() => setEditMode(false)} />
       ) : (
         is_chef &&
-        courses && (
+        hasCourses && (
           <CourseList
             courses={courses}
             allowModfications={isCurrentUserProfileOwner}
