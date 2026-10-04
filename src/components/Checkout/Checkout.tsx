@@ -47,8 +47,6 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
   const { data: planDetails, isLoading: isPlanDetailsLoading } =
     useGetPlanDetailsQuery(selectedPlanStripeId);
 
-  console.log({ selectedPlanStripeId });
-
   return (
     <>
       <Typography variant='h1' component='h2' ref={paymentSectionRef}>
@@ -65,7 +63,9 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
         >
           <Stack direction='row' alignItems={'center'} gap={1}>
             <ReceiptIcon />
-            <Typography variant='h6' component='h3'>Subscription information</Typography>
+            <Typography variant='h6' component='h3'>
+              Subscription information
+            </Typography>
           </Stack>
           <Select
             fullWidth
