@@ -12,6 +12,7 @@ import {
   useGetCurrentUserQuery,
   useUpdateProfileMutation,
 } from '@/api/authApi';
+import DeleteUserModal from './DeleteUserModal';
 
 function EditProfileForm({ onStopEdit }) {
   const { data: currentUser } = useGetCurrentUserQuery();
@@ -72,6 +73,9 @@ function EditProfileForm({ onStopEdit }) {
 
   const [imageName, setImageName] = useState('No Image Selected');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // Delete Modal
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   return (
     <>
@@ -143,14 +147,20 @@ function EditProfileForm({ onStopEdit }) {
       <Paper
         sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}
       >
-        <Typography variant='h5' component='h2'>Advanced Options</Typography>
+        <Typography variant='h5' component='h2'>
+          Advanced Options
+        </Typography>
         <Button>Change Password</Button>
         <Typography variant='body2' color='text.secondary'>
           Account deletion is not yet available in this student version. To
           request deletion, use the contact address listed in the privacy
           policy.
         </Typography>
-        <Button disabled>Delete Account</Button>
+        <Button onClick={() => setDeleteModalOpen(true)}>Delete Account</Button>
+        <DeleteUserModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+        ></DeleteUserModal>
       </Paper>
     </>
   );

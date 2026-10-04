@@ -135,6 +135,16 @@ export const authApi = createApi({
         body: checkoutData,
       }),
     }),
+    deleteUserById: builder.mutation<
+      void,
+      { id: string; password: string }
+    >({
+      query: ({ id, password }) => ({
+        url: `delete/${id}`,
+        method: 'DELETE',
+        body: { password },
+      }),
+    }),
     getChefs: builder.query<{ data: AuthUser[] }, { query: string }>({
       query: ({ query }) => {
         const params = new URLSearchParams();
@@ -155,4 +165,5 @@ export const {
   useGetUserByIdQuery,
   useCheckoutMutation,
   useGetChefsQuery,
+  useDeleteUserByIdMutation,
 } = authApi;

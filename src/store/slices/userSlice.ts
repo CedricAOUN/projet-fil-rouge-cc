@@ -43,6 +43,11 @@ const userSlice = createSlice({
         state.isAuthenticated = false;
         localStorage.removeItem('token');
       })
+      .addMatcher(authApi.endpoints.deleteUserById.matchFulfilled, (state) => {
+        state.currentUser = null;
+        state.isAuthenticated = false;
+        localStorage.removeItem('token');
+      })
       // register
       .addMatcher(authApi.endpoints.register.matchPending, (state) => {
         state.isLoading = true;
