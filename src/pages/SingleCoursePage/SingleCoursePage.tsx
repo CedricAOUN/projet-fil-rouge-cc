@@ -22,7 +22,7 @@ const SingleCoursePage = () => {
   } = useGetCourseByIdQuery(id!, { skip: !id });
 
   if (isLoading) {
-    <Stack direction={'row'} justifyContent={'center'} p={3}>
+    return <Stack direction={'row'} justifyContent={'center'} p={3}>
       <CircularProgress size={'50px'} />
     </Stack>;
   }

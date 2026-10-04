@@ -18,3 +18,28 @@ Follow instructions in the backend README to get it running. Afterwards, make a 
 
 ## Stripe
 If running locally, run stripe cli with `stripe listen --forward-to localhost:8080/api/v1/stripe/webhook` to enable full stripe functionality.
+
+## Tests and coverage
+
+Use Node 22 or newer, then install the locked dependencies with `npm ci`.
+
+```sh
+npm test
+npm run test:coverage
+npm run typecheck
+npm run build
+```
+
+Jest uses jsdom, React Testing Library and MSW. Tests in `tests/` use a fresh
+Redux store, real RTK Query endpoints and intercepted HTTP responses; no running
+backend or Google/Stripe/Groq account is needed. Unexpected requests fail tests.
+Only third-party SDK/editor/player boundaries and missing browser APIs are faked.
+
+The coverage command fails below **50% global executable-line coverage** across
+every runtime TypeScript/JavaScript file in `src/`, including files no test imports.
+Declarations are excluded; application components, pages and startup code remain
+included. The working target is 60% or more. Other coverage metrics are informational.
+
+Open `coverage/index.html` for the HTML report. `coverage/lcov.info` and
+`coverage/coverage-summary.json` are available for CI/reporting. Reports and
+portable local tooling in `.tools/` are ignored by Git.

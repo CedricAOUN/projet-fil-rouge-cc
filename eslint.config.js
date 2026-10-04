@@ -6,7 +6,7 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'coverage', '.tools'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -62,6 +62,18 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+    },
+  },
+  {
+    files: ['tests/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node, ...globals.jest },
+      parserOptions: { project: null },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      'react-refresh/only-export-components': 'off',
     },
   },
 ];
