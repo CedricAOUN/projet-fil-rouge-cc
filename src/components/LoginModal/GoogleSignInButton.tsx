@@ -32,7 +32,7 @@ const SCRIPT_ID = 'google-identity-services';
 const SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const callbackRef = useRef(onCredential);
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -57,6 +57,7 @@ function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
         text: 'continue_with',
         shape: 'rectangular',
         width: 304,
+        locale: i18n.resolvedLanguage ?? 'en',
       });
     };
 
@@ -77,7 +78,7 @@ function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
     }
 
     return () => script.removeEventListener('load', render);
-  }, [clientId]);
+  }, [clientId, i18n.resolvedLanguage]);
 
   if (!clientId) return null;
 
