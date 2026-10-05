@@ -30,13 +30,13 @@ export default function LegalPageLayout({
             </Typography>
             <Typography color='text.secondary'>{description}</Typography>
             <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>
-              {t('Last updated: [TO COMPLETE — DD/MM/YYYY]')}
+              {t("Last updated: 05/10/2026")}
             </Typography>
           </Box>
 
           <Alert severity='warning'>
-            <strong>{t('Student project — draft document.')}</strong>{' '}
-            {t('The “[TO COMPLETE]” placeholders must be filled in and the document reviewed by a professional before any production deployment or real sale.')}
+            <strong>{t("Student demonstration.")}</strong>{' '}
+            {t("This website is a certification demonstration with simulated subscriptions and no real payments. These documents describe its current operation and identify settings that have not yet been verified. They will need updating if the service becomes commercial.")}
           </Alert>
 
           <Box component='nav' aria-label={t('Contents — {{title}}', { title })}>
