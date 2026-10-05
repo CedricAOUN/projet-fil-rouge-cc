@@ -46,7 +46,7 @@ export default function PrivacyPolicy() {
         <>
           <Typography>Les données sont accessibles aux personnes habilitées du projet et, selon la fonctionnalité utilisée, aux prestataires suivants :</Typography>
           {list([
-            'Google, pour la connexion facultative avec un compte Google ;',
+            'Google, pour la connexion facultative avec un compte Google et, avec votre accord, la mesure d’audience via Google Analytics ;',
             'Stripe, pour le paiement et la gestion technique des abonnements ;',
             'Resend ou [À COMPLÉTER — fournisseur réellement configuré], pour l’envoi des courriels transactionnels ;',
             'Groq, pour générer les suggestions d’IA demandées ;',
@@ -77,7 +77,8 @@ export default function PrivacyPolicy() {
       content: (
         <>
           <Typography>MealMosaic utilise le stockage local du navigateur pour conserver le jeton d’authentification (<code>token</code>) et la préférence d’affichage clair ou sombre (<code>theme-mode</code>). Ces éléments servent à fournir les fonctions demandées et ne sont pas utilisés à des fins publicitaires.</Typography>
-          <Typography>La connexion Google et le paiement Stripe peuvent utiliser leurs propres mécanismes techniques lorsque l’utilisateur ouvre ces services. Aucun outil d’analyse d’audience ou de publicité n’a été identifié dans la version actuelle. Cette affirmation doit être revue après chaque ajout de service tiers.</Typography>
+          <Typography>La connexion Google et le paiement Stripe peuvent utiliser leurs propres mécanismes techniques lorsque l’utilisateur ouvre ces services. Google Analytics est utilisé, lorsqu’il est configuré, uniquement après votre accord pour mesurer la fréquentation du site. Aucun script Analytics ni événement de mesure n’est chargé ou envoyé avant acceptation.</Typography>
+          <Typography>Votre choix d’acceptation ou de refus est conservé pendant six mois dans le stockage local (<code>analytics-consent</code>), avec sa date et la version du choix. Si ce stockage est indisponible, le choix vaut uniquement pour la visite en cours. Vous pouvez le modifier à tout moment avec « Gérer les cookies » dans le pied de page. Le retrait de votre accord désactive la collecte et supprime les cookies Google Analytics accessibles sur ce site ; il ne supprime pas les données déjà transmises.</Typography>
         </>
       ),
     },

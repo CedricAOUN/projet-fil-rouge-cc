@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, lazy, Suspense } from 'react';
+import React, { useMemo, useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import '@/App.css';
 import Header from '@/components/Header/Header';
@@ -10,6 +10,7 @@ import { RootState } from '@/store';
 import { toggleThemeMode, setThemeMode } from '@/store/slices/appSlice';
 import { useGetCurrentUserQuery } from './api/authApi';
 import Footer from './components/Footer/Footer';
+import ConsentBanner from '@/components/ConsentBanner/ConsentBanner';
 
 const SingleRecipePage = lazy(() => import('@/pages/SingleRecipePage/SingleRecipePage'));
 const RecipeCreateForm = lazy(() => import('@/pages/RecipeCreateForm/RecipeCreateForm'));
@@ -30,6 +31,7 @@ const TermsOfSale = lazy(() => import('./pages/LegalPages/TermsOfSale'));
 const LegalNotice = lazy(() => import('./pages/LegalPages/LegalNotice'));
 
 function App() {
+  const [consentOpen, setConsentOpen] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isMobile = useMediaQuery('(max-width: 900px)');
@@ -111,7 +113,8 @@ function App() {
             </Suspense>
           </Box>
         </Box>
-        <Footer />
+        <Footer onManageCookies={() => setConsentOpen(true)} />
+        <ConsentBanner open={consentOpen} onClose={() => setConsentOpen(false)} />
       </Box>
     </ThemeProvider>
   );

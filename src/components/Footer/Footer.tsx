@@ -8,7 +8,7 @@ const legalLinks = [
   { label: 'Mentions légales', to: '/mentions-legales' },
 ];
 
-export default function Footer() {
+export default function Footer({ onManageCookies }: { onManageCookies: () => void }) {
   return (
     <Box
       component='footer'
@@ -35,6 +35,9 @@ export default function Footer() {
             direction={{ xs: 'column', sm: 'row' }}
             gap={{ xs: 1, sm: 2 }}
           >
+            <MuiLink id='manage-cookies' component='button' type='button' onClick={onManageCookies} variant='body2' sx={{ textAlign: 'left', cursor: 'pointer' }}>
+              Gérer les cookies
+            </MuiLink>
             {legalLinks.map((link) => (
               <MuiLink key={link.to} component={NavLink} to={link.to} variant='body2'>
                 {link.label}
