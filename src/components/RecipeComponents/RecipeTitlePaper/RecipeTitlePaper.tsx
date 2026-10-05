@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import './recipeTitlePaper.css';
 import {
@@ -34,6 +35,7 @@ function RecipeTitlePaper({
   onFavoriteToggle,
   isLoading,
 }) {
+  const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width:900px)');
   const { data: currentUser } = useGetCurrentUserQuery();
 
@@ -60,7 +62,7 @@ function RecipeTitlePaper({
       <img
         className='recipe-img'
         src={imgUrl}
-        alt={`Image of ${title}`}
+          alt={t('Image of {{title}}', { title })}
         height={'300px'}
       />
       <Box
@@ -78,7 +80,7 @@ function RecipeTitlePaper({
         <Typography variant='subtitle2'>{desc}</Typography>
         <Stack direction='row' gap={1} flexWrap='wrap'>
           <Chip
-            label={`By ${recipe.creator.name}`}
+            label={t('By {{author}}', { author: recipe.creator.name })}
             color='primary'
             sx={{
               flex: 0,
@@ -89,7 +91,7 @@ function RecipeTitlePaper({
             }}
           ></Chip>
           <Chip
-            label={`Created on ${dayjs(recipe.created_at).format('MMMM D, YYYY')}`}
+            label={t('Created on {{date}}', { date: dayjs(recipe.created_at).format('MMMM D, YYYY') })}
             color='primary'
             sx={{
               flex: 0,
@@ -108,7 +110,7 @@ function RecipeTitlePaper({
         >
           {isPremiumRecipe && (
             <Chip
-              label='Premium'
+              label={t("Premium")}
               icon={<WorkspacePremiumIcon color='primary' />}
               sx={{
                 backgroundColor: 'transparent',

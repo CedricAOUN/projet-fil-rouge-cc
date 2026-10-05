@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import {
   Modal,
@@ -57,6 +58,7 @@ function CustomTabPanel({ children, value, index, onSubmit }) {
 }
 
 function LoginModal({ isOpen, handleClose }) {
+  const { t } = useTranslation();
   const [value, setValue] = useState(0);
 
   const [loginContext, setLoginContext] = useState({
@@ -71,7 +73,7 @@ function LoginModal({ isOpen, handleClose }) {
   });
   const [registrationAttempted, setRegistrationAttempted] = useState(false);
   const passwordRequirements =
-    'Use at least 12 characters, with uppercase and lowercase letters, a number, and a symbol.';
+    t("Use at least 12 characters, with uppercase and lowercase letters, a number, and a symbol.");
   const passwordIsValid =
     Array.from(registerContext.password).length >= 12 &&
     /\p{Ll}/u.test(registerContext.password) &&
@@ -153,7 +155,7 @@ function LoginModal({ isOpen, handleClose }) {
         }
 
         setGoogleError(
-          error.data?.message ?? 'Google sign-in failed. Please try again.',
+          error.data?.message ?? t("Google sign-in failed. Please try again."),
         );
       });
   };
@@ -198,10 +200,10 @@ function LoginModal({ isOpen, handleClose }) {
           <Tabs
             value={value}
             onChange={handleChange}
-            aria-label='login/signup tabs'
+            aria-label={t("login/signup tabs")}
           >
-            <Tab label='Login' {...a11yProps(0)} />
-            <Tab label='Sign Up' {...a11yProps(1)} />
+            <Tab label={t("Login")} {...a11yProps(0)} />
+            <Tab label={t("Sign Up")} {...a11yProps(1)} />
           </Tabs>
         </Box>
 
@@ -231,7 +233,7 @@ function LoginModal({ isOpen, handleClose }) {
             <>
               <TextField
                 fullWidth
-                placeholder='Email'
+                placeholder={t("Email")}
                 type='email'
                 autoComplete='email'
                 required
@@ -244,7 +246,7 @@ function LoginModal({ isOpen, handleClose }) {
               <TextField
                 fullWidth
                 type='password'
-                placeholder='Password'
+                placeholder={t("Password")}
                 autoComplete='current-password'
                 required
                 sx={{ mb: 2 }}
@@ -266,7 +268,7 @@ function LoginModal({ isOpen, handleClose }) {
             type='submit'
             disabled={isLoggingIn}
           >
-            {isLoggingIn ? 'Logging in...' : 'Login'}
+            {isLoggingIn ? t("Logging in...") : t("Login")}
           </Button>
           <Typography
             variant='subtitle2'
@@ -277,9 +279,7 @@ function LoginModal({ isOpen, handleClose }) {
               cursor: 'pointer',
               marginTop: '10px',
             }}
-          >
-            I don't have an account
-          </Typography>
+          >{t("I don't have an account")}</Typography>
         </CustomTabPanel>
 
         <CustomTabPanel
@@ -308,8 +308,8 @@ function LoginModal({ isOpen, handleClose }) {
             <>
               <TextField
                 fullWidth
-                placeholder='Name'
-                label='Name'
+                placeholder={t("Name")}
+                label={t("Name")}
                 autoComplete='username'
                 required
                 slotProps={{ htmlInput: { maxLength: 20 } }}
@@ -324,8 +324,8 @@ function LoginModal({ isOpen, handleClose }) {
               />
               <TextField
                 fullWidth
-                placeholder='Email'
-                label='Email'
+                placeholder={t("Email")}
+                label={t("Email")}
                 type='email'
                 autoComplete='email'
                 required
@@ -341,10 +341,10 @@ function LoginModal({ isOpen, handleClose }) {
               <TextField
                 fullWidth
                 type='password'
-                placeholder='Password'
+                placeholder={t("Password")}
                 sx={{ mb: 2 }}
                 value={registerContext.password}
-                label='Password'
+                label={t("Password")}
                 autoComplete='new-password'
                 required
                 error={registrationAttempted && !passwordIsValid}
@@ -359,13 +359,13 @@ function LoginModal({ isOpen, handleClose }) {
               <TextField
                 fullWidth
                 type='password'
-                label='Confirm password'
+                label={t("Confirm password")}
                 autoComplete='new-password'
                 required
                 sx={{ mb: 2 }}
                 value={registerContext.password_confirmation}
                 error={showConfirmationError}
-                helperText={showConfirmationError ? 'Passwords must match.' : undefined}
+                helperText={showConfirmationError ? t("Passwords must match.") : undefined}
                 onChange={(e) =>
                   setRegisterContext({
                     ...registerContext,
@@ -386,27 +386,10 @@ function LoginModal({ isOpen, handleClose }) {
             type='submit'
             disabled={isRegistering}
           >
-            {isRegistering ? 'Signing Up...' : 'Sign Up'}
+            {isRegistering ? t("Signing Up...") : t("Sign Up")}
           </Button>
           <Typography variant='caption' color='text.secondary' display='block' sx={{ mt: 1.5 }}>
-            En créant un compte, vous acceptez les{' '}
-            <MuiLink
-              component={RouterLink}
-              to='/conditions-utilisation'
-              target='_blank'
-              rel='noreferrer'
-            >
-              conditions d’utilisation
-            </MuiLink>{' '}
-            et reconnaissez avoir pris connaissance de la{' '}
-            <MuiLink
-              component={RouterLink}
-              to='/confidentialite'
-              target='_blank'
-              rel='noreferrer'
-            >
-              politique de confidentialité
-            </MuiLink>.
+            <Trans i18nKey="By creating an account, you accept the <terms>Terms of Use</terms> and acknowledge that you have read the <privacy>privacy policy</privacy>." components={{ terms: <MuiLink component={RouterLink} to='/conditions-utilisation' target='_blank' rel='noreferrer' />, privacy: <MuiLink component={RouterLink} to='/confidentialite' target='_blank' rel='noreferrer' /> }} />
           </Typography>
           <Typography
             variant='subtitle2'
@@ -417,13 +400,11 @@ function LoginModal({ isOpen, handleClose }) {
               cursor: 'pointer',
               marginTop: '10px',
             }}
-          >
-            Already have an account?
-          </Typography>
+          >{t("Already have an account?")}</Typography>
         </CustomTabPanel>
 
         <Box sx={{ px: 3, pb: 3 }}>
-          <Divider sx={{ mb: 2 }}>or</Divider>
+          <Divider sx={{ mb: 2 }}>{t("or")}</Divider>
           {googleError && (
             <Alert severity='error' sx={{ mb: 2 }}>
               {googleError}
@@ -431,14 +412,11 @@ function LoginModal({ isOpen, handleClose }) {
           )}
           {pendingGoogleCredential ? (
             <Box>
-              <Alert severity='info' sx={{ mb: 2 }}>
-                This email already has an account. Enter its password once to
-                link Google sign-in.
-              </Alert>
+              <Alert severity='info' sx={{ mb: 2 }}>{t("This email already has an account. Enter its password once to link Google sign-in.")}</Alert>
               <TextField
                 fullWidth
                 type='password'
-                label='Existing account password'
+                label={t("Existing account password")}
                 value={linkPassword}
                 onChange={(event) => setLinkPassword(event.target.value)}
                 onKeyDown={(event) => {
@@ -458,16 +436,14 @@ function LoginModal({ isOpen, handleClose }) {
                     completeGoogleLogin(pendingGoogleCredential, linkPassword)
                   }
                 >
-                  {isGoogleLoading ? 'Linking...' : 'Link account'}
+                  {isGoogleLoading ? t("Linking...") : t("Link account")}
                 </Button>
                 <Button
                   fullWidth
                   variant='outlined'
                   onClick={cancelGoogleLink}
                   disabled={isGoogleLoading}
-                >
-                  Cancel
-                </Button>
+                >{t("Cancel")}</Button>
               </Box>
             </Box>
           ) : (

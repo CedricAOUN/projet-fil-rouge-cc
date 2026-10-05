@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react'
 import {
   Autocomplete,
@@ -15,6 +16,7 @@ interface MultiSelectFilterProps {
 }
 
 const MultiSelectFilter = ({ options, label, onChange }: MultiSelectFilterProps) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState<string[]>([])
 
   const handleChange = (_: React.SyntheticEvent, newValue: string[]) => {
@@ -46,7 +48,7 @@ const MultiSelectFilter = ({ options, label, onChange }: MultiSelectFilterProps)
         ))
       }
       renderInput={(params) => (
-        <TextField {...params} label={label} placeholder="Search..." size="small" />
+        <TextField {...params} label={label} placeholder={t("Search...")} size="small" />
       )}
     />
   )

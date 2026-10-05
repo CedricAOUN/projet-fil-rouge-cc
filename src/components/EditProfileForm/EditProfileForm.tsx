@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useState } from 'react';
 import {
   Avatar,
@@ -15,6 +16,7 @@ import {
 import DeleteUserModal from './DeleteUserModal';
 
 function EditProfileForm({ onStopEdit }) {
+  const { t } = useTranslation();
   const { data: currentUser } = useGetCurrentUserQuery();
 
   const [formData, setFormData] = useState({
@@ -71,7 +73,7 @@ function EditProfileForm({ onStopEdit }) {
     }
   };
 
-  const [imageName, setImageName] = useState('No Image Selected');
+  const [imageName, setImageName] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Delete Modal
@@ -83,7 +85,7 @@ function EditProfileForm({ onStopEdit }) {
         sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}
       >
         <TextField
-          label='Username'
+          label={t("Username")}
           fullWidth
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
@@ -91,7 +93,7 @@ function EditProfileForm({ onStopEdit }) {
           helperText={errors?.name}
         ></TextField>
         <TextField
-          label='First name'
+          label={t("First name")}
           fullWidth
           value={formData.first_name}
           onChange={(e) => handleChange('first_name', e.target.value)}
@@ -99,7 +101,7 @@ function EditProfileForm({ onStopEdit }) {
           helperText={errors?.first_name}
         ></TextField>
         <TextField
-          label='Last name'
+          label={t("Last name")}
           fullWidth
           value={formData.last_name}
           onChange={(e) => handleChange('last_name', e.target.value)}
@@ -107,7 +109,7 @@ function EditProfileForm({ onStopEdit }) {
           helperText={errors?.last_name}
         ></TextField>
         <TextField
-          label='Biography'
+          label={t("Biography")}
           rows={3}
           fullWidth
           value={formData.biography}
@@ -115,9 +117,7 @@ function EditProfileForm({ onStopEdit }) {
           error={!!errors?.biography}
           helperText={errors?.biography}
         ></TextField>
-        <Button variant='contained' component='label'>
-          New Avatar
-          <input
+        <Button variant='contained' component='label'>{t("New Avatar")}<input
             type='file'
             hidden
             accept='image/png,image/jpeg,image/webp'
@@ -125,38 +125,28 @@ function EditProfileForm({ onStopEdit }) {
             ref={fileInputRef}
           />
         </Button>
-        <Typography textAlign='center'>{imageName}</Typography>
+        <Typography textAlign='center'>{imageName ?? t('No Image Selected')}</Typography>
         {imagePreview && (
           <Box width={'100%'} display={'flex'} justifyContent={'center'}>
             <Avatar
               sx={{ height: '100px', width: '100px' }}
               src={imagePreview}
-              alt='Preview of your profile photo'
+              alt={t("Preview of your profile photo")}
             ></Avatar>
           </Box>
         )}
         <Stack direction={'row'} mt={2} width={'100%'} spacing={2}>
-          <Button fullWidth onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button fullWidth onClick={handleConfirm}>
-            Confirm
-          </Button>
+          <Button fullWidth onClick={handleCancel}>{t("Cancel")}</Button>
+          <Button fullWidth onClick={handleConfirm}>{t("Confirm")}</Button>
         </Stack>
       </Paper>
       <Paper
         sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}
       >
-        <Typography variant='h5' component='h2'>
-          Advanced Options
-        </Typography>
-        <Button>Change Password</Button>
-        <Typography variant='body2' color='text.secondary'>
-          Account deletion is not yet available in this student version. To
-          request deletion, use the contact address listed in the privacy
-          policy.
-        </Typography>
-        <Button onClick={() => setDeleteModalOpen(true)}>Delete Account</Button>
+        <Typography variant='h5' component='h2'>{t("Advanced Options")}</Typography>
+        <Button>{t("Change Password")}</Button>
+        <Typography variant='body2' color='text.secondary'>{t("Account deletion is not yet available in this student version. To request deletion, use the contact address listed in the privacy policy.")}</Typography>
+        <Button onClick={() => setDeleteModalOpen(true)}>{t("Delete Account")}</Button>
         <DeleteUserModal
           open={deleteModalOpen}
           onClose={() => setDeleteModalOpen(false)}

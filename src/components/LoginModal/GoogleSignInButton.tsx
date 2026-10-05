@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef } from 'react';
 
 type CredentialResponse = {
@@ -31,6 +32,7 @@ const SCRIPT_ID = 'google-identity-services';
 const SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const callbackRef = useRef(onCredential);
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -79,7 +81,7 @@ function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
 
   if (!clientId) return null;
 
-  return <div ref={containerRef} aria-label='Continue with Google' />;
+  return <div ref={containerRef} aria-label={t("Continue with Google")} />;
 }
 
 export default GoogleSignInButton;

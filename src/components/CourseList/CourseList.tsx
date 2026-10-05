@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Button,
   List,
@@ -24,6 +25,7 @@ function CourseList({
   courses: Course[];
   allowModfications?: boolean;
 }) {
+  const { t } = useTranslation();
   const currentUser = useGetCurrentUserQuery()?.data;
 
   const isCurrentUserPremium = currentUser?.is_premium;
@@ -46,7 +48,7 @@ function CourseList({
 
   return (
     <Paper sx={{ width: '100%' }}>
-      <Typography component='h2' variant='h4'>Courses</Typography>
+      <Typography component='h2' variant='h4'>{t("Courses")}</Typography>
       <List
         sx={{
           width: '100%',
@@ -65,8 +67,7 @@ function CourseList({
             >
               <Stack>
                 <Typography component='h3'>{course.title}</Typography>
-                <Typography variant='subtitle2' color='primary'>
-                  By {course?.created_by?.name}
+                <Typography variant='subtitle2' color='primary'>{t('By {{author}}', { author: course?.created_by?.name })}
                 </Typography>
               </Stack>
               <Stack direction={'row'} sx={{ ml: 'auto' }}>
@@ -87,7 +88,7 @@ function CourseList({
                   </>
                 )}
                 <Button onClick={() => handleViewClick(course.id)}>
-                  {isCurrentUserPremium ? 'View Course' : 'Get Premium'}
+                  {isCurrentUserPremium ? t("View Course") : t("Get Premium")}
                 </Button>
               </Stack>
             </Paper>
@@ -95,8 +96,8 @@ function CourseList({
         ))}
       </List>
       <ConfirmationModal
-        title='Delete confirmation'
-        message='Are you sure you want to delete this course ?'
+        title={t("Delete confirmation")}
+        message={t("Are you sure you want to delete this course ?")}
         onClose={() => setCourseIDToDelete(null)}
         open={Boolean(courseIDToDelete)}
         onConfirm={() => handleDeleteCourse(courseIDToDelete)}

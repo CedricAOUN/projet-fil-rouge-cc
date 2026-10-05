@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import {
   Button,
@@ -11,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 const BillingSuccess = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const stripeSessionId = new URLSearchParams(window.location.search).get(
     'session_id',
@@ -36,29 +38,25 @@ const BillingSuccess = () => {
           alignItems: 'center',
         }}
       >
-        <Typography variant='h1'>Payment Successful</Typography>
-        <Typography variant='h6' component='p'>
-          Thank you for your payment. Your subscription has been activated.
-        </Typography>
+        <Typography variant='h1'>{t("Payment Successful")}</Typography>
+        <Typography variant='h6' component='p'>{t("Thank you for your payment. Your subscription has been activated.")}</Typography>
       </Paper>
       <Paper>
-        <Typography variant='h6' component='h2'>Order Details:</Typography>
+        <Typography variant='h6' component='h2'>{t("Order Details:")}</Typography>
         {isLoading ? (
           <Stack direction={'row'} justifyContent={'center'} p={3}>
             <CircularProgress size={'50px'} />
           </Stack>
         ) : (
           <Stack width='100%' padding={2} gap={1}>
-            <Typography>User: {data?.customer_details?.email}</Typography>
-            <Typography>Date of purchase: {createdAt}</Typography>
-            <Typography>Order ID: {data?.id}</Typography>
-            <Typography>Amount Paid: {price}</Typography>
+            <Typography>{t('User: {{email}}', { email: data?.customer_details?.email })}</Typography>
+            <Typography>{t('Date of purchase: {{date}}', { date: createdAt })}</Typography>
+            <Typography>{t('Order ID: {{id}}', { id: data?.id })}</Typography>
+            <Typography>{t('Amount Paid: {{price}}', { price })}</Typography>
           </Stack>
         )}
       </Paper>
-      <Button variant='contained' onClick={() => navigate('/')}>
-        Back to Home
-      </Button>
+      <Button variant='contained' onClick={() => navigate('/')}>{t("Back to Home")}</Button>
     </Stack>
   );
 };

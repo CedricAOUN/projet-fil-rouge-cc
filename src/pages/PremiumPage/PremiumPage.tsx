@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Badge,
   Button,
@@ -12,11 +13,12 @@ import React, { useRef, useState } from 'react';
 import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
-import { PREMIUM_TIERS } from '@/constants/premiumPlans';
+import { getPremiumTiers } from '@/constants/premiumPlans';
 import Checkout from '@/components/Checkout/Checkout';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 
 function PremiumPage() {
+  const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width:900px)');
   const paymentSectionRef = useRef(null);
   const { data: currentUser } = useGetCurrentUserQuery();
@@ -33,27 +35,26 @@ function PremiumPage() {
       <Paper
         sx={{ gap: 3, padding: 2, display: 'flex', flexDirection: 'column' }}
       >
-        <Typography variant='h1'>Premium</Typography>
+        <Typography variant='h1'>{t("Premium")}</Typography>
         <Typography variant='h6' component='p' color='success.main'>
-          You are already a {currentUser?.is_chef ? 'Chef' : 'Premium member'}.
-          Your subscription will be renewed on{' '}
-          {dayjs(currentUser?.premium_expire).format('MMMM D, YYYY')}.
+          {t('You are already a {{membership}}. Your subscription will be renewed on {{date}}.', {
+            membership: currentUser?.is_chef ? t('Chef') : t('Premium member'),
+            date: dayjs(currentUser?.premium_expire).format('MMMM D, YYYY'),
+          })}
         </Typography>
-        <Button variant='contained' color='primary' disabled>
-          Subscription management is not yet available
-        </Button>
+        <Button variant='contained' color='primary' disabled>{t("Subscription management is not yet available")}</Button>
       </Paper>
     );
   }
 
   return (
     <Stack gap={3}>
-      <Typography variant='h1'>Premium</Typography>
+      <Typography variant='h1'>{t("Premium")}</Typography>
       <Stack direction={isMobile ? 'column' : 'row'} width='100%' gap={1}>
-        {PREMIUM_TIERS.map((tier, index) => (
+        {getPremiumTiers(t).map((tier, index) => (
           <Badge
             key={index}
-            badgeContent={tier?.isPopular && 'Recommended'}
+            badgeContent={tier?.isPopular && t("Recommended")}
             color='secondary'
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             sx={{
@@ -95,15 +96,13 @@ function PremiumPage() {
                   fontSize={50}
                   mb={tier?.price === 0 ? '60px' : undefined}
                 >
-                  {tier?.price !== 0 ? `$${tier.price}` : 'Free'}
+                  {tier?.price !== 0 ? `$${tier.price}` : t("Free")}
                 </Typography>
                 {tier?.isSelectable && (
                   <Button
                     onClick={() => handleTierSelect(tier.id)}
                     sx={{ mt: '30px' }}
-                  >
-                    Get Started
-                  </Button>
+                  >{t("Get Started")}</Button>
                 )}
               </Stack>
 

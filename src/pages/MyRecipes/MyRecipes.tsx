@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -18,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal';
 
 const MyRecipes = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const currentUser = useGetCurrentUserQuery()?.data;
   const { data, isLoading, isFetching } = useGetRecipesQuery({
@@ -43,7 +45,7 @@ const MyRecipes = () => {
 
   return (
     <Stack direction={'column'} spacing={2} width={'100%'}>
-      <Typography variant='h1'>Your Recipes</Typography>
+      <Typography variant='h1'>{t("Your Recipes")}</Typography>
       <Stack
         direction={'row'}
         gap={2}
@@ -66,7 +68,7 @@ const MyRecipes = () => {
             <Typography component='h2'>{recipe.title}</Typography>
             <img
               src={recipe.image_url}
-              alt={recipe.title || "Recipe"}
+              alt={recipe.title || t("Recipe")}
               width={'300'}
               height={'300'}
               style={{ objectFit: 'cover' }}
@@ -100,14 +102,14 @@ const MyRecipes = () => {
               gap: 2,
             }}
           >
-            <Typography>You haven't created any recipes yet !</Typography>
-            <Button onClick={handleGoToCreateRecipe}>Create a Recipe</Button>
+            <Typography>{t("You haven't created any recipes yet !")}</Typography>
+            <Button onClick={handleGoToCreateRecipe}>{t("Create a Recipe")}</Button>
           </Box>
         )}
       </Stack>
       <ConfirmationModal
-        title='Delete confirmation'
-        message='Are you sure you want to delete this recipe ?'
+        title={t("Delete confirmation")}
+        message={t("Are you sure you want to delete this recipe ?")}
         onClose={() => setRecipeIDToDelete(null)}
         open={Boolean(recipeIDToDelete)}
         onConfirm={() => handleDeleteRecipe(recipeIDToDelete)}

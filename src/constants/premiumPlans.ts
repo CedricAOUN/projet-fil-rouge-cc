@@ -1,18 +1,19 @@
-export const PREMIUM_TIERS = [
+import type { TFunction } from 'i18next';
+export const getPremiumTiers = (t: TFunction) => [
   {
     id: 'basic',
-    title: 'Home Cook',
+    title: t("Home Cook"),
     price: 0,
     prevPrice: null,
-    features: ['View Basic Recipes'],
+    features: [t("View Basic Recipes")],
     isSelectable: false,
     stripePriceMap: null,
   },
   {
     id: 'premium',
-    title: 'Sous Chef',
+    title: t("Sous Chef"),
     price: 9.99,
-    features: ['View Basic Recipes', 'View Premium Recipes', 'Create Recipes'],
+    features: [t("View Basic Recipes"), t("View Premium Recipes"), t("Create Recipes")],
     isSelectable: true,
     isPopular: true,
     stripePriceMap: {
@@ -23,14 +24,14 @@ export const PREMIUM_TIERS = [
   },
   {
     id: 'chef',
-    title: 'Master Chef',
+    title: t("Master Chef"),
     price: '19.99',
     features: [
-      'View Basic Recipes',
-      'View Premium Recipes',
-      'Create Recipes',
-      'Become a chef',
-      'Create Premium Recipes',
+      t("View Basic Recipes"),
+      t("View Premium Recipes"),
+      t("Create Recipes"),
+      t("Become a chef"),
+      t("Create Premium Recipes"),
     ],
     isSelectable: true,
     stripePriceMap: {

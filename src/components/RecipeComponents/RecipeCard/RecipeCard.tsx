@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 import { recipeThumbnail } from '@/utils/recipeImage';
 import { Button, Paper, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function RecipeCard({ title, image, description, id, isPremium }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: currentUser } = useGetCurrentUserQuery();
 
@@ -83,7 +85,7 @@ function RecipeCard({ title, image, description, id, isPremium }) {
           fontSize: { xs: 12, md: 16 },
         }}
       >
-        {canViewRecipe ? 'View' : 'Upgrade to Premium'}
+        {canViewRecipe ? t("View") : t("Upgrade to Premium")}
       </Button>
     </Paper>
   );

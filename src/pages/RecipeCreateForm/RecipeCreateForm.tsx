@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { t } from '@/i18n';
 import React, { useMemo, useState, useRef } from 'react';
 import {
   Button,
@@ -40,34 +42,35 @@ type RecipeFormData = {
 
 const schema: any = yup
   .object({
-    title: yup.string().required('Title is required'),
+    title: yup.string().required(() => t("Title is required")),
     description: yup.string().defined(),
-    instructions: yup.string().required('Instructions are required'),
+    instructions: yup.string().required(() => t("Instructions are required")),
     is_premium: yup.boolean().defined(),
     ingredients: yup
       .array()
       .of(
         yup
           .object({
-            name: yup.string().required('Ingredient name is required'),
+            name: yup.string().required(() => t("Ingredient name is required")),
             amount: yup
               .number()
-              .typeError('Amount must be a number')
-              .required('Amount is required'),
+              .typeError(() => t("Amount must be a number"))
+              .required(() => t("Amount is required")),
             unit: yup
               .string()
-              .oneOf(UNIT_VALUES, 'Unit is required')
+              .oneOf(UNIT_VALUES, () => t("Unit is required"))
               .required(),
           })
           .required(),
       )
-      .min(1, 'At least one ingredient is required')
+      .min(1, () => t("At least one ingredient is required"))
       .required(),
     image: yup.mixed<File>().nullable().defined(),
   })
   .required();
 
 function RecipeCreateForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:900px)');
   const currentUser = useGetCurrentUserQuery().data;
@@ -115,7 +118,7 @@ function RecipeCreateForm() {
     name: 'ingredients',
   });
 
-  const [imageName, setImageName] = useState<string>('No Image Selected');
+  const [imageName, setImageName] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     edittingRecipe?.image_url || null,
   );
@@ -135,7 +138,7 @@ function RecipeCreateForm() {
   };
 
   const handleImageRemove = () => {
-    setImageName('No Image Selected');
+    setImageName(null);
     setImagePreview(null);
     setValue('image', null);
 
@@ -170,12 +173,12 @@ function RecipeCreateForm() {
 
   return (
     <Paper sx={{ display: 'flex', flexDirection: 'column', gap: '20px', p: 3 }}>
-      <Typography variant='h1'>{id ? 'Edit recipe' : 'Create a recipe'}</Typography>
-      <Typography variant='h4' component='h2'>General</Typography>
+      <Typography variant='h1'>{id ? t("Edit recipe") : t("Create a recipe")}</Typography>
+      <Typography variant='h4' component='h2'>{t("General")}</Typography>
 
       <TextField
         {...register('title')}
-        placeholder='Title'
+        placeholder={t("Title")}
         required
         error={!!errors.title}
         helperText={errors.title?.message}
@@ -183,7 +186,7 @@ function RecipeCreateForm() {
 
       <TextField
         {...register('description')}
-        placeholder='Description'
+        placeholder={t("Description")}
         rows={5}
         multiline
         error={!!errors.description}
@@ -193,7 +196,7 @@ function RecipeCreateForm() {
       <Stack>
         {currentUser?.is_chef && (
           <Stack direction='row' gap={1} alignItems='center'>
-            <Typography>Mark recipe as Premium</Typography>
+            <Typography>{t("Mark recipe as Premium")}</Typography>
             <Checkbox {...register('is_premium')} />
           </Stack>
         )}
@@ -210,13 +213,13 @@ function RecipeCreateForm() {
           padding='10px'
           borderRadius='5px'
         >
-          <Typography textAlign='center'>{imageName}</Typography>
+          <Typography textAlign='center'>{imageName ?? t('No Image Selected')}</Typography>
           {imagePreview && (
-            <img className='image-preview' src={imagePreview} alt='Preview of your recipe photo' />
+            <img className='image-preview' src={imagePreview} alt={t("Preview of your recipe photo")} />
           )}
 
           <Button variant='contained' component='label'>
-            {imagePreview ? 'Change' : 'Upload'} image
+            {imagePreview ? t('Change image') : t('Upload image')}
             <input
               type='file'
               hidden
@@ -231,14 +234,12 @@ function RecipeCreateForm() {
               variant='contained'
               sx={{ backgroundColor: 'error.main' }}
               onClick={handleImageRemove}
-            >
-              Remove Image
-            </Button>
+            >{t("Remove Image")}</Button>
           )}
         </Stack>
       </Stack>
 
-      <Typography variant='h4' component='h2'>Ingredients</Typography>
+      <Typography variant='h4' component='h2'>{t("Ingredients")}</Typography>
       {errors.ingredients && (
         <Typography color='error'>{errors.ingredients.message}</Typography>
       )}
@@ -252,11 +253,11 @@ function RecipeCreateForm() {
           sx={{ borderBottom: '1px solid', pb: 2 }}
         >
           <Stack width='100%' gap={1}>
-            <Typography>Ingredient {index + 1}</Typography>
+            <Typography>{t('Ingredient {{number}}', { number: index + 1 })}</Typography>
             <Stack direction='row' gap={1}>
               <TextField
                 {...register(`ingredients.${index}.name`)}
-                placeholder='Ingredient Name'
+                placeholder={t("Ingredient Name")}
                 size='small'
                 fullWidth
                 error={!!errors.ingredients?.[index]?.name}
@@ -271,7 +272,7 @@ function RecipeCreateForm() {
                 {...register(`ingredients.${index}.amount`)}
                 sx={{ width: !isMobile ? '150px' : 'auto', minWidth: '100px' }}
                 fullWidth
-                placeholder='Amount'
+                placeholder={t("Amount")}
                 size='small'
                 error={!!errors.ingredients?.[index]?.amount}
               />
@@ -316,10 +317,10 @@ function RecipeCreateForm() {
         +
       </Button>
 
-      <Typography variant='h4' component='h2'>Instructions</Typography>
+      <Typography variant='h4' component='h2'>{t("Instructions")}</Typography>
       <TextField
         {...register('instructions')}
-        placeholder='Instructions'
+        placeholder={t("Instructions")}
         rows={5}
         multiline
         error={!!errors.instructions}
@@ -331,7 +332,7 @@ function RecipeCreateForm() {
         color='primary'
         onClick={handleSubmit(onSubmit)}
       >
-        {edittingRecipe ? 'Confirm' : 'Submit Recipe'}
+        {edittingRecipe ? t("Confirm") : t("Submit Recipe")}
       </Button>
     </Paper>
   );

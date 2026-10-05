@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef } from 'react';
 import RecipeCard from '@/components/RecipeComponents/RecipeCard/RecipeCard';
 import { CircularProgress, Stack, TextField, Typography } from '@mui/material';
@@ -11,6 +12,7 @@ function RecipeSearch({
   headerSearchRef = null,
   maxHeight = '300px',
 }) {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const searchRef = useRef(null);
   const containerRef = useRef(null);
@@ -52,9 +54,7 @@ function RecipeSearch({
     >
       {showSearch && (
         <>
-          <Typography variant='h5' component='h3' marginBottom={2}>
-            Refine your search
-          </Typography>
+          <Typography variant='h5' component='h3' marginBottom={2}>{t("Refine your search")}</Typography>
           <TextField
             inputRef={searchRef}
             value={searchTerm}

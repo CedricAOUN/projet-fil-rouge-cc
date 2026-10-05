@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from 'react-i18next';
 import {
   Button,
   CircularProgress,
@@ -14,10 +15,11 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import { useGetPlanDetailsQuery } from '@/api/plansApi';
 import { useState } from 'react';
 import { useCheckoutMutation, useGetCurrentUserQuery } from '@/api/authApi';
-import { PREMIUM_TIERS } from '@/constants/premiumPlans';
+import { getPremiumTiers } from '@/constants/premiumPlans';
 import { Link as RouterLink } from 'react-router-dom';
 
 function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
+  const { t } = useTranslation();
   const currentUserId = useGetCurrentUserQuery().data?.id;
   const isLoggedIn = Boolean(currentUserId);
 
@@ -41,7 +43,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
   };
 
   // Fetch chosen plan details
-  const selectedPlan = PREMIUM_TIERS.find((tier) => tier.id === selectedTier);
+  const selectedPlan = getPremiumTiers(t).find((tier) => tier.id === selectedTier);
   const selectedPlanStripeId = selectedPlan?.stripePriceMap[selectedBilling];
 
   const { data: planDetails, isLoading: isPlanDetailsLoading } =
@@ -49,9 +51,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
 
   return (
     <>
-      <Typography variant='h1' component='h2' ref={paymentSectionRef}>
-        Plan Selection
-      </Typography>
+      <Typography variant='h1' component='h2' ref={paymentSectionRef}>{t("Plan Selection")}</Typography>
       <Stack direction='row' width='100%' gap={2} mb={5} flexWrap='wrap'>
         <Paper
           sx={{
@@ -63,9 +63,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
         >
           <Stack direction='row' alignItems={'center'} gap={1}>
             <ReceiptIcon />
-            <Typography variant='h6' component='h3'>
-              Subscription information
-            </Typography>
+            <Typography variant='h6' component='h3'>{t("Subscription information")}</Typography>
           </Stack>
           <Select
             fullWidth
@@ -73,8 +71,8 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
             value={selectedTier}
             onChange={(e) => onTierSelect(e.target.value)}
           >
-            <MenuItem value='premium'>Sous Chef</MenuItem>
-            <MenuItem value='chef'>Master Chef</MenuItem>
+            <MenuItem value='premium'>{t("Sous Chef")}</MenuItem>
+            <MenuItem value='chef'>{t("Master Chef")}</MenuItem>
           </Select>
           <Select
             fullWidth
@@ -84,9 +82,9 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
               setSelectedBilling(e.target.value);
             }}
           >
-            <MenuItem value='monthly'>Monthly</MenuItem>
-            <MenuItem value='6_months'>Every 6 Months</MenuItem>
-            <MenuItem value='annual'>Yearly</MenuItem>
+            <MenuItem value='monthly'>{t("Monthly")}</MenuItem>
+            <MenuItem value='6_months'>{t("Every 6 Months")}</MenuItem>
+            <MenuItem value='annual'>{t("Yearly")}</MenuItem>
           </Select>
           {isPlanDetailsLoading ? (
             <Stack direction={'row'} justifyContent={'center'} p={3}>
@@ -94,16 +92,10 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
             </Stack>
           ) : (
             <>
-              <Typography variant='body2' fontSize={18}>
-                Price now: {planDetails?.price}
+              <Typography variant='body2' fontSize={18}>{t('Price now: {{price}}', { price: planDetails?.price })}
               </Typography>
-              <Typography variant='body2' fontSize={18}>
-                Equivalent to {planDetails?.monthlyPrice ?? 'N/A'}/month
-              </Typography>
-              <Typography variant='body2' color='text.secondary'>
-                You will be charged based on the selected billing cycle. This
-                student version does not yet provide self-service cancellation.
-              </Typography>
+              <Typography variant='body2' fontSize={18}>{t('Equivalent to {{price}}/month', { price: planDetails?.monthlyPrice ?? t('N/A') })}</Typography>
+              <Typography variant='body2' color='text.secondary'>{t("You will be charged based on the selected billing cycle. This student version does not yet provide self-service cancellation.")}</Typography>
             </>
           )}
           <FormControlLabel
@@ -119,17 +111,8 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
             }
             label={
               <Typography variant='body2'>
-                J’ai lu et j’accepte les{' '}
-                <MuiLink
-                  component={RouterLink}
-                  to='/conditions-vente'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  conditions générales de vente et d’abonnement
-                </MuiLink>
-                .
-              </Typography>
+            <Trans i18nKey="I have read and accept the <terms>Terms of Sale and Subscription</terms>." components={{ terms: <MuiLink component={RouterLink} to='/conditions-vente' target='_blank' rel='noreferrer' /> }} />
+          </Typography>
             }
           />
           <Button
@@ -144,10 +127,10 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
             }
           >
             {isCheckoutLoading
-              ? 'Processing...'
+              ? t("Processing...")
               : isLoggedIn
-                ? 'Proceed to Checkout'
-                : 'You must be logged in'}
+                ? t("Proceed to Checkout")
+                : t("You must be logged in")}
           </Button>
         </Paper>
       </Stack>

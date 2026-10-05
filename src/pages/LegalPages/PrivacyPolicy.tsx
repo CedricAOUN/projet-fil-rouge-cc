@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from 'react-i18next';
 import { Link, Typography } from '@mui/material';
 import LegalPageLayout, { type LegalSection } from '@/components/Legal/LegalPageLayout';
 
@@ -8,97 +9,104 @@ const list = (items: string[]) => (
 );
 
 export default function PrivacyPolicy() {
+  const { t } = useTranslation();
   const sections: LegalSection[] = [
     {
       id: 'responsable',
-      title: '1. Responsable du traitement',
-      content: <Typography>Le responsable du traitement est [À COMPLÉTER — nom ou raison sociale, forme juridique, adresse postale et adresse électronique de contact].</Typography>,
+      title: t("1. Data controller"),
+      content: <Typography>{t("The data controller is [TO COMPLETE — name or business name, legal form, postal address, and contact email address].")}</Typography>,
     },
     {
       id: 'donnees',
-      title: '2. Données traitées',
+      title: t("2. Data processed"),
       content: list([
-        'Compte et authentification : pseudonyme, adresse électronique, mot de passe haché, jetons de connexion et date de création du compte.',
-        'Connexion Google facultative : identifiant Google, adresse électronique vérifiée, nom, prénom et photo de profil transmis par Google selon les choix du compte.',
-        'Profil public : pseudonyme, prénom, nom, biographie, avatar, rôle de chef et dates de mise à jour. L’adresse électronique et les favoris ne sont pas publics.',
-        'Contributions : recettes, ingrédients, instructions, images, commentaires, mentions « j’aime », favoris, cours, contenus et vidéos associés.',
-        'Abonnement : identifiants client et abonnement Stripe, formule, statut, échéance et quatre derniers chiffres du moyen de paiement lorsqu’ils sont fournis par Stripe. MealMosaic ne reçoit pas le numéro complet de carte.',
-        'Fonctionnement et sécurité : journaux techniques, adresse IP, agent utilisateur et informations nécessaires à la prévention des abus et au diagnostic des erreurs.',
-        'Assistance par IA : contenu de la recette nécessaire à la génération d’une suggestion, ainsi que la suggestion enregistrée.',
+        t("Account and authentication: username, email address, hashed password, login tokens, and account creation date."),
+        t("Optional Google sign-in: Google identifier, verified email address, first and last names, and profile photo supplied by Google according to the account’s settings."),
+        t("Public profile: username, first and last names, biography, avatar, chef role, and update dates. Email addresses and favorites are not public."),
+        t("Contributions: recipes, ingredients, instructions, images, comments, likes, favorites, courses, content, and associated videos."),
+        t("Subscription: Stripe customer and subscription identifiers, plan, status, renewal date, and the last four digits of the payment method when supplied by Stripe. MealMosaic does not receive full card numbers."),
+        t("Operation and security: technical logs, IP address, user agent, and information needed to prevent abuse and diagnose errors."),
+        t("AI assistance: recipe content needed to generate a suggestion, together with the saved suggestion."),
       ]),
     },
     {
       id: 'finalites',
-      title: '3. Finalités et bases juridiques',
+      title: t("3. Purposes and legal bases"),
       content: list([
-        'Créer et administrer le compte, authentifier l’utilisateur et fournir les recettes, favoris, cours et fonctions communautaires : exécution du service demandé et des CGU.',
-        'Publier les informations de profil et contenus choisis par l’utilisateur : exécution du service et intérêt légitime à faire fonctionner la communauté.',
-        'Gérer les abonnements, paiements et messages transactionnels : exécution du contrat et respect des obligations comptables et fiscales applicables.',
-        'Produire une suggestion d’IA à la demande : exécution du service demandé.',
-        'Sécuriser le site, prévenir la fraude et défendre les droits de l’éditeur : intérêt légitime.',
-        'Respecter les demandes des autorités et les obligations légales : obligation légale.',
+        t("Creating and managing accounts, authenticating users, and providing recipes, favorites, courses, and community features: performance of the requested service and the Terms of Use."),
+        t("Publishing profile information and content selected by users: performance of the service and legitimate interest in operating the community."),
+        t("Managing subscriptions, payments, and transactional messages: performance of the contract and compliance with applicable accounting and tax obligations."),
+        t("Producing an AI suggestion on request: performance of the requested service."),
+        t("Securing the website, preventing fraud, and protecting the publisher’s rights: legitimate interest."),
+        t("Complying with requests from authorities and legal obligations: legal obligation."),
       ]),
     },
     {
       id: 'destinataires',
-      title: '4. Destinataires et prestataires',
+      title: t("4. Recipients and service providers"),
       content: (
         <>
-          <Typography>Les données sont accessibles aux personnes habilitées du projet et, selon la fonctionnalité utilisée, aux prestataires suivants :</Typography>
+          <Typography>{t("Data is accessible to authorized project personnel and, depending on the feature used, the following providers:")}</Typography>
           {list([
-            'Google, pour la connexion facultative avec un compte Google et, avec votre accord, la mesure d’audience via Google Analytics ;',
-            'Stripe, pour le paiement et la gestion technique des abonnements ;',
-            'Resend ou [À COMPLÉTER — fournisseur réellement configuré], pour l’envoi des courriels transactionnels ;',
-            'Groq, pour générer les suggestions d’IA demandées ;',
-            '[À COMPLÉTER — hébergeur, base de données, stockage et pays d’hébergement].',
+            t("Google, for optional Google account sign-in and, with your consent, audience measurement through Google Analytics;"),
+            t("Stripe, for payment and technical subscription management;"),
+            t("Resend or [TO COMPLETE — provider actually configured], for sending transactional emails;"),
+            t("Groq, for generating requested AI suggestions;"),
+            t("[TO COMPLETE — hosting provider, database, storage, and hosting countries]."),
           ])}
-          <Typography>Les profils, recettes, commentaires et contenus désignés comme publics sont visibles par les visiteurs du site.</Typography>
+          <Typography>{t("Profiles, recipes, comments, and content designated as public are visible to website visitors.")}</Typography>
         </>
       ),
     },
     {
       id: 'conservation',
-      title: '5. Durées de conservation',
+      title: t("5. Retention periods"),
       content: (
         <>
-          <Typography>Les données du compte et les contributions sont conservées pendant l’utilisation du compte, puis supprimées ou archivées selon le calendrier suivant : [À COMPLÉTER — durées opérationnelles, sauvegardes et comptes inactifs].</Typography>
-          <Typography>Les pièces nécessaires à la facturation sont archivées pendant la durée légale applicable. Les journaux de sécurité, jetons, fichiers supprimés, suggestions d’IA et demandes d’exercice de droits suivent les durées suivantes : [À COMPLÉTER].</Typography>
+          <Typography>{t("Account data and contributions are retained while the account is in use, then deleted or archived according to the following schedule: [TO COMPLETE — operational retention periods, backups, and inactive accounts].")}</Typography>
+          <Typography>{t("Records needed for billing are archived for the applicable statutory period. Security logs, tokens, deleted files, AI suggestions, and requests to exercise rights follow these retention periods: [TO COMPLETE].")}</Typography>
         </>
       ),
     },
     {
       id: 'transferts',
-      title: '6. Transferts hors de l’Espace économique européen',
-      content: <Typography>Google, Stripe, Resend et Groq peuvent traiter certaines données hors de l’Espace économique européen. Les pays concernés, mécanismes de transfert et garanties contractuelles doivent être vérifiés et indiqués ici avant mise en production : [À COMPLÉTER].</Typography>,
+      title: t("6. Transfers outside the European Economic Area"),
+      content: <Typography>{t("Google, Stripe, Resend, and Groq may process some data outside the European Economic Area. The countries concerned, transfer mechanisms, and contractual safeguards must be verified and specified here before production deployment: [TO COMPLETE].")}</Typography>,
     },
     {
       id: 'traceurs',
-      title: '7. Stockage local et traceurs',
+      title: t("7. Local storage and trackers"),
       content: (
         <>
-          <Typography>MealMosaic utilise le stockage local du navigateur pour conserver le jeton d’authentification (<code>token</code>) et la préférence d’affichage clair ou sombre (<code>theme-mode</code>). Ces éléments servent à fournir les fonctions demandées et ne sont pas utilisés à des fins publicitaires.</Typography>
-          <Typography>La connexion Google et le paiement Stripe peuvent utiliser leurs propres mécanismes techniques lorsque l’utilisateur ouvre ces services. Google Analytics est utilisé, lorsqu’il est configuré, uniquement après votre accord pour mesurer la fréquentation du site. Aucun script Analytics ni événement de mesure n’est chargé ou envoyé avant acceptation.</Typography>
-          <Typography>Votre choix d’acceptation ou de refus est conservé pendant six mois dans le stockage local (<code>analytics-consent</code>), avec sa date et la version du choix. Si ce stockage est indisponible, le choix vaut uniquement pour la visite en cours. Vous pouvez le modifier à tout moment avec « Gérer les cookies » dans le pied de page. Le retrait de votre accord désactive la collecte et supprime les cookies Google Analytics accessibles sur ce site ; il ne supprime pas les données déjà transmises.</Typography>
+          <Typography>
+            <Trans i18nKey="MealMosaic uses browser local storage to retain the authentication token (<code>token</code>) and the light or dark display preference (<code>theme-mode</code>). These items provide the requested features and are not used for advertising." components={{ code: <code /> }} />
+          </Typography>
+          <Typography>{t("Google sign-in and Stripe payments may use their own technical mechanisms when users open these services. When configured, Google Analytics is used only with your consent to measure website traffic. No Analytics script or measurement event is loaded or sent before acceptance.")}</Typography>
+          <Typography>
+            <Trans i18nKey="Your acceptance or refusal is retained for six months in local storage (<code>analytics-consent</code>), along with its date and the consent version. If storage is unavailable, the choice applies only to the current visit. You can change it at any time through “Manage cookies” in the footer. Withdrawing consent disables collection and removes Google Analytics cookies accessible on this website; it does not delete data already transmitted." components={{ code: <code /> }} />
+          </Typography>
         </>
       ),
     },
     {
       id: 'droits',
-      title: '8. Vos droits',
+      title: t("8. Your rights"),
       content: (
         <>
-          <Typography>Selon votre situation, vous pouvez demander l’accès, la rectification, l’effacement, la limitation ou la portabilité de vos données, et vous opposer aux traitements fondés sur l’intérêt légitime.</Typography>
-          <Typography>Adressez votre demande à [À COMPLÉTER — adresse électronique RGPD]. Une preuve d’identité pourra être demandée uniquement si elle est nécessaire pour éviter une divulgation à un tiers. Le bouton « Supprimer le compte » n’étant pas encore opérationnel dans ce projet étudiant, les demandes doivent être envoyées à cette adresse.</Typography>
-          <Typography>Vous pouvez également déposer une réclamation auprès de la <Link href='https://www.cnil.fr/' target='_blank' rel='noreferrer'>CNIL</Link>.</Typography>
+          <Typography>{t("Depending on your circumstances, you may request access, rectification, erasure, restriction, or portability of your data, and object to processing based on legitimate interest.")}</Typography>
+          <Typography>{t("Send your request to [TO COMPLETE — GDPR contact email address]. Proof of identity may be requested only when necessary to prevent disclosure to a third party. As the “Delete Account” button is not yet operational in this student project, requests must be sent to this address.")}</Typography>
+          <Typography>
+            <Trans i18nKey="You may also lodge a complaint with the <authority>CNIL</authority>." components={{ authority: <Link href='https://www.cnil.fr/' target='_blank' rel='noreferrer' /> }} />
+          </Typography>
         </>
       ),
     },
     {
       id: 'securite',
-      title: '9. Sécurité et modifications',
-      content: <Typography>MealMosaic applique des mesures destinées à limiter les accès non autorisés, notamment le hachage des mots de passe et l’authentification par jeton. Aucun système ne garantissant une sécurité absolue, les mesures, procédures de sauvegarde et contacts en cas d’incident doivent être documentés avant mise en production : [À COMPLÉTER]. Toute modification importante de cette politique sera signalée par un moyen approprié.</Typography>,
+      title: t("9. Security and changes"),
+      content: <Typography>{t("MealMosaic applies measures intended to limit unauthorized access, including password hashing and token authentication. As no system guarantees absolute security, measures, backup procedures, and incident contacts must be documented before production deployment: [TO COMPLETE]. Material changes to this policy will be communicated appropriately.")}</Typography>,
     },
   ];
 
-  return <LegalPageLayout title='Politique de confidentialité et traceurs' description='Cette politique explique comment MealMosaic traite les données personnelles nécessaires au fonctionnement du service.' sections={sections} />;
+  return <LegalPageLayout title={t("Privacy and tracking policy")} description={t("This policy explains how MealMosaic processes the personal data necessary to operate the service.")} sections={sections} />;
 }

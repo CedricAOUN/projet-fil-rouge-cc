@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Comment } from '@/types';
 import {
   Typography,
@@ -32,6 +33,7 @@ function CommentList({
   comments: Comment[];
   recipeId: string;
 }) {
+  const { t } = useTranslation();
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
   const [idToEdit, setIdToEdit] = useState<number | null>(null);
   const [newCommentContent, setNewCommentContent] = useState<string>('');
@@ -60,11 +62,11 @@ function CommentList({
   if (!comments || comments.length === 0) {
     return (
       <Box display={'flex'} flexDirection={'column'} gap={2}>
-        <Typography variant='h4' component='h2'>Comments</Typography>
+        <Typography variant='h4' component='h2'>{t("Comments")}</Typography>
         {isPremiumUser && (
           <Stack direction='row' alignItems='center' gap={2}>
             <TextField
-              label='Add a comment'
+              label={t("Add a comment")}
               multiline
               fullWidth
               value={newCommentContent}
@@ -78,20 +80,18 @@ function CommentList({
             </Button>
           </Stack>
         )}
-        <Typography variant='subtitle1' textAlign={'center'}>
-          No comments available.
-        </Typography>
+        <Typography variant='subtitle1' textAlign={'center'}>{t("No comments available.")}</Typography>
       </Box>
     );
   }
 
   return (
     <Stack gap={2}>
-      <Typography variant='h4' component='h2'>Comments</Typography>
+      <Typography variant='h4' component='h2'>{t("Comments")}</Typography>
       {isPremiumUser && (
         <Stack direction='row' alignItems='center' gap={2}>
           <TextField
-            label='Add a comment'
+            label={t("Add a comment")}
             multiline
             fullWidth
             value={newCommentContent}
@@ -127,8 +127,7 @@ function CommentList({
               <Typography variant='subtitle2'>{comment.content}</Typography>
               {comment.updated_at &&
                 comment.updated_at !== comment.created_at && (
-                  <Typography variant='caption' color='textSecondary'>
-                    Edited on{' '}
+                  <Typography variant='caption' color='textSecondary'>{t("Edited on")}{' '}
                     {dayjs(comment.updated_at).format('MMM D, YYYY h:mm A')}
                   </Typography>
                 )}
@@ -167,8 +166,8 @@ function CommentList({
           setIdToDelete(null);
           handleDeleteComment(idToDelete); // Assuming you want to delete the first comment for demonstration
         }}
-        title='Confirm Deletion'
-        message='Are you sure you want to delete this comment?'
+        title={t("Confirm Deletion")}
+        message={t("Are you sure you want to delete this comment?")}
       />
       <EditCommentDialog
         open={idToEdit !== null}
@@ -177,7 +176,7 @@ function CommentList({
           setIdToEdit(null);
           handleEditComment(idToEdit, editedCommentContent); // Assuming you want to edit the first comment for demonstration
         }}
-        title='Edit Comment'
+        title={t("Edit Comment")}
         content={editedCommentContent}
         onContentChange={(content) => setEditedCommentContent(content)}
       />

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Button,
   List,
@@ -13,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthUser, useGetCurrentUserQuery } from '@/api/authApi';
 
 function ChefsList({ chefs }: { chefs: AuthUser[] }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleViewClick = (chefId) => {
@@ -45,7 +47,7 @@ function ChefsList({ chefs }: { chefs: AuthUser[] }) {
                 sx={{ ml: 'auto' }}
                 onClick={() => handleViewClick(chef.id)}
               >
-                {'View Courses'}
+                {t("View Courses")}
               </Button>
             </Paper>
           </ListItem>

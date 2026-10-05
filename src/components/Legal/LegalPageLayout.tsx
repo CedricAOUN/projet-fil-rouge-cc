@@ -1,5 +1,6 @@
 import { Alert, Box, Container, Divider, Link, Paper, Stack, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export type LegalSection = {
   id: string;
@@ -18,6 +19,7 @@ export default function LegalPageLayout({
   description,
   sections,
 }: LegalPageLayoutProps) {
+  const { t } = useTranslation();
   return (
     <Container maxWidth='md' sx={{ py: { xs: 2, md: 4 } }}>
       <Paper component='article' sx={{ p: { xs: 2.5, sm: 4, md: 6 } }}>
@@ -28,19 +30,18 @@ export default function LegalPageLayout({
             </Typography>
             <Typography color='text.secondary'>{description}</Typography>
             <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>
-              Dernière mise à jour : [À COMPLÉTER — JJ/MM/AAAA]
+              {t('Last updated: [TO COMPLETE — DD/MM/YYYY]')}
             </Typography>
           </Box>
 
           <Alert severity='warning'>
-            <strong>Projet étudiant — document de travail.</strong> Les mentions
-            « [À COMPLÉTER] » doivent être renseignées et le document validé par
-            un professionnel avant toute mise en production ou vente réelle.
+            <strong>{t('Student project — draft document.')}</strong>{' '}
+            {t('The “[TO COMPLETE]” placeholders must be filled in and the document reviewed by a professional before any production deployment or real sale.')}
           </Alert>
 
-          <Box component='nav' aria-label={`Sommaire — ${title}`}>
+          <Box component='nav' aria-label={t('Contents — {{title}}', { title })}>
             <Typography component='h2' variant='h6' gutterBottom>
-              Sommaire
+              {t('Contents')}
             </Typography>
             <Box component='ol' sx={{ m: 0, pl: 3 }}>
               {sections.map((section) => (

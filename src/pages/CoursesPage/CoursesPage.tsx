@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useGetChefsQuery } from '@/api/authApi';
 import { useGetCoursesQuery } from '@/api/courseApi';
 import ChefsList from '@/components/ChefsList/ChefsList';
@@ -14,6 +15,7 @@ import {
 import React, { useState } from 'react';
 
 const CoursesPage = () => {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<'course' | 'chef'>('course');
   const [query, setQuery] = useState<string>('');
   const debouncedQuery = useDebounce(query, 300);
@@ -35,22 +37,18 @@ const CoursesPage = () => {
 
   return (
     <Stack width={'100%'} alignItems={'center'} gap={1}>
-      <Typography variant='h1'>Cooking courses</Typography>
+      <Typography variant='h1'>{t("Cooking courses")}</Typography>
       <ToggleButtonGroup value={mode}>
         <ToggleButton
           value={'course'}
           onClick={() => handleSwitchMode('course')}
-        >
-          By Courses
-        </ToggleButton>
-        <ToggleButton value={'chef'} onClick={() => handleSwitchMode('chef')}>
-          By Chef
-        </ToggleButton>
+        >{t("By Courses")}</ToggleButton>
+        <ToggleButton value={'chef'} onClick={() => handleSwitchMode('chef')}>{t("By Chef")}</ToggleButton>
       </ToggleButtonGroup>
       <TextField
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder='Search'
+        placeholder={t("Search")}
         fullWidth
       />
       {isLoading && (

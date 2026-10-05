@@ -1,3 +1,4 @@
+import { t } from '@/i18n';
 import { useAppSelector, useAppDispatch } from '@/store';
 import {
   fetchRecipesStart,
@@ -32,10 +33,10 @@ export const useRecipes = () => {
         const recipes = await response.json();
         dispatch(fetchRecipesSuccess(recipes));
       } else {
-        dispatch(fetchRecipesFailure('Failed to fetch recipes'));
+        dispatch(fetchRecipesFailure(t("Failed to fetch recipes")));
       }
     } catch (error) {
-      dispatch(fetchRecipesFailure('Network error'));
+      dispatch(fetchRecipesFailure(t("Network error")));
     }
   };
 

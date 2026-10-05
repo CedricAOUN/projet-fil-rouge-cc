@@ -1,17 +1,18 @@
+import type { TFunction } from 'i18next';
 import { Unit } from '@/api/api.types';
 
-export const UNITS: Unit[] = [
-  { value: 'ml', label: 'Milliliter (ml)' },
-  { value: 'l', label: 'Liter (L)' },
-  { value: 'pcs', label: 'Pieces' },
-  { value: 'tsp', label: 'Teaspoon (tsp)' },
-  { value: 'tbsp', label: 'Tablespoon (tbsp)' },
-  { value: 'cup', label: 'Cup' },
-  { value: 'fl_oz', label: 'Fluid Ounce (fl oz)' },
-  { value: 'g', label: 'Gram (g)' },
-  { value: 'kg', label: 'Kilogram (kg)' },
-  { value: 'oz', label: 'Ounce (oz)' },
-  { value: 'lb', label: 'Pound (lb)' },
+export const getUnits = (t: TFunction): Unit[] => [
+  { value: 'ml', label: t("Milliliter (ml)") },
+  { value: 'l', label: t("Liter (L)") },
+  { value: 'pcs', label: t("Pieces") },
+  { value: 'tsp', label: t("Teaspoon (tsp)") },
+  { value: 'tbsp', label: t("Tablespoon (tbsp)") },
+  { value: 'cup', label: t("Cup") },
+  { value: 'fl_oz', label: t("Fluid Ounce (fl oz)") },
+  { value: 'g', label: t("Gram (g)") },
+  { value: 'kg', label: t("Kilogram (kg)") },
+  { value: 'oz', label: t("Ounce (oz)") },
+  { value: 'lb', label: t("Pound (lb)") },
 ];
 
-export const UNIT_VALUES = UNITS.map((unit) => unit.value);
+export const UNIT_VALUES = ['ml', 'l', 'pcs', 'tsp', 'tbsp', 'cup', 'fl_oz', 'g', 'kg', 'oz', 'lb'];

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import PremiumCard from '@/components/PremiumCard/PremiumCard';
 import RecipeSearch from '@/components/RecipeComponents/RecipeSearch/RecipeSearch';
 import { setSearchQuery, useAppDispatch, useAppSelector } from '@/store';
@@ -167,10 +168,11 @@ function CulinaryDecorations() {
 }
 
 function RecipeBoard() {
+  const { t } = useTranslation();
   const steps = [
-    ['01', 'Pick a craving'],
-    ['02', 'Find your recipe'],
-    ['03', 'Make it your own'],
+    ['01', t("Pick a craving")],
+    ['02', t("Find your recipe")],
+    ['03', t("Make it your own")],
   ];
 
   return (
@@ -204,12 +206,8 @@ function RecipeBoard() {
         variant='overline'
         color='text.secondary'
         letterSpacing='0.14em'
-      >
-        Today&apos;s kitchen note
-      </Typography>
-      <Typography variant='h4' component='h2' fontWeight={800} mt={0.5} mb={3}>
-        Good food starts with a little curiosity.
-      </Typography>
+      >{t("Today's kitchen note")}</Typography>
+      <Typography variant='h4' component='h2' fontWeight={800} mt={0.5} mb={3}>{t("Good food starts with a little curiosity.")}</Typography>
       <Stack divider={<Box sx={{ borderTop: 1, borderColor: 'divider' }} />}>
         {steps.map(([number, label]) => (
           <Stack
@@ -235,6 +233,7 @@ function RecipeBoard() {
 }
 
 function CoursesCard() {
+  const { t } = useTranslation();
   return (
     <Paper
       elevation={0}
@@ -261,28 +260,22 @@ function CoursesCard() {
           <MenuBookRoundedIcon />
         </Box>
         <Box flex={1}>
-          <Typography variant='h4' component='h2' fontWeight={800} gutterBottom>
-            Learn from passionate chefs
-          </Typography>
-          <Typography color='text.secondary'>
-            Explore practical courses, discover new techniques, and bring more
-            confidence to your kitchen.
-          </Typography>
+          <Typography variant='h4' component='h2' fontWeight={800} gutterBottom>{t("Learn from passionate chefs")}</Typography>
+          <Typography color='text.secondary'>{t("Explore practical courses, discover new techniques, and bring more confidence to your kitchen.")}</Typography>
         </Box>
         <Button
           component={NavLink}
           to='/courses'
           variant='contained'
           size='large'
-        >
-          Explore courses
-        </Button>
+        >{t("Explore courses")}</Button>
       </Stack>
     </Paper>
   );
 }
 
 function Home() {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const heroRef = useRef<HTMLElement>(null);
   const headerSearchRef = useRef<HTMLInputElement>(null);
@@ -386,9 +379,7 @@ function Home() {
               color='secondary.main'
               fontWeight={900}
               letterSpacing='0.15em'
-            >
-              Your kitchen, your mosaic
-            </Typography>
+            >{t("Your kitchen, your mosaic")}</Typography>
             <Typography
               component='h1'
               sx={{
@@ -398,23 +389,18 @@ function Home() {
                 fontWeight: 900,
                 maxWidth: '10ch',
               }}
-            >
-              Find something worth cooking.
-            </Typography>
+            >{t("Find something worth cooking.")}</Typography>
             <Typography
               color='text.secondary'
               fontSize={{ xs: '1rem', md: '1.15rem' }}
               maxWidth='52ch'
-            >
-              Discover recipes for every appetite, learn from cooks who love
-              their craft, and make each dish your own.
-            </Typography>
+            >{t("Discover recipes for every appetite, learn from cooks who love their craft, and make each dish your own.")}</Typography>
             <TextField
               inputRef={headerSearchRef}
               value={searchQuery}
               onChange={(event) => dispatch(setSearchQuery(event.target.value))}
-              placeholder='What are you craving?'
-              aria-label='Search recipes'
+              placeholder={t("What are you craving?")}
+              aria-label={t("Search recipes")}
               fullWidth
               sx={(theme) => ({
                 maxWidth: 560,
@@ -492,13 +478,13 @@ function Home() {
             })}
           >
             <HomeSection
-              eyebrow={searchQuery ? 'Search results' : 'Fresh inspiration'}
+              eyebrow={searchQuery ? t("Search results") : t("Fresh inspiration")}
               title={
                 searchQuery
-                  ? `Recipes for “${searchQuery}”`
-                  : 'Discover your next favorite dish'
+                  ? t('Recipes for “{{query}}”', { query: searchQuery })
+                  : t("Discover your next favorite dish")
               }
-              description='Browse the latest recipes from the MealMosaic community.'
+              description={t("Browse the latest recipes from the MealMosaic community.")}
             >
               <RecipeSearch
                 showSearch={Boolean(searchQuery)}

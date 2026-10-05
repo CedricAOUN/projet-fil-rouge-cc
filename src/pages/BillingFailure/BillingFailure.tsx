@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { Button, Paper, Typography, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function BillingFailure() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -15,15 +17,10 @@ function BillingFailure() {
           alignItems: 'center',
         }}
       >
-        <Typography variant='h1'>Payment Failed</Typography>
-        <Typography variant='h6' component='p'>
-          Unfortunately, your payment could not be processed. Please try again
-          or contact support for assistance.
-        </Typography>
+        <Typography variant='h1'>{t("Payment Failed")}</Typography>
+        <Typography variant='h6' component='p'>{t("Unfortunately, your payment could not be processed. Please try again or contact support for assistance.")}</Typography>
       </Paper>
-      <Button variant='contained' onClick={() => navigate('/')}>
-        Back to Home
-      </Button>
+      <Button variant='contained' onClick={() => navigate('/')}>{t("Back to Home")}</Button>
     </Stack>
   );
 }

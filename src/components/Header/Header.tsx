@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   AppBar,
   Avatar,
@@ -21,6 +22,7 @@ import ProfileDropdown from './ProfileDropdown';
 const LoginModal = lazy(() => import('@/components/LoginModal/LoginModal'));
 
 export default function Header({ currentTheme, onThemeToggle }) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -142,7 +144,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
               mr='10px'
               alignItems='center'
             >
-              <IconButton onClick={handleMenuOpen} color='inherit' aria-label='Open menu' aria-haspopup='menu' aria-expanded={Boolean(anchorEl)}>
+              <IconButton onClick={handleMenuOpen} color='inherit' aria-label={t("Open menu")} aria-haspopup='menu' aria-expanded={Boolean(anchorEl)}>
                 <MenuIcon />
               </IconButton>
               <Menu
@@ -151,33 +153,21 @@ export default function Header({ currentTheme, onThemeToggle }) {
                 onClose={handleMenuClose}
               >
                 <MenuItem>
-                  <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
-                    Recipes
-                  </MuiLink>
+                  <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>{t("Recipes")}</MuiLink>
                 </MenuItem>
                 <MenuItem>
-                  <MuiLink component={NavLink} to='/courses' sx={linkStyles}>
-                    Courses
-                  </MuiLink>
+                  <MuiLink component={NavLink} to='/courses' sx={linkStyles}>{t("Courses")}</MuiLink>
                 </MenuItem>
                 <MenuItem>
-                  <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
-                    Premium
-                  </MuiLink>
+                  <MuiLink component={NavLink} to='/premium' sx={linkStyles}>{t("Premium")}</MuiLink>
                 </MenuItem>
               </Menu>
             </Stack>
           ) : (
             <Stack direction='row' gap='2px' alignItems='center'>
-              <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>
-                Recipes
-              </MuiLink>
-              <MuiLink component={NavLink} to='/courses' sx={linkStyles}>
-                Courses
-              </MuiLink>
-              <MuiLink component={NavLink} to='/premium' sx={linkStyles}>
-                Premium
-              </MuiLink>
+              <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>{t("Recipes")}</MuiLink>
+              <MuiLink component={NavLink} to='/courses' sx={linkStyles}>{t("Courses")}</MuiLink>
+              <MuiLink component={NavLink} to='/premium' sx={linkStyles}>{t("Premium")}</MuiLink>
             </Stack>
           )}
 
@@ -188,9 +178,7 @@ export default function Header({ currentTheme, onThemeToggle }) {
                 color='primary'
                 size={isMobile ? 'small' : 'medium'}
                 onClick={handleModalOpen}
-              >
-                Sign In
-              </Button>
+              >{t("Sign In")}</Button>
             )}
             {currentUser && (
               <ProfileDropdown

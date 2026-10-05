@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   useDeleteUserByIdMutation,
   useGetCurrentUserQuery,
@@ -11,6 +12,7 @@ interface DeleteUserModalProps {
 }
 
 const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
+  const { t } = useTranslation();
   const currentUser = useGetCurrentUserQuery();
 
   const [password, setPassword] = useState('');
@@ -34,21 +36,18 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
     errorData && typeof errorData === 'object' && 'message' in errorData &&
     typeof errorData.message === 'string'
       ? errorData.message
-      : 'Unable to delete your account. Please try again.';
+      : t("Unable to delete your account. Please try again.");
 
   return (
     <Dialog open={open} onClose={onClose}>
       <Stack gap={2}>
-        <Typography>
-          Please re-enter your password to confirm account deletion. This action
-          is irreversible.
-        </Typography>
+        <Typography>{t("Please re-enter your password to confirm account deletion. This action is irreversible.")}</Typography>
         <TextField
           id='password'
           type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder='Password'
+          placeholder={t("Password")}
           error={!!error}
           helperText={error ? errorMessage : undefined}
           disabled={isLoading}
@@ -56,9 +55,7 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
         <Button
           onClick={handleDeleteUser}
           disabled={isLoading || !password || !currentUser.data}
-        >
-          Delete account
-        </Button>
+        >{t("Delete account")}</Button>
       </Stack>
     </Dialog>
   );

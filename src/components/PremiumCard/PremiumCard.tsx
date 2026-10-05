@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
 
 function PremiumCard() {
+  const { t } = useTranslation();
   return (
     <Paper
       elevation={0}
@@ -30,22 +32,15 @@ function PremiumCard() {
           <WorkspacePremiumRoundedIcon />
         </Box>
         <Box flex={1}>
-          <Typography variant='h4' component='h2' fontWeight={800} gutterBottom>
-            Take your cooking further
-          </Typography>
-          <Typography color='text.secondary'>
-            Unlock premium recipes, share your own creations, and grow from
-            home cook to chef.
-          </Typography>
+          <Typography variant='h4' component='h2' fontWeight={800} gutterBottom>{t("Take your cooking further")}</Typography>
+          <Typography color='text.secondary'>{t("Unlock premium recipes, share your own creations, and grow from home cook to chef.")}</Typography>
         </Box>
         <Button
           component={NavLink}
           to='/premium'
           variant='contained'
           size='large'
-        >
-          Discover Premium
-        </Button>
+        >{t("Discover Premium")}</Button>
       </Stack>
     </Paper>
   );

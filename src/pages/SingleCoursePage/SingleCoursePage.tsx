@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useGetCourseByIdQuery } from '@/api/courseApi';
 import { useParams } from 'react-router-dom';
 import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
@@ -13,6 +14,7 @@ import ReactMarkdown from 'react-markdown';
 import ReactPlayer from 'react-player';
 
 const SingleCoursePage = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
 
   const {
@@ -37,8 +39,7 @@ const SingleCoursePage = () => {
       <Typography variant='h3' component='h1' textAlign={'center'}>
         {course?.title}
       </Typography>
-      <Typography variant='subtitle2' color='primary' textAlign={'center'}>
-        by {course?.created_by.name}
+      <Typography variant='subtitle2' color='primary' textAlign={'center'}>{t('by {{author}}', { author: course?.created_by.name })}
       </Typography>
       {course?.video_url && (
         <>

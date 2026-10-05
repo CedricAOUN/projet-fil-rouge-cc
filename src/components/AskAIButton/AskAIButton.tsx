@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useAskAIQuery } from '@/api/recipeApi';
 import {
   Button,
@@ -14,6 +15,7 @@ import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CloseIcon from '@mui/icons-material/Close';
 
 function AskAIButton({ recipe }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: suggestion, isLoading } = useAskAIQuery(
@@ -25,9 +27,7 @@ function AskAIButton({ recipe }) {
 
   return (
     <>
-      <Button sx={{ height: 40 }} onClick={() => setIsOpen(true)}>
-        Ask AI
-      </Button>
+      <Button sx={{ height: 40 }} onClick={() => setIsOpen(true)}>{t("Ask AI")}</Button>
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -41,9 +41,7 @@ function AskAIButton({ recipe }) {
           justifyContent={'space-between'}
         >
           <SmartToyIcon color='primary'></SmartToyIcon>
-          <Typography variant='h5' component='h2' color='primary'>
-            AI Assisted Steps
-          </Typography>
+          <Typography variant='h5' component='h2' color='primary'>{t("AI Assisted Steps")}</Typography>
           <IconButton onClick={() => setIsOpen(false)}>
             <CloseIcon sx={{ fontSize: 24 }}></CloseIcon>
           </IconButton>

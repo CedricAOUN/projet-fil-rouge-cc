@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,7 @@ function ConfirmationModal({
   title: string;
   message: string;
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
@@ -28,12 +30,8 @@ function ConfirmationModal({
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color='primary'>
-          Cancel
-        </Button>
-        <Button onClick={onConfirm} color='primary' autoFocus>
-          Confirm
-        </Button>
+        <Button onClick={onClose} color='primary'>{t("Cancel")}</Button>
+        <Button onClick={onConfirm} color='primary' autoFocus>{t("Confirm")}</Button>
       </DialogActions>
     </Dialog>
   );

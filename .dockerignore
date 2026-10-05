@@ -1,0 +1,7 @@
+node_modules
+.tools
+.git
+coverage
+dist
+dist-ssr
+*.log

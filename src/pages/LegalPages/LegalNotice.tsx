@@ -1,17 +1,21 @@
+import { Trans, useTranslation } from 'react-i18next';
 import { Link, Typography } from '@mui/material';
 import LegalPageLayout, { type LegalSection } from '@/components/Legal/LegalPageLayout';
 
 const P = ({ children }) => <Typography>{children}</Typography>;
 
 export default function LegalNotice() {
+  const { t } = useTranslation();
   const sections: LegalSection[] = [
-    { id: 'edition', title: '1. Édition du site', content: <P>MealMosaic est un projet étudiant édité par [À COMPLÉTER — nom ou raison sociale, forme juridique, capital social le cas échéant, adresse du siège ou domicile professionnel]. Immatriculation : [À COMPLÉTER — RCS/RNE, SIREN/SIRET]. Numéro de TVA intracommunautaire : [À COMPLÉTER ou « non applicable »].</P> },
-    { id: 'publication', title: '2. Direction de la publication', content: <P>Directeur ou directrice de la publication : [À COMPLÉTER — nom et qualité]. Contact : [À COMPLÉTER — adresse électronique et numéro de téléphone professionnel].</P> },
-    { id: 'hebergement', title: '3. Hébergement', content: <P>Le frontend, l’API, la base de données et les fichiers sont hébergés par [À COMPLÉTER — raison sociale de chaque hébergeur, adresse et téléphone]. L’emplacement géographique des données doit être précisé après vérification : [À COMPLÉTER].</P> },
-    { id: 'propriete', title: '4. Propriété intellectuelle', content: <P>La structure, la marque, les textes et éléments graphiques propres à MealMosaic sont protégés sous réserve des droits des tiers. Toute reproduction excédant les exceptions légales nécessite une autorisation. Les utilisateurs conservent leurs droits sur leurs contributions et accordent uniquement la licence définie dans les CGU.</P> },
-    { id: 'signalement', title: '5. Contact et signalement', content: <P>Pour signaler un contenu manifestement illicite, une atteinte à des droits ou un problème technique, écrivez à [À COMPLÉTER — adresse électronique] en indiquant l’URL concernée, le motif et les éléments permettant d’examiner la demande. Pour les données personnelles, consultez la <Link href='/confidentialite'>politique de confidentialité</Link>.</P> },
-    { id: 'credits', title: '6. Crédits', content: <P>Conception et développement : [À COMPLÉTER]. Crédits des photographies, vidéos, polices, bibliothèques et autres ressources : [À COMPLÉTER après inventaire des licences].</P> },
+    { id: 'edition', title: t("1. Website publisher"), content: <P>{t("MealMosaic is a student project published by [TO COMPLETE — name or business name, legal form, share capital where applicable, registered office or professional address]. Registration: [TO COMPLETE — RCS/RNE, SIREN/SIRET]. EU VAT number: [TO COMPLETE or “not applicable”].")}</P> },
+    { id: 'publication', title: t("2. Publication director"), content: <P>{t("Publication director: [TO COMPLETE — name and capacity]. Contact: [TO COMPLETE — email address and professional telephone number].")}</P> },
+    { id: 'hebergement', title: t("3. Hosting"), content: <P>{t("The frontend, API, database, and files are hosted by [TO COMPLETE — business name, address, and telephone number of each hosting provider]. The geographical location of the data must be specified after verification: [TO COMPLETE].")}</P> },
+    { id: 'propriete', title: t("4. Intellectual property"), content: <P>{t("The structure, brand, text, and graphics specific to MealMosaic are protected, subject to third-party rights. Reproduction beyond statutory exceptions requires permission. Users retain their rights to their contributions and grant only the license defined in the Terms of Use.")}</P> },
+    { id: 'signalement', title: t("5. Contact and reporting"), content: <P>
+            <Trans i18nKey="To report manifestly unlawful content, an infringement of rights, or a technical issue, write to [TO COMPLETE — email address], specifying the URL concerned, the reason, and the information needed to review the request. For personal data, see the <privacy>privacy policy</privacy>." components={{ privacy: <Link href='/confidentialite' /> }} />
+          </P> },
+    { id: 'credits', title: t("6. Credits"), content: <P>{t("Design and development: [TO COMPLETE]. Credits for photographs, videos, fonts, libraries, and other resources: [TO COMPLETE after reviewing licenses].")}</P> },
   ];
 
-  return <LegalPageLayout title='Mentions légales' description='Informations relatives à l’éditeur, à l’hébergement et aux droits applicables au site MealMosaic.' sections={sections} />;
+  return <LegalPageLayout title={t("Legal notice")} description={t("Information about the publisher, hosting, and rights applicable to the MealMosaic website.")} sections={sections} />;
 }

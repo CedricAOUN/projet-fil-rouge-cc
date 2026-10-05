@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -14,6 +15,7 @@ import { useGetCurrentUserQuery } from '@/api/authApi';
 import { useNavigate } from 'react-router-dom';
 
 const Favorites = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const currentUser = useGetCurrentUserQuery().data;
   const favoriteRecipes = currentUser?.favorite_recipes;
@@ -28,7 +30,7 @@ const Favorites = () => {
 
   return (
     <Stack direction={'column'} spacing={2}>
-      <Typography variant='h1'>Your Favorites</Typography>
+      <Typography variant='h1'>{t("Your Favorites")}</Typography>
       <Stack direction={'row'} gap={2} justifyContent={'center'}>
         {favoriteRecipes?.map((recipe) => (
           <Paper
@@ -47,15 +49,13 @@ const Favorites = () => {
             <Typography component='h2'>{recipe.title}</Typography>
             <img
               src={recipe.image_url}
-              alt={recipe.title || "Recipe"}
+              alt={recipe.title || t("Recipe")}
               width={'300'}
               height={'300'}
               style={{ objectFit: 'cover' }}
             />
             <Typography>{recipe.description}</Typography>
-            <Button onClick={() => handleGoToRecipe(recipe.id)}>
-              View Recipe
-            </Button>
+            <Button onClick={() => handleGoToRecipe(recipe.id)}>{t("View Recipe")}</Button>
           </Paper>
         ))}
         {(favoriteRecipes?.length < 1 || favoriteRecipes == null) && (
@@ -67,8 +67,8 @@ const Favorites = () => {
               gap: 2,
             }}
           >
-            <Typography>You don't have any favorites yet !</Typography>
-            <Button onClick={handleGoToRecipeSearch}>Explore Recipes</Button>
+            <Typography>{t("You don't have any favorites yet !")}</Typography>
+            <Button onClick={handleGoToRecipeSearch}>{t("Explore Recipes")}</Button>
           </Box>
         )}
       </Stack>

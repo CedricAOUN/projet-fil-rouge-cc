@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo, useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import '@/App.css';
@@ -31,10 +32,20 @@ const TermsOfSale = lazy(() => import('./pages/LegalPages/TermsOfSale'));
 const LegalNotice = lazy(() => import('./pages/LegalPages/LegalNotice'));
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [consentOpen, setConsentOpen] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isMobile = useMediaQuery('(max-width: 900px)');
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.resolvedLanguage ?? 'en';
+    document.title = t('MealMosaic | Recipes and cooking courses');
+    document.querySelector('meta[name="description"]')?.setAttribute(
+      'content',
+      t('Discover recipes, learn cooking techniques from passionate chefs, and share your creations with the MealMosaic community.'),
+    );
+  }, [t, i18n.resolvedLanguage]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -86,7 +97,7 @@ function App() {
               minHeight: isHomePage ? undefined : 'calc(100vh - 190px)',
             }}
           >
-            <Suspense fallback={<Box role='status' sx={{ p: 3 }}>Loading page…</Box>}>
+            <Suspense fallback={<Box role='status' sx={{ p: 3 }}>{t("Loading page…")}</Box>}>
               <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/recipes' element={<AdvancedRecipeSearch />} />

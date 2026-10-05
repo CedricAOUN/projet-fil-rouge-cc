@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Button,
   CircularProgress,
@@ -17,6 +18,7 @@ import useDebounce from '@/utils/useDebounce';
 import { useNavigate } from 'react-router-dom';
 
 const AdvancedRecipeSearch = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [allIngredients, setAllIngredients] = React.useState<string[]>([]);
@@ -69,9 +71,7 @@ const AdvancedRecipeSearch = () => {
 
   return (
     <>
-      <Typography variant='h1' gutterBottom>
-        Recipes
-      </Typography>
+      <Typography variant='h1' gutterBottom>{t("Recipes")}</Typography>
       <Stack
         height={'100%'}
         maxHeight={'100%'}
@@ -98,16 +98,14 @@ const AdvancedRecipeSearch = () => {
             }}
             gap={3}
           >
-            <Typography variant='h5' component='h2' sx={{ padding: '20px' }}>
-              Filters
-            </Typography>
+            <Typography variant='h5' component='h2' sx={{ padding: '20px' }}>{t("Filters")}</Typography>
             <MultiSelectFilter
-              label='By ingredient'
+              label={t("By ingredient")}
               options={allIngredients}
               onChange={(selected) => setSelectedIngredients(selected)}
             />
             <MultiSelectFilter
-              label='By creator'
+              label={t("By creator")}
               options={allCreators}
               onChange={(selected) => setSelectedCreators(selected)}
             />
@@ -117,7 +115,7 @@ const AdvancedRecipeSearch = () => {
               </Stack>
             ) : (
               <CustomSlider
-                label='By likes'
+                label={t("By likes")}
                 min={data?.lowest_likes || 0}
                 max={data?.highest_likes || 10000}
                 onChange={(value) => setLikeRange(value as [number, number])}
@@ -141,9 +139,9 @@ const AdvancedRecipeSearch = () => {
                   },
                 }}
               >
-                <ToggleButton value={'all'}>All</ToggleButton>
-                <ToggleButton value={'premium'}>Premium</ToggleButton>
-                <ToggleButton value={'free'}>Free</ToggleButton>
+                <ToggleButton value={'all'}>{t("All")}</ToggleButton>
+                <ToggleButton value={'premium'}>{t("Premium")}</ToggleButton>
+                <ToggleButton value={'free'}>{t("Free")}</ToggleButton>
               </ToggleButtonGroup>
             </Stack>
           </Stack>
@@ -159,7 +157,7 @@ const AdvancedRecipeSearch = () => {
           <Stack direction={'row'} alignItems={'center'} gap={2} flexShrink={0}>
             <TextField
               fullWidth
-              placeholder='Search for recipes...'
+              placeholder={t("Search for recipes...")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -195,9 +193,7 @@ const AdvancedRecipeSearch = () => {
                   />
                 ))}
                 {recipes?.length == 0 && (
-                  <Typography>
-                    No recipes match your search. Please try something else !
-                  </Typography>
+                  <Typography>{t("No recipes match your search. Please try something else !")}</Typography>
                 )}
               </Stack>
             )}

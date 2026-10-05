@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import {
   Avatar,
@@ -10,6 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const isCurrentUserChef = currentUser?.is_chef;
@@ -76,39 +78,27 @@ function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
           </Typography>
         </MenuItem>
         <MenuItem onClick={onNavigateToProfile}>
-          <Typography textAlign={'center'} width={'100%'}>
-            Profile
-          </Typography>
+          <Typography textAlign={'center'} width={'100%'}>{t("Profile")}</Typography>
         </MenuItem>
         <MenuItem onClick={() => navigate('/favorites')}>
-          <Typography textAlign={'center'} width={'100%'}>
-            Favorites
-          </Typography>
+          <Typography textAlign={'center'} width={'100%'}>{t("Favorites")}</Typography>
         </MenuItem>
         <MenuItem onClick={() => navigate('/my-recipes')}>
-          <Typography textAlign={'center'} width={'100%'}>
-            My Recipes
-          </Typography>
+          <Typography textAlign={'center'} width={'100%'}>{t("My Recipes")}</Typography>
         </MenuItem>
         {isCurrentUserPremium && (
           <MenuItem onClick={() => navigate('/recipe/create')}>
-            <Typography textAlign={'center'} width={'100%'}>
-              Create a recipe
-            </Typography>
+            <Typography textAlign={'center'} width={'100%'}>{t("Create a recipe")}</Typography>
           </MenuItem>
         )}
         {isCurrentUserChef && (
           <MenuItem onClick={() => navigate('/course/create')}>
-            <Typography textAlign={'center'} width={'100%'}>
-              Create a course
-            </Typography>
+            <Typography textAlign={'center'} width={'100%'}>{t("Create a course")}</Typography>
           </MenuItem>
         )}
         <Divider />
         <MenuItem onClick={onLogout}>
-          <Typography textAlign={'center'} width={'100%'} color={'error'}>
-            Logout
-          </Typography>
+          <Typography textAlign={'center'} width={'100%'} color={'error'}>{t("Logout")}</Typography>
         </MenuItem>
       </Menu>
     </div>

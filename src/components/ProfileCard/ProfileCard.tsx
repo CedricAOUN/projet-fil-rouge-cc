@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 import { RootState, useAppSelector } from '@/store/store';
 import {
@@ -10,6 +11,7 @@ import {
 } from '@mui/material';
 
 function ProfileCard({ user, onEdit, isMobile }) {
+  const { t } = useTranslation();
   // Test
   const {
     name,
@@ -39,7 +41,7 @@ function ProfileCard({ user, onEdit, isMobile }) {
         <Avatar
           sx={{ height: '100px', width: '100px' }}
           src={avatar_url}
-          alt={`Profile photo of ${displayName}`}
+          alt={t('Profile photo of {{name}}', { name: displayName })}
         />
         <Stack
           width={'100%'}
@@ -54,11 +56,10 @@ function ProfileCard({ user, onEdit, isMobile }) {
             {biography}
           </Typography>
           {courses_count && (
-            <Typography variant='subtitle2'>
-              Available courses: {courses_count}
+            <Typography variant='subtitle2'>{t('Available courses: {{count}}', { count: courses_count })}
             </Typography>
           )}
-          {isCurrentUser && <Button onClick={onEdit}>Edit Profile</Button>}
+          {isCurrentUser && <Button onClick={onEdit}>{t("Edit Profile")}</Button>}
         </Stack>
       </CardContent>
     </Card>
