@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import React, { useRef, useState } from 'react';
 import {
   Avatar,
+  Alert,
   Box,
   Button,
   Stack,
@@ -14,6 +15,7 @@ import {
   useUpdateProfileMutation,
 } from '@/api/authApi';
 import DeleteUserModal from './DeleteUserModal';
+import ChangePasswordModal from './ChangePasswordModal';
 
 function EditProfileForm({ onStopEdit }) {
   const { t } = useTranslation();
@@ -77,6 +79,8 @@ function EditProfileForm({ onStopEdit }) {
 
   // Delete Modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [passwordChanged, setPasswordChanged] = useState(false);
 
   return (
     <>
@@ -154,7 +158,32 @@ function EditProfileForm({ onStopEdit }) {
         <Typography variant='h5' component='h2'>
           {t('Advanced Options')}
         </Typography>
-        <Button>{t('Change Password')}</Button>
+        {passwordChanged && (
+          <Alert severity='success'>{t('Password changed successfully.')}</Alert>
+        )}
+        <Button
+          disabled={currentUser.has_password === false}
+          onClick={() => {
+            setPasswordChanged(false);
+            setPasswordModalOpen(true);
+          }}
+        >
+          {t('Change Password')}
+        </Button>
+        {currentUser.has_password === false && (
+          <Typography variant='body2' color='text.secondary'>
+            {t('You sign in with Google and do not have a password to change.')}
+          </Typography>
+        )}
+        {passwordModalOpen && (
+          <ChangePasswordModal
+            onClose={() => setPasswordModalOpen(false)}
+            onSuccess={() => {
+              setPasswordModalOpen(false);
+              setPasswordChanged(true);
+            }}
+          />
+        )}
         <Button
           variant='outlined'
           color='error'

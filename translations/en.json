@@ -392,5 +392,13 @@
   "Likes": "Likes",
   "Edit": "Edit",
   "Delete": "Delete",
-  "Close": "Close"
+  "Close": "Close",
+  "Current password": "Current password",
+  "New password": "New password",
+  "Enter your current password.": "Enter your current password.",
+  "Your new password must be different from your current password.": "Your new password must be different from your current password.",
+  "Changing password...": "Changing password...",
+  "Password changed successfully.": "Password changed successfully.",
+  "Unable to change your password. Please try again.": "Unable to change your password. Please try again.",
+  "You sign in with Google and do not have a password to change.": "You sign in with Google and do not have a password to change."
 }

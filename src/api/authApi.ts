@@ -6,6 +6,7 @@ export interface AuthUser {
   id: number;
   name: string;
   email: string;
+  has_password?: boolean;
   biography: string | null;
   first_name: string | null;
   last_name: string | null;
@@ -35,6 +36,12 @@ export interface RegisterRequest {
 export interface GoogleLoginRequest {
   credential: string;
   password?: string;
+}
+
+export interface ChangePasswordRequest {
+  current_password: string;
+  password: string;
+  password_confirmation: string;
 }
 
 export interface AuthResponse {
@@ -112,6 +119,13 @@ export const authApi = createApi({
         { type: 'User', id: String(userId) },
       ],
     }),
+    changePassword: builder.mutation<{ message: string }, ChangePasswordRequest>({
+      query: (passwordData) => ({
+        url: 'password',
+        method: 'PUT',
+        body: passwordData,
+      }),
+    }),
     getCurrentUser: builder.query<AuthUser, void>({
       query: () => ({
         url: 'me',
@@ -162,6 +176,7 @@ export const {
   useLogoutMutation,
   useGetCurrentUserQuery,
   useUpdateProfileMutation,
+  useChangePasswordMutation,
   useGetUserByIdQuery,
   useCheckoutMutation,
   useGetChefsQuery,

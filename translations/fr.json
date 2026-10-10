@@ -393,5 +393,13 @@
   "Likes": "J’aime",
   "Edit": "Modifier",
   "Delete": "Supprimer",
-  "Close": "Fermer"
+  "Close": "Fermer",
+  "Current password": "Mot de passe actuel",
+  "New password": "Nouveau mot de passe",
+  "Enter your current password.": "Saisissez votre mot de passe actuel.",
+  "Your new password must be different from your current password.": "Votre nouveau mot de passe doit être différent du mot de passe actuel.",
+  "Changing password...": "Modification du mot de passe…",
+  "Password changed successfully.": "Mot de passe modifié avec succès.",
+  "Unable to change your password. Please try again.": "Impossible de modifier votre mot de passe. Veuillez réessayer.",
+  "You sign in with Google and do not have a password to change.": "Vous vous connectez avec Google et n’avez pas de mot de passe à modifier."
 }
