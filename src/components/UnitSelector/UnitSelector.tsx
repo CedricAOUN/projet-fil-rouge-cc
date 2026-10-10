@@ -16,7 +16,7 @@ function UnitSelector({ control, index, error }) {
           <Select
             {...field}
             value={field.value || 'unit'}
-            labelId={`unit-label-${index}`}
+            inputProps={{ 'aria-label': t('Unit') }}
             size='small'
             sx={{
               maxHeight: '41px',

@@ -1,3 +1,4 @@
+import ContentPanel from '@/components/Layout/ContentPanel';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { t } from '@/i18n';
@@ -10,8 +11,7 @@ import {
   Box,
   Button,
   CircularProgress,
-  darken,
-  Paper,
+  useTheme,
   Stack,
   TextField,
   Typography,
@@ -36,42 +36,44 @@ type CourseFormData = {
 
 const schema = yup
   .object({
-    title: yup.string().required(() => t("Title is required")),
-    content: yup.string().required(() => t("Content is required")),
+    title: yup.string().required(() => t('Title is required')),
+    content: yup.string().required(() => t('Content is required')),
     video: yup
       .mixed<File>()
       .test(
         'fileSize',
-        () => t("The video must not be larger than 200 MB."),
+        () => t('The video must not be larger than 200 MB.'),
         (file) => !file || file.size <= MAX_VIDEO_SIZE,
       )
       .optional(),
   })
   .required();
 
-const getHeadingGroup = (t: TFunction) => commands.group(
-  [
-    { ...commands.heading1, buttonProps: { 'aria-label': t("Heading 1") } },
-    { ...commands.heading2, buttonProps: { 'aria-label': t("Heading 2") } },
-    { ...commands.heading3, buttonProps: { 'aria-label': t("Heading 3") } },
-    { ...commands.heading4, buttonProps: { 'aria-label': t("Heading 4") } },
-    { ...commands.heading5, buttonProps: { 'aria-label': t("Heading 5") } },
-    { ...commands.heading6, buttonProps: { 'aria-label': t("Heading 6") } },
-  ],
-  {
-    name: 'heading',
-    groupName: 'heading',
-    buttonProps: { 'aria-label': t("Insert heading") },
-    icon: (
-      <span style={{ fontSize: 12, fontWeight: 600, marginBottom: '3px' }}>
-        H
-      </span>
-    ),
-  },
-);
+const getHeadingGroup = (t: TFunction) =>
+  commands.group(
+    [
+      { ...commands.heading1, buttonProps: { 'aria-label': t('Heading 1') } },
+      { ...commands.heading2, buttonProps: { 'aria-label': t('Heading 2') } },
+      { ...commands.heading3, buttonProps: { 'aria-label': t('Heading 3') } },
+      { ...commands.heading4, buttonProps: { 'aria-label': t('Heading 4') } },
+      { ...commands.heading5, buttonProps: { 'aria-label': t('Heading 5') } },
+      { ...commands.heading6, buttonProps: { 'aria-label': t('Heading 6') } },
+    ],
+    {
+      name: 'heading',
+      groupName: 'heading',
+      buttonProps: { 'aria-label': t('Insert heading') },
+      icon: (
+        <span style={{ fontSize: 12, fontWeight: 600, marginBottom: '3px' }}>
+          H
+        </span>
+      ),
+    },
+  );
 
 const CourseCreateForm = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const navigate = useNavigate();
 
   const { id } = useParams<{ id: string }>();
@@ -147,8 +149,9 @@ const CourseCreateForm = () => {
   }
 
   return (
-    <Paper
+    <ContentPanel
       component='form'
+      data-color-mode={theme.palette.mode}
       onSubmit={handleSubmit(onSubmit)}
       sx={{
         display: 'flex',
@@ -156,16 +159,20 @@ const CourseCreateForm = () => {
         gap: 2,
       }}
     >
-      <Typography variant='h3' component='h1'>{t("Create a course")}</Typography>
+      <Typography variant='h3' component='h1'>
+        {t('Create a course')}
+      </Typography>
       <TextField
         {...register('title')}
-        placeholder={t("Title")}
+        placeholder={t('Title')}
         required
         error={!!errors.title}
         helperText={errors.title?.message}
       />
       <Stack spacing={1}>
-        <Typography variant='h4' component='h2'>{t("Course video")}</Typography>
+        <Typography variant='h4' component='h2'>
+          {t('Course video')}
+        </Typography>
         <input
           type='file'
           accept='.mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv'
@@ -181,11 +188,14 @@ const CourseCreateForm = () => {
           </Typography>
         )}
         {watch('video') && (
-          <Typography variant='body2' color='text.secondary'>{t('Selected: {{filename}}', { filename: watch('video')?.name })}
+          <Typography variant='body2' color='text.secondary'>
+            {t('Selected: {{filename}}', { filename: watch('video')?.name })}
           </Typography>
         )}
       </Stack>
-      <Typography variant='h4' component='h2'>{t("Course content editor")}</Typography>
+      <Typography variant='h4' component='h2'>
+        {t('Course content editor')}
+      </Typography>
       <Controller
         name='content'
         control={control}
@@ -205,23 +215,31 @@ const CourseCreateForm = () => {
           {errors.content.message}
         </Typography>
       )}
-      <Typography variant='h4' component='h2'>{t("Preview")}</Typography>
+      <Typography variant='h4' component='h2'>
+        {t('Preview')}
+      </Typography>
       <Box
         sx={{
-          background: (theme) => darken(theme.palette.background.paper, 0.4),
+          bgcolor: 'action.hover',
+          borderRadius: '10px',
+          maxWidth: '100%',
+          width: '100%',
+          mx: 'auto',
+          overflowWrap: 'anywhere',
+          '& pre': { overflowX: 'auto' },
           padding: 2,
         }}
       >
         <ReactMarkdown>
           {mdContent
             ? mdContent
-            : t("Write something in the editor to preview it here !")}
+            : t('Write something in the editor to preview it here !')}
         </ReactMarkdown>
       </Box>
-      <Button fullWidth type='submit'>
-        {edittingCourse ? t("Confirm") : t("Submit")}
+      <Button variant='contained' fullWidth type='submit'>
+        {edittingCourse ? t('Confirm') : t('Submit')}
       </Button>
-    </Paper>
+    </ContentPanel>
   );
 };
 

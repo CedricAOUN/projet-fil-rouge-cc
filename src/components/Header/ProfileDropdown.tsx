@@ -32,6 +32,7 @@ function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
   return (
     <div>
       <IconButton
+        aria-label={t('Profile')}
         sx={{ p: 0 }}
         aria-owns={anchorEl ? 'simple-menu' : undefined}
         aria-haspopup='true'

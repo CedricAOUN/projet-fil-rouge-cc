@@ -3,7 +3,7 @@ import React, { useMemo, useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import '@/App.css';
 import Header from '@/components/Header/Header';
-import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
+import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 import getTheme from '@/theme/muiTheme';
 import Home from '@/pages/Home/Home';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,7 +36,6 @@ function App() {
   const [consentOpen, setConsentOpen] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  const isMobile = useMediaQuery('(max-width: 900px)');
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage ?? 'en';
@@ -91,12 +90,8 @@ function App() {
           onThemeToggle={toggleMode}
         />
         <Box component='main' sx={{ flex: 1, pb: isHomePage ? 0 : '10px' }}>
-          <Box
-            sx={{
-              margin: isHomePage ? 0 : isMobile ? '15px' : '15px 15%',
-              minHeight: isHomePage ? undefined : 'calc(100vh - 190px)',
-            }}
-          >
+          <Container maxWidth={isHomePage ? false : 'lg'} disableGutters={isHomePage}
+            sx={{ py: isHomePage ? 0 : { xs: 4, md: 7 }, minHeight: isHomePage ? undefined : 'calc(100vh - 190px)' }}>
             <Suspense fallback={<Box role='status' sx={{ p: 3 }}>{t("Loading page…")}</Box>}>
               <Routes>
                 <Route path='/' element={<Home />} />
@@ -122,7 +117,7 @@ function App() {
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </Suspense>
-          </Box>
+          </Container>
         </Box>
         <Footer onManageCookies={() => setConsentOpen(true)} />
         <ConsentBanner open={consentOpen} onClose={() => setConsentOpen(false)} />

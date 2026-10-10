@@ -1,29 +1,6 @@
-body {
-  margin: 0;
-  font-family: 'Caveat, cursive';
-  background-color: gray;
-  transition: background-color 200ms ease-in, color 200ms ease-in;
-}
+body { margin: 0; }
 
-
-/* Remove arrows from type number inputs  */
+/* Remove arrows from number inputs. Colors and typography belong to MUI. */
 input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type="number"] {
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
-
-/* Add 'required *' on inputs that need it */
-input[required=true]::before {
-  content: "*";
-  color: #f44336;
-  position: absolute;
-  top: -10px;
-  right: 0;
-  font-size: 16px;
-  z-index: 1;
-}
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }

@@ -12,10 +12,11 @@ import {
   CircularProgress,
   Alert,
   Divider,
+  IconButton,
   Link as MuiLink,
 } from '@mui/material';
 import './LoginModal.css';
-import { Close } from '@mui/icons-material';
+import Close from '@mui/icons-material/Close';
 import {
   useGoogleLoginMutation,
   useLoginMutation,
@@ -49,7 +50,7 @@ function CustomTabPanel({ children, value, index, onSubmit }) {
       aria-labelledby={`simple-tab-${index}`}
     >
       {value === index && (
-        <Box component='form' onSubmit={onSubmit} sx={{ p: 3 }}>
+        <Box component='form' onSubmit={onSubmit} sx={{ pt: 3 }}>
           {children}
         </Box>
       )}
@@ -176,27 +177,20 @@ function LoginModal({ isOpen, handleClose }) {
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
       <Paper
+        role='dialog'
+        aria-modal='true'
+        aria-label={value === 0 ? t('Login') : t('Sign Up')}
         sx={{
-          p: 4,
-          width: 400,
+          p: { xs: 3, sm: 4 },
+          width: 'min(480px, calc(100vw - 32px))',
           maxHeight: '90vh',
           overflowY: 'auto',
           position: 'relative',
         }}
       >
-        <Close
-          sx={{
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            margin: '10px',
-            fontSize: '32px',
-            cursor: 'pointer',
-          }}
-          onClick={handleClose}
-        />
+        <IconButton aria-label={t('Close')} onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8, zIndex: 1 }}><Close /></IconButton>
 
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mr: 4 }}>
           <Tabs
             value={value}
             onChange={handleChange}

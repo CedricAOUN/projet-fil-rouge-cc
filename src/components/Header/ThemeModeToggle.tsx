@@ -1,17 +1,12 @@
-import React from 'react';
+import { ButtonBase } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import './themeModeToggle.css';
 
-function ThemeModeToggle({ currentTheme, onThemeToggle }) {
-  return (
-    <div
-      className={`track ${currentTheme === 'dark' ? 'track-night' : ''}`}
-      onClick={onThemeToggle}
-    >
-      <div
-        className={`circle ${currentTheme === 'dark' ? 'crescent-moon' : ''}`}
-      ></div>
-    </div>
-  );
+export default function ThemeModeToggle({ currentTheme, onThemeToggle }: { currentTheme: 'light' | 'dark'; onThemeToggle: () => void }) {
+  const { t } = useTranslation();
+  return <ButtonBase type='button' disableRipple className={`track ${currentTheme === 'dark' ? 'track-night' : ''}`}
+    onClick={onThemeToggle} aria-label={t('Dark mode')} aria-pressed={currentTheme === 'dark'}
+    sx={{ flexShrink: 0, justifyContent: 'flex-start', borderRadius: '15px', width: 60, height: 30, '&:focus-visible': { outline: '3px solid', outlineColor: 'secondary.main', outlineOffset: 3 } }}>
+    <span aria-hidden='true' className={`circle ${currentTheme === 'dark' ? 'crescent-moon' : ''}`} />
+  </ButtonBase>;
 }
-
-export default ThemeModeToggle;

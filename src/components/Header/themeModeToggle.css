@@ -15,7 +15,7 @@
 }
 
 .circle {
-  margin: 0px 5px;
+  margin: 0 5px;
   border-radius: 100%;
   width: 20px;
   height: 20px;
@@ -27,13 +27,15 @@
 }
 
 .crescent-moon {
-  width: 20px;
-  height: 20px;
   background-image: url('../../assets/moon-texture.jpg');
   background-size: cover;
   filter: brightness(2);
-  position: relative;
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-  border-radius: 50%;
-  transform: translate(30px);
+  transform: translateX(30px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track, .circle {
+    transition: none;
+  }
 }

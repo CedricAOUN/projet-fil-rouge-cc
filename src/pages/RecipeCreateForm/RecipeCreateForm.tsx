@@ -1,3 +1,4 @@
+import ContentPanel from '@/components/Layout/ContentPanel';
 import { useTranslation } from 'react-i18next';
 import { t } from '@/i18n';
 import React, { useMemo, useState, useRef } from 'react';
@@ -5,7 +6,6 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  Paper,
   Stack,
   TextField,
   Typography,
@@ -40,7 +40,7 @@ type RecipeFormData = {
   image: File | null;
 };
 
-const schema: any = yup
+const schema = yup
   .object({
     title: yup.string().required(() => t("Title is required")),
     description: yup.string().defined(),
@@ -109,7 +109,8 @@ function RecipeCreateForm() {
     control,
     setValue,
   } = useForm<RecipeFormData>({
-    resolver: yupResolver(schema) as Resolver<RecipeFormData>,
+    // Text inputs hold strings; Yup coerces valid ingredient amounts on submit.
+    resolver: yupResolver(schema) as unknown as Resolver<RecipeFormData>,
     values: formValues,
   });
 
@@ -172,7 +173,7 @@ function RecipeCreateForm() {
   }
 
   return (
-    <Paper sx={{ display: 'flex', flexDirection: 'column', gap: '20px', p: 3 }}>
+    <ContentPanel sx={{ display: 'flex', flexDirection: 'column', gap: '20px', p: 3 }}>
       <Typography variant='h1'>{id ? t("Edit recipe") : t("Create a recipe")}</Typography>
       <Typography variant='h4' component='h2'>{t("General")}</Typography>
 
@@ -210,8 +211,9 @@ function RecipeCreateForm() {
           justifyContent='center'
           alignItems='center'
           border='1px dashed'
+          borderColor='divider'
           padding='10px'
-          borderRadius='5px'
+          borderRadius='10px'
         >
           <Typography textAlign='center'>{imageName ?? t('No Image Selected')}</Typography>
           {imagePreview && (
@@ -232,7 +234,7 @@ function RecipeCreateForm() {
           {imagePreview && (
             <Button
               variant='contained'
-              sx={{ backgroundColor: 'error.main' }}
+              color='error'
               onClick={handleImageRemove}
             >{t("Remove Image")}</Button>
           )}
@@ -250,7 +252,7 @@ function RecipeCreateForm() {
           direction={isMobile ? 'column' : 'row'}
           spacing={1}
           alignItems='center'
-          sx={{ borderBottom: '1px solid', pb: 2 }}
+          sx={{ borderBottom: 1, borderColor: 'divider', pb: 2 }}
         >
           <Stack width='100%' gap={1}>
             <Typography>{t('Ingredient {{number}}', { number: index + 1 })}</Typography>
@@ -334,7 +336,7 @@ function RecipeCreateForm() {
       >
         {edittingRecipe ? t("Confirm") : t("Submit Recipe")}
       </Button>
-    </Paper>
+    </ContentPanel>
   );
 }
 

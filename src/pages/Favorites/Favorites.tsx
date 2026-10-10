@@ -1,79 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Paper,
-  Button,
-  Box,
-} from '@mui/material';
+import { Stack, Typography, Button } from '@mui/material';
 import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 import { useNavigate } from 'react-router-dom';
+import RecipeGrid from '@/components/RecipeComponents/RecipeGrid';
+import RecipeCard from '@/components/RecipeComponents/RecipeCard/RecipeCard';
+import ContentPanel from '@/components/Layout/ContentPanel';
 
-const Favorites = () => {
+export default function Favorites() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const currentUser = useGetCurrentUserQuery().data;
-  const favoriteRecipes = currentUser?.favorite_recipes;
-
-  if (!currentUser) {
-    return <PageErrorHandler errorStatus={401} />;
-  }
-
-  const handleGoToRecipe = (recipeId) => navigate(`/recipe/${recipeId}`);
-
-  const handleGoToRecipeSearch = () => navigate('/recipes');
-
-  return (
-    <Stack direction={'column'} spacing={2}>
-      <Typography variant='h1'>{t("Your Favorites")}</Typography>
-      <Stack direction={'row'} gap={2} justifyContent={'center'}>
-        {favoriteRecipes?.map((recipe) => (
-          <Paper
-            key={recipe.id}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexDirection: 'column',
-              flexWrap: 'wrap',
-              gap: 2,
-              maxWidth: 500,
-              width: 500,
-            }}
-          >
-            <Typography component='h2'>{recipe.title}</Typography>
-            <img
-              src={recipe.image_url}
-              alt={recipe.title || t("Recipe")}
-              width={'300'}
-              height={'300'}
-              style={{ objectFit: 'cover' }}
-            />
-            <Typography>{recipe.description}</Typography>
-            <Button onClick={() => handleGoToRecipe(recipe.id)}>{t("View Recipe")}</Button>
-          </Paper>
-        ))}
-        {(favoriteRecipes?.length < 1 || favoriteRecipes == null) && (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-              gap: 2,
-            }}
-          >
-            <Typography>{t("You don't have any favorites yet !")}</Typography>
-            <Button onClick={handleGoToRecipeSearch}>{t("Explore Recipes")}</Button>
-          </Box>
-        )}
-      </Stack>
-    </Stack>
-  );
-};
-
-export default Favorites;
+  const recipes = currentUser?.favorite_recipes;
+  if (!currentUser) return <PageErrorHandler errorStatus={401} />;
+  return <Stack spacing={4}>
+    <Typography variant='h1'>{t('Your Favorites')}</Typography>
+    {recipes?.length ? <RecipeGrid>{recipes.map(recipe => <RecipeCard key={recipe.id} id={recipe.id} title={recipe.title} image={recipe.image_url} description={recipe.description} viewLabel={t('View Recipe')} onView={() => navigate(`/recipe/${recipe.id}`)} />)}</RecipeGrid> : <ContentPanel>
+      <Stack alignItems='center' spacing={2}><Typography>{t("You don't have any favorites yet !")}</Typography><Button variant='contained' onClick={() => navigate('/recipes')}>{t('Explore Recipes')}</Button></Stack>
+    </ContentPanel>}
+  </Stack>;
+}

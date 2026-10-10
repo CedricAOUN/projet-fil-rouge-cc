@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import {
-  Button,
   CircularProgress,
-  Paper,
   Stack,
   TextField,
   ToggleButton,
@@ -15,11 +13,11 @@ import { useGetRecipesQuery } from '@/api/recipeApi';
 import RecipeCard from '../RecipeComponents/RecipeCard/RecipeCard';
 import CustomSlider from './CustomSlider';
 import useDebounce from '@/utils/useDebounce';
-import { useNavigate } from 'react-router-dom';
+import ContentPanel from '@/components/Layout/ContentPanel';
+import RecipeGrid from '@/components/RecipeComponents/RecipeGrid';
 
 const AdvancedRecipeSearch = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const [allIngredients, setAllIngredients] = React.useState<string[]>([]);
   const [allCreators, setAllCreators] = React.useState<string[]>([]);
@@ -73,20 +71,16 @@ const AdvancedRecipeSearch = () => {
     <>
       <Typography variant='h1' gutterBottom>{t("Recipes")}</Typography>
       <Stack
-        height={'100%'}
-        maxHeight={'100%'}
-        minHeight={0}
         direction={{ xs: 'column', lg: 'row' }}
-        gap={2}
-        flexGrow={1}
-        overflow={'hidden'}
+        gap={4}
+        alignItems='flex-start'
       >
         {/* FILTERS */}
-        <Paper
+        <ContentPanel
           sx={{
-            width: { xs: '100%', lg: '30%' },
-            height: 'auto',
-            overflow: 'hidden',
+            width: { xs: '100%', lg: 280 },
+            flexShrink: 0,
+            p: 3,
           }}
           variant='outlined'
         >
@@ -98,7 +92,7 @@ const AdvancedRecipeSearch = () => {
             }}
             gap={3}
           >
-            <Typography variant='h5' component='h2' sx={{ padding: '20px' }}>{t("Filters")}</Typography>
+            <Typography variant='h5' component='h2'>{t("Filters")}</Typography>
             <MultiSelectFilter
               label={t("By ingredient")}
               options={allIngredients}
@@ -126,18 +120,11 @@ const AdvancedRecipeSearch = () => {
               alignItems={'center'}
               gap={1}
               justifyContent={'center'}
-              paddingX={2}
             >
               <ToggleButtonGroup
                 value={recipeType}
                 exclusive
-                onChange={(_, newValue) => setRecipeType(newValue)}
-                sx={{
-                  '& .MuiToggleButton-root.Mui-selected': {
-                    backgroundColor: 'primary.main',
-                    color: 'black',
-                  },
-                }}
+                onChange={(_, newValue) => { if (newValue) setRecipeType(newValue); }}
               >
                 <ToggleButton value={'all'}>{t("All")}</ToggleButton>
                 <ToggleButton value={'premium'}>{t("Premium")}</ToggleButton>
@@ -145,7 +132,7 @@ const AdvancedRecipeSearch = () => {
               </ToggleButtonGroup>
             </Stack>
           </Stack>
-        </Paper>
+        </ContentPanel>
         {/* RESULTS + GENERAL SEARCH BAR */}
         <Stack
           gap={2}
@@ -157,31 +144,18 @@ const AdvancedRecipeSearch = () => {
           <Stack direction={'row'} alignItems={'center'} gap={2} flexShrink={0}>
             <TextField
               fullWidth
+              slotProps={{ htmlInput: { 'aria-label': t('Search recipes') } }}
               placeholder={t("Search for recipes...")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Stack>
-          <Paper
-            variant='outlined'
-            sx={{
-              flexGrow: 1,
-              minHeight: 0,
-              overflow: 'hidden',
-            }}
-          >
             {isLoading || isFetching ? (
               <Stack direction={'row'} justifyContent={'center'} p={3}>
                 <CircularProgress size={'50px'} />
               </Stack>
             ) : (
-              <Stack
-                gap={2}
-                padding={2}
-                overflow={'auto'}
-                height={'100%'}
-                sx={{ boxSizing: 'border-box' }}
-              >
+              <RecipeGrid>
                 {recipes.map((recipe) => (
                   <RecipeCard
                     key={recipe.id}
@@ -193,11 +167,10 @@ const AdvancedRecipeSearch = () => {
                   />
                 ))}
                 {recipes?.length == 0 && (
-                  <Typography>{t("No recipes match your search. Please try something else !")}</Typography>
+                  <Typography color='text.secondary' sx={{ gridColumn: '1 / -1' }}>{t("No recipes match your search. Please try something else !")}</Typography>
                 )}
-              </Stack>
+              </RecipeGrid>
             )}
-          </Paper>
         </Stack>
       </Stack>
     </>

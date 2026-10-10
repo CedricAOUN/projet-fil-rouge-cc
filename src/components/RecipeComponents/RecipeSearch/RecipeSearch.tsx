@@ -6,11 +6,11 @@ import { setSearchQuery, useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import { useGetRecipesQuery } from '@/api/recipeApi';
 import useDebounce from '@/utils/useDebounce';
+import RecipeGrid from '../RecipeGrid';
 
 function RecipeSearch({
   showSearch = true,
   headerSearchRef = null,
-  maxHeight = '300px',
 }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -27,14 +27,15 @@ function RecipeSearch({
   const filteredRecipes = currentData?.recipes;
 
   useEffect(() => {
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
     if (searchTerm) {
       searchRef.current?.scrollIntoView({
-        behavior: 'smooth',
+        behavior,
         block: 'center',
       });
       searchRef.current?.focus();
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior });
       headerSearchRef?.current?.focus();
     }
   }, [headerSearchRef, searchTerm]);
@@ -46,16 +47,13 @@ function RecipeSearch({
   return (
     <Stack
       ref={containerRef}
-      gap={1}
-      padding={2}
-      border={'1px solid #ccc'}
-      borderRadius={2}
-      bgcolor={(theme) => theme.palette.background.paper}
+      gap={3}
     >
       {showSearch && (
         <>
           <Typography variant='h5' component='h3' marginBottom={2}>{t("Refine your search")}</Typography>
           <TextField
+            slotProps={{ htmlInput: { 'aria-label': t('Search recipes') } }}
             inputRef={searchRef}
             value={searchTerm}
             onChange={handleSearch}
@@ -68,9 +66,10 @@ function RecipeSearch({
         </Stack>
       )}
       {!(isLoading || isFetching) && (
-        <Stack gap={1} overflow={'auto'} maxHeight={maxHeight} padding={1}>
+        <RecipeGrid>
           {filteredRecipes?.map((recipe) => (
             <RecipeCard
+              headingLevel='h3'
               key={recipe.id}
               id={recipe.id}
               title={recipe.title}
@@ -79,7 +78,8 @@ function RecipeSearch({
               isPremium={recipe.is_premium}
             />
           ))}
-        </Stack>
+          {filteredRecipes?.length === 0 && <Typography color='text.secondary' sx={{ gridColumn: '1 / -1' }}>{t('No recipes match your search. Please try something else !')}</Typography>}
+        </RecipeGrid>
       )}
     </Stack>
   );

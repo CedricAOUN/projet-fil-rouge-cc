@@ -22,7 +22,10 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
     if (!currentUser.data || isLoading || !password) return;
 
     try {
-      await deleteUserById({ id: currentUser.data.id.toString(), password }).unwrap();
+      await deleteUserById({
+        id: currentUser.data.id.toString(),
+        password,
+      }).unwrap();
     } catch {
       // The mutation exposes the error below; keep the session and dialog open.
       return;
@@ -33,21 +36,27 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
 
   const errorData = error && 'data' in error ? error.data : undefined;
   const errorMessage =
-    errorData && typeof errorData === 'object' && 'message' in errorData &&
+    errorData &&
+    typeof errorData === 'object' &&
+    'message' in errorData &&
     typeof errorData.message === 'string'
       ? errorData.message
-      : t("Unable to delete your account. Please try again.");
+      : t('Unable to delete your account. Please try again.');
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <Stack gap={2}>
-        <Typography>{t("Please re-enter your password to confirm account deletion. This action is irreversible.")}</Typography>
+      <Stack gap={2} sx={{ padding: 2 }}>
+        <Typography>
+          {t(
+            'Please re-enter your password to confirm account deletion. This action is irreversible.',
+          )}
+        </Typography>
         <TextField
           id='password'
           type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder={t("Password")}
+          placeholder={t('Password')}
           error={!!error}
           helperText={error ? errorMessage : undefined}
           disabled={isLoading}
@@ -55,7 +64,9 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
         <Button
           onClick={handleDeleteUser}
           disabled={isLoading || !password || !currentUser.data}
-        >{t("Delete account")}</Button>
+        >
+          {t('Delete account')}
+        </Button>
       </Stack>
     </Dialog>
   );

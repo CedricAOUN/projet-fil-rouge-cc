@@ -1,20 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { Paper, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { Typography } from '@mui/material';
+import ContentPanel from '@/components/Layout/ContentPanel';
 
-function StepByStep({ instructions }) {
+export default function StepByStep({ instructions }: { instructions: string }) {
   const { t } = useTranslation();
-
-  return (
-    <Paper sx={{ flex: 1, p: 2 }}>
-      <Typography variant='h4' component='h2' gutterBottom>{t("Steps")}</Typography>
-      <Stack gap={2}>
-        <Typography variant='body1'>
-          {instructions}
-        </Typography>
-      </Stack>
-    </Paper>
-  );
+  return <ContentPanel sx={{ flex: 1, width: '100%' }}>
+    <Typography variant='h4' component='h2' gutterBottom>{t('Steps')}</Typography>
+    <Typography sx={{ maxWidth: '70ch', whiteSpace: 'pre-line' }}>{instructions}</Typography>
+  </ContentPanel>;
 }
-
-export default StepByStep;

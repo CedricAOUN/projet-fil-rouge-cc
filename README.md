@@ -2,6 +2,24 @@
 ### Getting started
 `npm install` to get frontend dependencies
 
+### Customize the appearance
+
+Edit `themeColors.light` and `themeColors.dark` at the top of
+`src/theme/muiTheme.ts` to change the site's colors. `primary` controls main
+actions, `secondary` controls supporting accents, and `premium` controls Premium
+badges. `background`, `surface`, `text`, and `muted` control page and content
+surfaces. Keep the corresponding `onPrimary`, `onSecondary`, and `onPremium`
+foreground colors readable when changing an accent. Typography, spacing, corners,
+and shared MUI component styles are defined in the same file.
+
+Pages use MUI palette values rather than their own brand colors. Padded content
+uses `ContentPanel`; image cards and menus manage their own spacing. The theme
+switch preserves the existing saved light/dark preference. The homepage uses the
+first free recipe photograph and displays a kitchen note if none can load.
+
+Run `npm test -- --runInBand` after changing the palette: the editorial theme tests
+check text/action contrast, keyboard theme switching, and homepage image fallback.
+
 ### Launch in dev environment
 
 Ensure you are back at root of the project, and run these commands in 2 separate terminals:

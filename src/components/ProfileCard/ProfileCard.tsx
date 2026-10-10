@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { useGetCurrentUserQuery } from '@/api/authApi';
-import { RootState, useAppSelector } from '@/store/store';
 import {
   Avatar,
   Button,
@@ -29,13 +28,14 @@ function ProfileCard({ user, onEdit, isMobile }) {
   const isCurrentUser = currentUser?.id === user.id;
 
   return (
-    <Card sx={{ height: '100%', borderRadius: '5px' }}>
+    <Card sx={{ height: '100%', width: '100%' }}>
       <CardContent
         sx={{
           display: 'flex',
           flexDirection: isMobile ? 'column' : is_chef ? 'column' : 'row',
           alignItems: 'center',
-          gap: 4,
+          gap: 3,
+          p: { xs: 3, md: 4 },
         }}
       >
         <Avatar
@@ -49,17 +49,17 @@ function ProfileCard({ user, onEdit, isMobile }) {
           justifyContent={'center'}
           spacing={2}
         >
-          <Typography variant='h5' component='h1'>
+          <Typography variant='h3' component='h1'>
             {displayName}
           </Typography>
-          <Typography variant='subtitle1' textAlign={'center'}>
+          <Typography color='text.secondary' textAlign={'center'} sx={{ maxWidth: '65ch' }}>
             {biography}
           </Typography>
           {courses_count && (
             <Typography variant='subtitle2'>{t('Available courses: {{count}}', { count: courses_count })}
             </Typography>
           )}
-          {isCurrentUser && <Button onClick={onEdit}>{t("Edit Profile")}</Button>}
+          {isCurrentUser && <Button variant='outlined' onClick={onEdit}>{t("Edit Profile")}</Button>}
         </Stack>
       </CardContent>
     </Card>

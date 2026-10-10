@@ -32,7 +32,8 @@ function AskAIButton({ recipe }) {
         open={isOpen}
         onClose={() => setIsOpen(false)}
         fullWidth
-        maxWidth='xl'
+        maxWidth='md'
+        slotProps={{ paper: { sx: { p: { xs: 3, md: 4 }, '& p, & li': { lineHeight: 1.75 }, '& pre': { overflowX: 'auto' }, '& a': { color: 'primary.main' } } } }}
       >
         <Stack
           direction={'row'}
@@ -42,7 +43,7 @@ function AskAIButton({ recipe }) {
         >
           <SmartToyIcon color='primary'></SmartToyIcon>
           <Typography variant='h5' component='h2' color='primary'>{t("AI Assisted Steps")}</Typography>
-          <IconButton onClick={() => setIsOpen(false)}>
+          <IconButton aria-label={t('Close')} onClick={() => setIsOpen(false)}>
             <CloseIcon sx={{ fontSize: 24 }}></CloseIcon>
           </IconButton>
         </Stack>

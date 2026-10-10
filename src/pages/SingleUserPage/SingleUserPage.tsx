@@ -41,11 +41,12 @@ const SingleUserPage: React.FC = () => {
 
   return (
     <Stack
-      gap={2}
+      gap={3}
       direction={isMobile ? 'column' : is_chef && hasCourses ? 'row' : 'column'}
     >
       <Box
-        maxWidth={isMobile ? '100%' : is_chef && hasCourses ? '300px' : '100%'}
+        sx={{ minWidth: 0, flexShrink: 0, width: '100%' }}
+        maxWidth={isMobile ? '100%' : is_chef && hasCourses ? '320px' : '100%'}
       >
         <ProfileCard
           user={singleUser}

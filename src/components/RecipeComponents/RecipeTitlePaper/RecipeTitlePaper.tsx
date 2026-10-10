@@ -1,18 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import React, { useState } from 'react';
-import './recipeTitlePaper.css';
-import {
-  Box,
-  Button,
-  Paper,
-  Stack,
-  Typography,
-  Chip,
-  useMediaQuery,
-} from '@mui/material';
-import { RootState } from '@/store';
-import { useSelector } from 'react-redux';
-import { Recipe } from '@/types';
+import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -21,177 +9,31 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 import dayjs from 'dayjs';
 import AskAIButton from '@/components/AskAIButton/AskAIButton';
+import RecipeImage from '../RecipeImage';
 
-type RecipeTitlePaperProps = {
-  recipe: Recipe;
-  onLikeToggle: () => void;
-  onFavoriteToggle: () => void;
-  isLoading: boolean;
-};
-
-function RecipeTitlePaper({
-  recipe,
-  onLikeToggle,
-  onFavoriteToggle,
-  isLoading,
-}) {
+export default function RecipeTitlePaper({ recipe, onLikeToggle, onFavoriteToggle, isLoading }) {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery('(max-width:900px)');
   const { data: currentUser } = useGetCurrentUserQuery();
-
-  const {
-    title,
-    description: desc,
-    image_url: imgUrl,
-    likes: likeObject,
-    favorites: favoritesObject,
-    is_premium: isPremiumRecipe,
-  } = recipe;
-
-  const isLiked = likeObject.is_liked_by_user;
-  const isFavorited = favoritesObject.is_favorited_by_user;
-
-  return (
-    <Paper
-      sx={{
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        padding: 0,
-      }}
-    >
-      <img
-        className='recipe-img'
-        src={imgUrl}
-          alt={t('Image of {{title}}', { title })}
-        height={'300px'}
-      />
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '30px',
-          flexGrow: 1,
-          alignItems: 'space-between',
-          gap: 2,
-        }}
-      >
-        <Typography variant='h3' component='h1'>{title}</Typography>
-        <Typography variant='subtitle2'>{desc}</Typography>
-        <Stack direction='row' gap={1} flexWrap='wrap'>
-          <Chip
-            label={t('By {{author}}', { author: recipe.creator.name })}
-            color='primary'
-            sx={{
-              flex: 0,
-              width: 'fit-content',
-              '& .MuiChip-label': {
-                color: 'black',
-              },
-            }}
-          ></Chip>
-          <Chip
-            label={t('Created on {{date}}', { date: dayjs(recipe.created_at).format('MMMM D, YYYY') })}
-            color='primary'
-            sx={{
-              flex: 0,
-              width: 'fit-content',
-              '& .MuiChip-label': {
-                color: 'black',
-              },
-            }}
-          ></Chip>
-        </Stack>
-        <Stack
-          direction='row'
-          alignItems='center'
-          justifyContent='flex-end'
-          gap={1}
-        >
-          {isPremiumRecipe && (
-            <Chip
-              label={t("Premium")}
-              icon={<WorkspacePremiumIcon color='primary' />}
-              sx={{
-                backgroundColor: 'transparent',
-                width: '100%',
-                maxWidth: '300px',
-                height: '40px',
-                border: (theme) => `2px solid ${theme.palette.primary.main}`,
-                mr: 'auto',
-                my: 'auto',
-                borderRadius: '50vh',
-                '& .MuiChip-label': {
-                  color: (theme) => theme.palette.primary.main,
-                },
-              }}
-            />
-          )}
-          {currentUser?.is_premium && <AskAIButton recipe={recipe} />}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              minWidth: '100px',
-              border: (theme) =>
-                `2px solid ${isFavorited ? theme.palette.secondary.main : 'grey'}`,
-              borderRadius: '50vh',
-            }}
-          >
-            <Button
-              onClick={onFavoriteToggle}
-              disabled={isLoading || Boolean(!currentUser)}
-              sx={{
-                backgroundColor: 'transparent',
-                borderRadius: '50vh 0 0 50vh',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                },
-              }}
-            >
-              {isFavorited ? (
-                <FavoriteIcon color='secondary' />
-              ) : (
-                <FavoriteBorderIcon />
-              )}
-            </Button>
-            <Typography>{favoritesObject.count}</Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              minWidth: '100px',
-              border: (theme) =>
-                `2px solid ${isLiked ? theme.palette.primary.main : 'grey'}`,
-              borderRadius: '50vh',
-            }}
-          >
-            <Button
-              onClick={onLikeToggle}
-              disabled={isLoading || Boolean(!currentUser)}
-              sx={{
-                backgroundColor: 'transparent',
-                borderRadius: '50vh 0 0 50vh',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                },
-              }}
-            >
-              {isLiked ? (
-                <ThumbUpAltIcon color='primary' />
-              ) : (
-                <ThumbUpOffAltIcon />
-              )}
-            </Button>
-            <Typography>{likeObject.count}</Typography>
-          </Box>
-        </Stack>
+  const isLiked = recipe.likes.is_liked_by_user;
+  const isFavorited = recipe.favorites.is_favorited_by_user;
+  return <Paper sx={{ display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'minmax(0, 1fr) minmax(0, 1fr)' }, overflow: 'hidden' }}>
+    <RecipeImage image={recipe.image_url} title={t('Image of {{title}}', { title: recipe.title })} />
+    <Stack spacing={3} sx={{ p: { xs: 3, md: 4 }, justifyContent: 'center', minWidth: 0 }}>
+      {recipe.is_premium && <Chip label={t('Premium')} icon={<WorkspacePremiumIcon />} size='small'
+        sx={(theme) => ({ alignSelf: 'flex-start', color: 'premium.main', bgcolor: alpha(theme.palette.premium.main, 0.1), '& .MuiChip-icon': { color: 'inherit' } })} />}
+      <Typography variant='h1'>{recipe.title}</Typography>
+      <Typography color='text.secondary'>{recipe.description}</Typography>
+      <Box>
+        <Typography variant='body2' color='secondary.main'>{t('By {{author}}', { author: recipe.creator.name })}</Typography>
+        <Typography variant='body2' color='text.secondary'>{t('Created on {{date}}', { date: dayjs(recipe.created_at).format('MMMM D, YYYY') })}</Typography>
       </Box>
-    </Paper>
-  );
+      <Stack direction='row' gap={1.5} flexWrap='wrap'>
+        <Button variant='outlined' color='secondary' aria-label={t('Favorites')} aria-pressed={Boolean(isFavorited)}
+          onClick={onFavoriteToggle} disabled={isLoading || !currentUser} startIcon={isFavorited ? <FavoriteIcon /> : <FavoriteBorderIcon />}>{recipe.favorites.count}</Button>
+        <Button variant='outlined' aria-label={t('Likes')} aria-pressed={Boolean(isLiked)}
+          onClick={onLikeToggle} disabled={isLoading || !currentUser} startIcon={isLiked ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />}>{recipe.likes.count}</Button>
+        {currentUser?.is_premium && <AskAIButton recipe={recipe} />}
+      </Stack>
+    </Stack>
+  </Paper>;
 }
-
-export default RecipeTitlePaper;

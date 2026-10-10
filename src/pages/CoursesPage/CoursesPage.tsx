@@ -36,7 +36,7 @@ const CoursesPage = () => {
   };
 
   return (
-    <Stack width={'100%'} alignItems={'center'} gap={1}>
+    <Stack width={'100%'} alignItems='flex-start' gap={3}>
       <Typography variant='h1'>{t("Cooking courses")}</Typography>
       <ToggleButtonGroup value={mode}>
         <ToggleButton
@@ -46,6 +46,7 @@ const CoursesPage = () => {
         <ToggleButton value={'chef'} onClick={() => handleSwitchMode('chef')}>{t("By Chef")}</ToggleButton>
       </ToggleButtonGroup>
       <TextField
+        slotProps={{ htmlInput: { 'aria-label': t('Search') } }}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={t("Search")}

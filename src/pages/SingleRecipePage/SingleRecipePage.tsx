@@ -52,14 +52,14 @@ const SingleRecipePage: React.FC = () => {
   const { ingredients, instructions, comments } = recipe;
 
   return (
-    <Stack gap={2} pb={4}>
+    <Stack gap={4} pb={4}>
       <RecipeTitlePaper
         recipe={recipe}
         onLikeToggle={handleLikeClick}
         onFavoriteToggle={handleFavoriteClick}
         isLoading={isLikeLoading || isFavoriteLoading}
       />
-      <Stack direction={isMobile ? 'column' : 'row'} gap={2}>
+      <Stack direction={isMobile ? 'column' : 'row'} gap={3} alignItems='flex-start'>
         <IngredientList ingredients={ingredients} />
         <StepByStep instructions={instructions} />
       </Stack>

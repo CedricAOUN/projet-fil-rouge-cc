@@ -6,12 +6,12 @@ import {
   Box,
   CircularProgress,
   Divider,
-  Paper,
   Stack,
   Typography,
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import ReactPlayer from 'react-player';
+import ContentPanel from '@/components/Layout/ContentPanel';
 
 const SingleCoursePage = () => {
   const { t } = useTranslation();
@@ -30,13 +30,12 @@ const SingleCoursePage = () => {
   }
 
   if (error) {
-    // @ts-ignore
-    return <PageErrorHandler errorStatus={error.status} />;
+    return <PageErrorHandler errorStatus={'status' in error && typeof error.status === 'number' ? error.status : 500} />;
   }
 
   return (
-    <Paper>
-      <Typography variant='h3' component='h1' textAlign={'center'}>
+    <ContentPanel>
+      <Typography variant='h1' gutterBottom textAlign={'center'}>
         {course?.title}
       </Typography>
       <Typography variant='subtitle2' color='primary' textAlign={'center'}>{t('by {{author}}', { author: course?.created_by.name })}
@@ -44,7 +43,7 @@ const SingleCoursePage = () => {
       {course?.video_url && (
         <>
           <Divider></Divider>
-          <Stack alignItems={'center'} py={2} px={'15%'} maxHeight={'50vh'}>
+          <Stack alignItems='center' sx={{ my: 3, mx: 'auto', maxWidth: 900, aspectRatio: '16 / 9' }}>
             <ReactPlayer
               src={course.video_url}
               controls
@@ -58,10 +57,10 @@ const SingleCoursePage = () => {
         </>
       )}
       <Divider></Divider>
-      <Box sx={{ padding: 2 }}>
+      <Box sx={{ maxWidth: '70ch', mx: 'auto', py: 3, overflowWrap: 'anywhere', '& img': { maxWidth: '100%' }, '& pre': { overflowX: 'auto' }, '& table': { display: 'block', overflowX: 'auto' }, '& a': { color: 'primary.main' }, '& blockquote': { ml: 0, pl: 3, borderLeft: 3, borderColor: 'secondary.main', color: 'text.secondary' } }}>
         <ReactMarkdown>{course?.content}</ReactMarkdown>
       </Box>
-    </Paper>
+    </ContentPanel>
   );
 };
 

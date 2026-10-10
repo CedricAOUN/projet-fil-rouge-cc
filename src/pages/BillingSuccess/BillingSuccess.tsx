@@ -1,9 +1,9 @@
+import ContentPanel from '@/components/Layout/ContentPanel';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
 import {
   Button,
   CircularProgress,
-  Paper,
   Stack,
   Typography,
 } from '@mui/material';
@@ -29,7 +29,7 @@ const BillingSuccess = () => {
 
   return (
     <Stack height='100%' justifyContent='center' alignItems='center' gap={3}>
-      <Paper
+      <ContentPanel
         sx={{
           display: 'flex',
           gap: 2,
@@ -40,8 +40,8 @@ const BillingSuccess = () => {
       >
         <Typography variant='h1'>{t("Payment Successful")}</Typography>
         <Typography variant='h6' component='p'>{t("Thank you for your payment. Your subscription has been activated.")}</Typography>
-      </Paper>
-      <Paper>
+      </ContentPanel>
+      <ContentPanel>
         <Typography variant='h6' component='h2'>{t("Order Details:")}</Typography>
         {isLoading ? (
           <Stack direction={'row'} justifyContent={'center'} p={3}>
@@ -55,7 +55,7 @@ const BillingSuccess = () => {
             <Typography>{t('Amount Paid: {{price}}', { price })}</Typography>
           </Stack>
         )}
-      </Paper>
+      </ContentPanel>
       <Button variant='contained' onClick={() => navigate('/')}>{t("Back to Home")}</Button>
     </Stack>
   );

@@ -22,7 +22,7 @@ export default function Footer({ onManageCookies }: { onManageCookies: () => voi
         bgcolor: 'background.paper',
       }}
     >
-      <Container maxWidth='lg' sx={{ py: 2.5 }}>
+      <Container maxWidth='lg' sx={{ py: 4 }}>
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           alignItems={{ xs: 'flex-start', md: 'center' }}

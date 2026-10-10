@@ -1,7 +1,10 @@
 import '@mui/material/styles';
 
 declare module '@mui/material/styles' {
-  interface TypeBackground {
-    darker: string;
+  interface Palette {
+    premium: { main: string; contrastText: string };
+  }
+  interface PaletteOptions {
+    premium?: { main: string; contrastText: string };
   }
 }

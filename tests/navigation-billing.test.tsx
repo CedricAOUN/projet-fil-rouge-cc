@@ -21,8 +21,8 @@ test('app restores its session, persists theme changes and navigates from home t
   localStorage.setItem('token', 'session');
   const interaction = userEvent.setup(); const { store } = renderApp(<App />);
   await waitFor(() => expect(store.getState().user.currentUser?.id).toBe(1));
-  expect(await screen.findByText('Carrot soup')).toBeVisible();
-  const themeSwitch = document.querySelector('.track');
+  expect(await screen.findByRole('heading', { name: 'Carrot soup' })).toBeVisible();
+  const themeSwitch = screen.getByRole('button', { name: 'Dark mode' });
   await interaction.click(themeSwitch);
   await waitFor(() => expect(localStorage.getItem('theme-mode')).toBe('dark'));
   await interaction.click(screen.getByRole('link', { name: 'Recipes', exact: true }));
@@ -40,7 +40,7 @@ test('anonymous header opens login and supports theme switching', async () => {
   server.use(http.get(`${API}/users/me`, () => HttpResponse.json({}, { status: 401 })));
   const toggle = jest.fn();
   renderApp(<Header currentTheme='light' onThemeToggle={toggle} />);
-  fireEvent.click(document.querySelector('.track'));
+  fireEvent.click(screen.getByRole('button', { name: 'Dark mode' }));
   expect(toggle).toHaveBeenCalledTimes(1);
   fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
   expect(await screen.findByRole('tab', { name: 'Login' })).toBeVisible();
@@ -71,7 +71,7 @@ test('my recipes allows editing and requires confirmation before deletion', asyn
   let deletes = 0;
   server.use(http.delete(`${API}/recipes/delete/1`, () => { deletes++; return new HttpResponse(null, { status: 204 }); }));
   const interaction = userEvent.setup(); renderApp(<MyRecipes />);
-  await screen.findByText('Carrot soup');
+  await screen.findByRole('heading', { name: 'Carrot soup' });
   await interaction.click(screen.getByTestId('EditIcon').closest('button'));
   expect(screen.getByTestId('location')).toHaveTextContent('/recipe/edit/1');
   await interaction.click(screen.getByTestId('DeleteIcon').closest('button'));

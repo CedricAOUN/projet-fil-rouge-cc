@@ -1,49 +1,18 @@
 import { useTranslation } from 'react-i18next';
 import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
+import ContentPanel from '@/components/Layout/ContentPanel';
 
-function PremiumCard() {
+export default function PremiumCard() {
   const { t } = useTranslation();
-  return (
-    <Paper
-      elevation={0}
-      sx={(theme) => ({
-        height: '100%',
-        p: { xs: 3, md: 4 },
-        borderRadius: 4,
-        border: `1px solid ${alpha(theme.palette.secondary.main, 0.28)}`,
-        background: `radial-gradient(circle at 92% 8%, ${alpha(theme.palette.secondary.main, 0.18)}, transparent 34%), ${theme.palette.background.paper}`,
-      })}
-    >
-      <Stack height='100%' alignItems='flex-start' spacing={2}>
-        <Box
-          sx={{
-            display: 'grid',
-            placeItems: 'center',
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            bgcolor: 'secondary.main',
-            color: 'secondary.contrastText',
-          }}
-        >
-          <WorkspacePremiumRoundedIcon />
-        </Box>
-        <Box flex={1}>
-          <Typography variant='h4' component='h2' fontWeight={800} gutterBottom>{t("Take your cooking further")}</Typography>
-          <Typography color='text.secondary'>{t("Unlock premium recipes, share your own creations, and grow from home cook to chef.")}</Typography>
-        </Box>
-        <Button
-          component={NavLink}
-          to='/premium'
-          variant='contained'
-          size='large'
-        >{t("Discover Premium")}</Button>
-      </Stack>
-    </Paper>
-  );
+  return <ContentPanel sx={(theme) => ({ height: '100%', bgcolor: alpha(theme.palette.premium.main, 0.055) })}>
+    <Stack height='100%' alignItems='flex-start' spacing={2}>
+      <WorkspacePremiumRoundedIcon sx={{ color: 'premium.main', fontSize: 32 }} />
+      <Typography variant='h3' component='h2'>{t('Take your cooking further')}</Typography>
+      <Typography color='text.secondary' sx={{ flex: 1 }}>{t('Unlock premium recipes, share your own creations, and grow from home cook to chef.')}</Typography>
+      <Button component={NavLink} to='/premium' variant='contained'>{t('Discover Premium')}</Button>
+    </Stack>
+  </ContentPanel>;
 }
-
-export default PremiumCard;

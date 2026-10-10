@@ -1,3 +1,4 @@
+import ContentPanel from '@/components/Layout/ContentPanel';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   Button,
@@ -6,7 +7,6 @@ import {
   FormControlLabel,
   Link as MuiLink,
   MenuItem,
-  Paper,
   Select,
   Stack,
   Typography,
@@ -53,7 +53,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
     <>
       <Typography variant='h1' component='h2' ref={paymentSectionRef}>{t("Plan Selection")}</Typography>
       <Stack direction='row' width='100%' gap={2} mb={5} flexWrap='wrap'>
-        <Paper
+        <ContentPanel
           sx={{
             flexGrow: 1,
             gap: '10px',
@@ -132,7 +132,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
                 ? t("Proceed to Checkout")
                 : t("You must be logged in")}
           </Button>
-        </Paper>
+        </ContentPanel>
       </Stack>
     </>
   );

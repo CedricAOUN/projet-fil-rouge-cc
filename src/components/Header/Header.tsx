@@ -1,19 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Link as MuiLink,
-  Stack,
-  useTheme,
-} from '@mui/material';
+import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Link as MuiLink, Stack, useMediaQuery, useTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { alpha } from '@mui/material/styles';
 import { lazy, Suspense, useState } from 'react';
-import { useMediaQuery } from '@mui/material';
 import ThemeModeToggle from './ThemeModeToggle';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useGetCurrentUserQuery, useLogoutMutation } from '@/api/authApi';
@@ -21,185 +10,47 @@ import ProfileDropdown from './ProfileDropdown';
 
 const LoginModal = lazy(() => import('@/components/LoginModal/LoginModal'));
 
-export default function Header({ currentTheme, onThemeToggle }) {
+export default function Header({ currentTheme, onThemeToggle }: { currentTheme: 'light' | 'dark'; onThemeToggle: () => void }) {
   const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width:900px)');
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { data: currentUser } = useGetCurrentUserQuery();
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleModalOpen = () => setIsOpen(true);
-  const handleModalClose = () => setIsOpen(false);
-
-  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
-
+  const [logout] = useLogoutMutation();
   const handleLogout = () => {
-    logout()
-      .unwrap()
-      .then(() => {
-        window.location.reload();
-      })
-      .catch(() => {});
+    logout().unwrap().then(() => window.location.reload()).catch(() => {});
   };
-
-  const navigateToProfile = () => navigate(`/user/${currentUser?.id}`);
-  const navigateToFavorites = () => navigate(`/favorites`);
-
+  const links = [{ to: '/recipes', label: t('Recipes') }, { to: '/courses', label: t('Courses') }, { to: '/premium', label: t('Premium') }];
   const linkStyles = {
-    mx: '2px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 500,
-    textDecoration: 'none',
-    px: '14px',
-    py: '6px',
-    borderRadius: '20px',
-    transition: 'background 0.2s, color 0.2s',
-    '&:hover': {
-      textDecoration: 'none',
-      backgroundColor: theme.palette.action.hover,
-      '&::after': {
-        width: '0%',
-      },
-    },
-    '&.active': {
-      backgroundColor: `${theme.palette.secondary.main}22`,
-      color: theme.palette.secondary.main,
-    },
+    px: 2, py: 1, borderRadius: '10px', fontWeight: 600, fontSize: '0.9rem',
+    color: 'text.secondary', textDecoration: 'none',
+    '&:hover': { bgcolor: 'action.hover', textDecoration: 'none', color: 'text.primary' },
+    '&.active': { bgcolor: alpha(theme.palette.secondary.main, 0.1), color: 'secondary.main' },
   };
-
-  return (
-    <>
-      <AppBar position='sticky' component='header'>
-        <Box
-          sx={{
-            padding: '10px 8%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <MuiLink
-            component={NavLink}
-            to='/'
-            sx={{
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              '&::after': { display: 'none' },
-              '&:hover': { textDecoration: 'none' },
-            }}
-          >
-            <Box
-              sx={{
-                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                borderRadius: '10px',
-                px: '10px',
-                py: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2px',
-              }}
-            >
-              <Box
-                component='span'
-                sx={{
-                  color: theme.palette.primary.contrastText,
-                  fontWeight: 800,
-                  fontSize: isMobile ? '15px' : '17px',
-                  letterSpacing: '-0.5px',
-                }}
-              >
-                Meal
-              </Box>
-              <Box
-                component='span'
-                sx={{
-                  color: theme.palette.secondary.contrastText,
-                  fontWeight: 400,
-                  fontSize: isMobile ? '15px' : '17px',
-                  letterSpacing: '-0.5px',
-                }}
-              >
-                Mosaic
-              </Box>
-            </Box>
-          </MuiLink>
-
-          {isMobile ? (
-            <Stack
-              direction='row'
-              gap={1}
-              ml='auto'
-              mr='10px'
-              alignItems='center'
-            >
-              <IconButton onClick={handleMenuOpen} color='inherit' aria-label={t("Open menu")} aria-haspopup='menu' aria-expanded={Boolean(anchorEl)}>
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem>
-                  <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>{t("Recipes")}</MuiLink>
-                </MenuItem>
-                <MenuItem>
-                  <MuiLink component={NavLink} to='/courses' sx={linkStyles}>{t("Courses")}</MuiLink>
-                </MenuItem>
-                <MenuItem>
-                  <MuiLink component={NavLink} to='/premium' sx={linkStyles}>{t("Premium")}</MuiLink>
-                </MenuItem>
-              </Menu>
-            </Stack>
-          ) : (
-            <Stack direction='row' gap='2px' alignItems='center'>
-              <MuiLink component={NavLink} to='/recipes' sx={linkStyles}>{t("Recipes")}</MuiLink>
-              <MuiLink component={NavLink} to='/courses' sx={linkStyles}>{t("Courses")}</MuiLink>
-              <MuiLink component={NavLink} to='/premium' sx={linkStyles}>{t("Premium")}</MuiLink>
-            </Stack>
-          )}
-
-          <Stack direction='row' gap='10px' alignItems='center'>
-            {!currentUser && (
-              <Button
-                variant='contained'
-                color='primary'
-                size={isMobile ? 'small' : 'medium'}
-                onClick={handleModalOpen}
-              >{t("Sign In")}</Button>
-            )}
-            {currentUser && (
-              <ProfileDropdown
-                currentUser={currentUser}
-                isMobile={isMobile}
-                onNavigateToProfile={navigateToProfile}
-                onLogout={handleLogout}
-              />
-            )}
-            <ThemeModeToggle
-              currentTheme={currentTheme}
-              onThemeToggle={onThemeToggle}
-            />
-          </Stack>
-        </Box>
-      </AppBar>
-      {isOpen && (
-        <Suspense fallback={null}>
-          <LoginModal isOpen={isOpen} handleClose={handleModalClose} />
-        </Suspense>
-      )}
-    </>
-  );
+  return <>
+    <AppBar position='sticky' component='header'>
+      <Container maxWidth='lg' sx={{ minHeight: { xs: 72, md: 80 }, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+        <MuiLink component={NavLink} to='/' aria-label='MealMosaic' sx={{ color: 'text.primary', fontFamily: 'Georgia, serif', fontSize: { xs: '1.2rem', sm: '1.6rem' }, letterSpacing: '-0.06em', textDecoration: 'none', whiteSpace: 'nowrap', '&:hover': { textDecoration: 'none' } }}>
+          Meal<Box component='span' sx={{ color: 'primary.main' }}>Mosaic</Box><Box component='span' sx={{ color: 'secondary.main' }}>.</Box>
+        </MuiLink>
+        {!isMobile && <Stack component='nav' direction='row' gap={0.5}>
+          {links.map(link => <MuiLink key={link.to} component={NavLink} to={link.to} sx={linkStyles}>{link.label}</MuiLink>)}
+        </Stack>}
+        <Stack direction='row' gap={{ xs: 0.25, sm: 1 }} alignItems='center'>
+          {!currentUser && <Button variant='contained' size={isMobile ? 'small' : 'medium'} onClick={() => setIsOpen(true)}>{t('Sign In')}</Button>}
+          {currentUser && <ProfileDropdown currentUser={currentUser} isMobile={isMobile} onNavigateToProfile={() => navigate(`/user/${currentUser.id}`)} onLogout={handleLogout} />}
+          <ThemeModeToggle currentTheme={currentTheme} onThemeToggle={onThemeToggle} />
+          {isMobile && <>
+            <IconButton onClick={event => setAnchorEl(event.currentTarget)} color='inherit' aria-label={t('Open menu')} aria-haspopup='menu' aria-expanded={Boolean(anchorEl)}><MenuIcon /></IconButton>
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+              {links.map(link => <MenuItem key={link.to} component={NavLink} to={link.to} onClick={() => setAnchorEl(null)}>{link.label}</MenuItem>)}
+            </Menu>
+          </>}
+        </Stack>
+      </Container>
+    </AppBar>
+    {isOpen && <Suspense fallback={null}><LoginModal isOpen={isOpen} handleClose={() => setIsOpen(false)} /></Suspense>}
+  </>;
 }

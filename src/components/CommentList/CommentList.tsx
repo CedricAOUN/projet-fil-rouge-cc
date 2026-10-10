@@ -19,8 +19,6 @@ import {
   useDeleteCommentMutation,
   useEditCommentMutation,
 } from '@/api/recipeApi';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import SendIcon from '@mui/icons-material/Send';
 import EditCommentDialog from './EditCommentDialog';
@@ -42,9 +40,9 @@ function CommentList({
   const currentUserId = currentUser?.id;
   const isPremiumUser = currentUser?.is_premium || false;
 
-  const [addComment, { isLoading: isAdding }] = useAddCommentMutation();
-  const [editComment, { isLoading: isEditing }] = useEditCommentMutation();
-  const [deleteComment, { isLoading: isDeleting }] = useDeleteCommentMutation();
+  const [addComment] = useAddCommentMutation();
+  const [editComment] = useEditCommentMutation();
+  const [deleteComment] = useDeleteCommentMutation();
 
   const handleAddComment = async (content: string) => {
     setNewCommentContent(''); // Clear the input field after adding a comment
@@ -73,6 +71,7 @@ function CommentList({
               onChange={(e) => setNewCommentContent(e.target.value)}
             ></TextField>
             <Button
+              aria-label={t('Submit')}
               color='primary'
               onClick={() => handleAddComment(newCommentContent)}
             >
@@ -98,6 +97,7 @@ function CommentList({
             onChange={(e) => setNewCommentContent(e.target.value)}
           ></TextField>
           <Button
+            aria-label={t('Submit')}
             color='primary'
             onClick={() => handleAddComment(newCommentContent)}
           >
@@ -106,9 +106,9 @@ function CommentList({
         </Stack>
       )}
       {comments.map((comment, index) => (
-        <Paper key={index} sx={{ position: 'relative' }}>
+        <Paper key={index} sx={{ position: 'relative', p: { xs: 2, sm: 3 }, minWidth: 0 }}>
           <Stack
-            direction='row'
+            direction={{ xs: 'column', sm: 'row' }}
             alignItems='center'
             gap={2}
             padding={1}
@@ -118,13 +118,13 @@ function CommentList({
               alt={comment.creator.name}
               src={comment.creator.avatar_url}
             />
-            <Stack>
+            <Stack sx={{ flex: 1, minWidth: 0, pr: currentUserId === comment.creator.id ? 7 : 0 }}>
               <Stack direction='row'>
                 <Typography variant='h6' component='p' fontWeight='bold'>
                   {comment.creator.name}:
                 </Typography>
               </Stack>
-              <Typography variant='subtitle2'>{comment.content}</Typography>
+              <Typography variant='body2' sx={{ whiteSpace: 'pre-line' }}>{comment.content}</Typography>
               {comment.updated_at &&
                 comment.updated_at !== comment.created_at && (
                   <Typography variant='caption' color='textSecondary'>{t("Edited on")}{' '}
@@ -141,6 +141,7 @@ function CommentList({
           {currentUserId === comment.creator.id && (
             <Stack direction='row' position='absolute' right={0} top={'2%'}>
               <IconButton
+                aria-label={t('Edit Comment')}
                 color='primary'
                 onClick={() => {
                   setIdToEdit(comment.id);
@@ -150,6 +151,7 @@ function CommentList({
                 <EditIcon />
               </IconButton>
               <IconButton
+                aria-label={t('Delete')}
                 color='error'
                 onClick={() => setIdToDelete(comment.id)}
               >
