@@ -20,7 +20,9 @@ export default function Header({ currentTheme, onThemeToggle }: { currentTheme: 
   const { data: currentUser } = useGetCurrentUserQuery();
   const [logout] = useLogoutMutation();
   const handleLogout = () => {
-    logout().unwrap().then(() => window.location.reload()).catch(() => {});
+    logout().unwrap().then(() => navigate('/', { replace: true })).catch((error) => {
+      if (error.status === 401) navigate('/', { replace: true });
+    });
   };
   const links = [{ to: '/recipes', label: t('Recipes') }, { to: '/courses', label: t('Courses') }, { to: '/premium', label: t('Premium') }];
   const linkStyles = {

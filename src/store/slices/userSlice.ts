@@ -18,7 +18,12 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    sessionEnded: () => {
+      localStorage.removeItem('token');
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // login
@@ -109,4 +114,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { sessionEnded } = userSlice.actions;
 export default userSlice.reducer;

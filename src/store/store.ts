@@ -9,6 +9,9 @@ import { authApi } from '@/api/authApi';
 import { recipeApi } from '@/api/recipeApi';
 import { courseApi } from '@/api/courseApi';
 import { plansApi } from '@/api/plansApi';
+import { createSessionListener } from './sessionListener';
+
+const sessionListener = createSessionListener();
 
 export const store = configureStore({
   reducer: {
@@ -25,7 +28,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }).concat(
+    }).prepend(sessionListener.middleware).concat(
       authApi.middleware,
       recipeApi.middleware,
       courseApi.middleware,

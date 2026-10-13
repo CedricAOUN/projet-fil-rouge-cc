@@ -12,8 +12,10 @@ import { authApi } from '@/api/authApi';
 import { recipeApi } from '@/api/recipeApi';
 import { courseApi } from '@/api/courseApi';
 import { plansApi } from '@/api/plansApi';
+import { createSessionListener } from '@/store/sessionListener';
 export function makeStore() {
-  return configureStore({ reducer: { app, user, recipes, authApi: authApi.reducer, recipeApi: recipeApi.reducer, courseApi: courseApi.reducer, plansApi: plansApi.reducer }, middleware: get => get().concat(authApi.middleware, recipeApi.middleware, courseApi.middleware, plansApi.middleware) });
+  const sessionListener = createSessionListener();
+  return configureStore({ reducer: { app, user, recipes, authApi: authApi.reducer, recipeApi: recipeApi.reducer, courseApi: courseApi.reducer, plansApi: plansApi.reducer }, middleware: get => get().prepend(sessionListener.middleware).concat(authApi.middleware, recipeApi.middleware, courseApi.middleware, plansApi.middleware) });
 }
 function Location() { return <output data-testid="location">{useLocation().pathname}</output>; }
 export function renderApp(ui: React.ReactNode, { route = '/', store = makeStore() } = {}) {
