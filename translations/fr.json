@@ -403,5 +403,20 @@
   "Unable to change your password. Please try again.": "Impossible de modifier votre mot de passe. Veuillez réessayer.",
   "You sign in with Google and do not have a password to change.": "Vous vous connectez avec Google et n’avez pas de mot de passe à modifier.",
   "Show password": "Afficher le mot de passe",
-  "Hide password": "Masquer le mot de passe"
+  "Hide password": "Masquer le mot de passe",
+  "Subscription": "Abonnement",
+  "Manage subscription": "Gérer l’abonnement",
+  "Unsubscribe": "Se désabonner",
+  "Confirm unsubscribe": "Confirmer le désabonnement",
+  "Unsubscribing...": "Désabonnement…",
+  "Your subscription renews on {{date}}.": "Votre abonnement sera renouvelé le {{date}}.",
+  "Your subscription will not renew. Your access remains available until {{date}}.": "Votre abonnement ne sera pas renouvelé. Votre accès reste disponible jusqu’au {{date}}.",
+  "Stop renewing your subscription? You will keep your access until {{date}}. We will send you a confirmation email.": "Arrêter le renouvellement de votre abonnement ? Vous conserverez votre accès jusqu’au {{date}}. Nous vous enverrons un e-mail de confirmation.",
+  "Stop renewing your subscription? You will keep your access until the end of your billing period. We will send you a confirmation email.": "Arrêter le renouvellement de votre abonnement ? Vous conserverez votre accès jusqu’à la fin de votre période de facturation. Nous vous enverrons un e-mail de confirmation.",
+  "A confirmation email has been sent.": "Un e-mail de confirmation a été envoyé.",
+  "Your subscription is cancelled, but the confirmation email could not be sent.": "Votre abonnement est résilié, mais l’e-mail de confirmation n’a pas pu être envoyé.",
+  "Retry confirmation email": "Renvoyer l’e-mail de confirmation",
+  "Sending...": "Envoi…",
+  "Unable to send the confirmation email. Please try again.": "Impossible d’envoyer l’e-mail de confirmation. Veuillez réessayer.",
+  "Unable to cancel your subscription. Please try again.": "Impossible de résilier votre abonnement. Veuillez réessayer."
 }

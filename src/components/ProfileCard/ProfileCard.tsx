@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useGetCurrentUserQuery } from '@/api/authApi';
+import SubscriptionManagement from './SubscriptionManagement';
 import {
   Avatar,
   Button,
@@ -60,6 +61,7 @@ function ProfileCard({ user, onEdit, isMobile }) {
             </Typography>
           )}
           {isCurrentUser && <Button variant='outlined' onClick={onEdit}>{t("Edit Profile")}</Button>}
+          {isCurrentUser && <SubscriptionManagement user={currentUser} />}
         </Stack>
       </CardContent>
     </Card>

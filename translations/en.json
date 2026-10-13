@@ -402,5 +402,20 @@
   "Unable to change your password. Please try again.": "Unable to change your password. Please try again.",
   "You sign in with Google and do not have a password to change.": "You sign in with Google and do not have a password to change.",
   "Show password": "Show password",
-  "Hide password": "Hide password"
+  "Hide password": "Hide password",
+  "Subscription": "Subscription",
+  "Manage subscription": "Manage subscription",
+  "Unsubscribe": "Unsubscribe",
+  "Confirm unsubscribe": "Confirm unsubscribe",
+  "Unsubscribing...": "Unsubscribing...",
+  "Your subscription renews on {{date}}.": "Your subscription renews on {{date}}.",
+  "Your subscription will not renew. Your access remains available until {{date}}.": "Your subscription will not renew. Your access remains available until {{date}}.",
+  "Stop renewing your subscription? You will keep your access until {{date}}. We will send you a confirmation email.": "Stop renewing your subscription? You will keep your access until {{date}}. We will send you a confirmation email.",
+  "Stop renewing your subscription? You will keep your access until the end of your billing period. We will send you a confirmation email.": "Stop renewing your subscription? You will keep your access until the end of your billing period. We will send you a confirmation email.",
+  "A confirmation email has been sent.": "A confirmation email has been sent.",
+  "Your subscription is cancelled, but the confirmation email could not be sent.": "Your subscription is cancelled, but the confirmation email could not be sent.",
+  "Retry confirmation email": "Retry confirmation email",
+  "Sending...": "Sending...",
+  "Unable to send the confirmation email. Please try again.": "Unable to send the confirmation email. Please try again.",
+  "Unable to cancel your subscription. Please try again.": "Unable to cancel your subscription. Please try again."
 }

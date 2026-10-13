@@ -3,7 +3,7 @@ import { Box, Button, Chip, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import DoneIcon from '@mui/icons-material/Done';
 import { useRef, useState } from 'react';
-import dayjs from 'dayjs';
+import { Link as RouterLink } from 'react-router-dom';
 import { getPremiumTiers } from '@/constants/premiumPlans';
 import Checkout from '@/components/Checkout/Checkout';
 import { useGetCurrentUserQuery } from '@/api/authApi';
@@ -21,8 +21,7 @@ export default function PremiumPage() {
   if (currentUser?.is_premium) return <ContentPanel>
     <Stack gap={3}>
       <Typography variant='h1'>{t('Premium')}</Typography>
-      <Typography color='success.main'>{t('You are already a {{membership}}. Your subscription will be renewed on {{date}}.', { membership: currentUser.is_chef ? t('Chef') : t('Premium member'), date: dayjs(currentUser.premium_expire).format('MMMM D, YYYY') })}</Typography>
-      <Button variant='contained' disabled>{t('Subscription management is not yet available')}</Button>
+      <Button variant='contained' component={RouterLink} to={`/user/${currentUser.id}`}>{t('Manage subscription')}</Button>
     </Stack>
   </ContentPanel>;
   return <Stack gap={5}>

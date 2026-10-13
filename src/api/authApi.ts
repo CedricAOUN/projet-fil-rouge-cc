@@ -14,6 +14,13 @@ export interface AuthUser {
   is_premium: boolean;
   is_chef: boolean;
   premium_expire: string | null;
+  subscription?: {
+    can_cancel: boolean;
+    cancelled: boolean;
+    ends_at: string | null;
+    current_period_end: string | null;
+    cancellation_email_sent: boolean;
+  } | null;
   created_at: string;
   updated_at: string;
   favorite_recipes: Partial<Recipe>[];
@@ -42,6 +49,12 @@ export interface ChangePasswordRequest {
   current_password: string;
   password: string;
   password_confirmation: string;
+}
+
+export interface CancelSubscriptionResponse {
+  message: string;
+  ends_at: string;
+  email_sent: boolean;
 }
 
 export interface AuthResponse {
@@ -126,6 +139,13 @@ export const authApi = createApi({
         body: passwordData,
       }),
     }),
+    cancelSubscription: builder.mutation<CancelSubscriptionResponse, void>({
+      query: () => ({
+        url: `${API_URL}/subscription/cancel`,
+        method: 'POST',
+      }),
+      invalidatesTags: (result) => result ? ['SelfUser', 'User'] : [],
+    }),
     getCurrentUser: builder.query<AuthUser, void>({
       query: () => ({
         url: 'me',
@@ -177,6 +197,7 @@ export const {
   useGetCurrentUserQuery,
   useUpdateProfileMutation,
   useChangePasswordMutation,
+  useCancelSubscriptionMutation,
   useGetUserByIdQuery,
   useCheckoutMutation,
   useGetChefsQuery,
