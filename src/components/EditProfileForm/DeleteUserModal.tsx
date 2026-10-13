@@ -4,7 +4,7 @@ import {
   useDeleteUserByIdMutation,
   useGetCurrentUserQuery,
 } from '@/api/authApi';
-import { Button, Dialog, Stack, Typography } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useState } from 'react';
 
 interface DeleteUserModalProps {
@@ -17,15 +17,23 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
   const currentUser = useGetCurrentUserQuery();
 
   const [password, setPassword] = useState('');
-  const [deleteUserById, { error, isLoading }] = useDeleteUserByIdMutation();
+  const [deleteUserById, { error, isLoading, reset }] = useDeleteUserByIdMutation();
+  const isGoogleAccount = currentUser.data?.has_google_account === true;
+
+  const handleClose = () => {
+    if (isLoading) return;
+    setPassword('');
+    reset();
+    onClose();
+  };
 
   const handleDeleteUser = async () => {
-    if (!currentUser.data || isLoading || !password) return;
+    if (!currentUser.data || isLoading || (!isGoogleAccount && !password)) return;
 
     try {
       await deleteUserById({
         id: currentUser.data.id.toString(),
-        password,
+        ...(isGoogleAccount ? { confirmed: true } : { password }),
       }).unwrap();
     } catch {
       // The mutation exposes the error below; keep the session and dialog open.
@@ -45,29 +53,37 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
       : t('Unable to delete your account. Please try again.');
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <Stack gap={2} sx={{ padding: 2 }}>
-        <Typography>
-          {t(
-            'Please re-enter your password to confirm account deletion. This action is irreversible.',
-          )}
-        </Typography>
-        <PasswordField
+    <Dialog open={open} onClose={isLoading ? undefined : handleClose} aria-labelledby='delete-account-title' aria-describedby='delete-account-description'>
+      <DialogTitle id='delete-account-title'>{t('Delete Account')}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id='delete-account-description' sx={{ mb: 2 }}>
+          {isGoogleAccount
+            ? t('Are you sure you want to delete your account? This action is irreversible.')
+            : t('Please re-enter your password to confirm account deletion. This action is irreversible.')}
+        </DialogContentText>
+        {!isGoogleAccount && <PasswordField
           id='password'
+          label={t('Password')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder={t('Password')}
           error={!!error}
           helperText={error ? errorMessage : undefined}
           disabled={isLoading}
-        ></PasswordField>
+          fullWidth
+        />}
+        {isGoogleAccount && error && <Alert severity='error'>{errorMessage}</Alert>}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} disabled={isLoading} autoFocus>{t('Cancel')}</Button>
         <Button
+          color='error'
           onClick={handleDeleteUser}
-          disabled={isLoading || !password || !currentUser.data}
+          disabled={isLoading || !currentUser.data || (!isGoogleAccount && !password)}
         >
-          {t('Delete account')}
+          {isLoading ? t('Deleting account...') : t('Delete account')}
         </Button>
-      </Stack>
+      </DialogActions>
     </Dialog>
   );
 };

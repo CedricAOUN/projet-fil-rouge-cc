@@ -94,7 +94,7 @@ export default function PrivacyPolicy() {
       content: (
         <>
           <Typography>{t("Depending on your circumstances, you may request access, rectification, erasure, restriction, or portability of your data, and object to processing based on legitimate interest.")}</Typography>
-          <Typography>{t("Send rights requests to Cedric.j.aoun@gmail.com. Proof of identity may be requested only where necessary. Accounts with a local password can use Delete Account in their profile. Google-only accounts must currently request deletion by email because the confirmation dialog requires a local password.")}</Typography>
+          <Typography>{t("Send rights requests to Cedric.j.aoun@gmail.com. Proof of identity may be requested only where necessary. Accounts can be deleted from the profile. Google-linked accounts use a confirmation dialog; other accounts require password confirmation.")}</Typography>
           <Typography>
             <Trans i18nKey="You may also lodge a complaint with the <authority>CNIL</authority>." components={{ authority: <Link href='https://www.cnil.fr/' target='_blank' rel='noreferrer' /> }} />
           </Typography>

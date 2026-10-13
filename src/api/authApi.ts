@@ -7,6 +7,7 @@ export interface AuthUser {
   name: string;
   email: string;
   has_password?: boolean;
+  has_google_account?: boolean;
   biography: string | null;
   first_name: string | null;
   last_name: string | null;
@@ -171,12 +172,12 @@ export const authApi = createApi({
     }),
     deleteUserById: builder.mutation<
       void,
-      { id: string; password: string }
+      { id: string; password?: string; confirmed?: boolean }
     >({
-      query: ({ id, password }) => ({
+      query: ({ id, ...confirmation }) => ({
         url: `delete/${id}`,
         method: 'DELETE',
-        body: { password },
+        body: confirmation,
       }),
     }),
     getChefs: builder.query<{ data: AuthUser[] }, { query: string }>({
