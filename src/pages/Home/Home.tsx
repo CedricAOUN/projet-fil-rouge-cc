@@ -24,7 +24,8 @@ function KitchenNote() {
 }
 
 function HeroPhoto() {
-  const { data } = useGetRecipesQuery({ search: '' });
+  const { i18n } = useTranslation();
+  const { currentData: data } = useGetRecipesQuery({ search: '', language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en' });
   const recipe = data?.recipes.find(item => !item.is_premium && item.image_url);
   const [failedImage, setFailedImage] = useState<string>();
   if (!recipe || failedImage === recipe.image_url) return <KitchenNote />;

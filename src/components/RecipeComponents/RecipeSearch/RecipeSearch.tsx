@@ -12,7 +12,7 @@ function RecipeSearch({
   showSearch = true,
   headerSearchRef = null,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const searchRef = useRef(null);
   const containerRef = useRef(null);
@@ -21,6 +21,7 @@ function RecipeSearch({
   const debouncedTerm = useDebounce(searchTerm, 500);
 
   const { currentData, isLoading, isFetching } = useGetRecipesQuery({
+    language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en',
     search: debouncedTerm,
   });
 

@@ -32,6 +32,7 @@ import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 type RecipeFormData = {
   title: string;
   category: string;
+  language: string;
   duration: string;
   description: string;
   instructions: string;
@@ -54,6 +55,7 @@ const schema = yup
       .min(1, () => t('Duration must be a positive whole number of minutes'))
       .max(4294967295, () => t('Duration must be a positive whole number of minutes'))
       .required(() => t('Duration is required')),
+    language: yup.string().oneOf(['en', 'fr']).required(() => t('Recipe language is required')),
     description: yup.string().defined(),
     instructions: yup.string().required(() => t("Instructions are required")),
     is_premium: yup.boolean().defined(),
@@ -81,7 +83,7 @@ const schema = yup
   .required();
 
 function RecipeCreateForm() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:900px)');
   const currentUser = useGetCurrentUserQuery().data;
@@ -95,10 +97,12 @@ function RecipeCreateForm() {
   const [createRecipe, { isLoading: isCreateLoading }] =
     useCreateRecipeMutation();
   const [editRecipe, { isLoading: isEditLoading }] = useEditRecipeMutation();
+  const [initialRecipeLanguage] = useState(() => i18n.resolvedLanguage === 'fr' ? 'fr' : 'en');
   const formValues = useMemo<RecipeFormData>(
     () => ({
       title: edittingRecipe?.title || '',
       category: edittingRecipe?.category || '',
+      language: edittingRecipe?.language || initialRecipeLanguage,
       duration: String(edittingRecipe?.duration ?? ''),
       description: edittingRecipe?.description || '',
       instructions: edittingRecipe?.instructions || '',
@@ -112,7 +116,7 @@ function RecipeCreateForm() {
         : [{ name: '', amount: '', unit: 'unit' }],
       image: null,
     }),
-    [edittingRecipe],
+    [edittingRecipe, initialRecipeLanguage],
   );
 
   const {
@@ -207,6 +211,12 @@ function RecipeCreateForm() {
         helperText={errors.description?.message}
       />
 
+      <Controller name='language' control={control} render={({ field }) => (
+        <TextField {...field} select label={t('Recipe language')} required fullWidth error={!!errors.language} helperText={errors.language?.message}>
+          <MenuItem value='en'>{t('English')}</MenuItem>
+          <MenuItem value='fr'>{t('French')}</MenuItem>
+        </TextField>
+      )} />
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
         <Controller name='category' control={control} render={({ field }) => (
           <TextField {...field} select label={t('Category')} required fullWidth error={!!errors.category} helperText={errors.category?.message}>

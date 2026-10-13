@@ -23,10 +23,10 @@ const actionButtonSx = (color: 'warning' | 'error') => (theme: Theme) => {
 };
 
 export default function MyRecipes() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const currentUser = useGetCurrentUserQuery()?.data;
-  const { data } = useGetRecipesQuery({ creators: [currentUser?.name] });
+  const { currentData: data } = useGetRecipesQuery({ creators: [currentUser?.name], language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en' });
   const recipes = data?.recipes;
   const [deleteRecipe] = useDeleteRecipeMutation();
   const [recipeIDToDelete, setRecipeIDToDelete] = useState<string | null>(null);

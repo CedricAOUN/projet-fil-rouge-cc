@@ -28,6 +28,7 @@ export interface Recipe {
   id: string;
   title: string;
   category: RecipeCategory | null;
+  language: 'en' | 'fr';
   duration: number | null;
   description: string;
   date: string;

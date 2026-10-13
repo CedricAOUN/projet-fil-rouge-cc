@@ -8,10 +8,10 @@ import RecipeCard from '@/components/RecipeComponents/RecipeCard/RecipeCard';
 import ContentPanel from '@/components/Layout/ContentPanel';
 
 export default function Favorites() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const currentUser = useGetCurrentUserQuery().data;
-  const recipes = currentUser?.favorite_recipes;
+  const recipes = currentUser?.favorite_recipes?.filter(recipe => recipe.language === (i18n.resolvedLanguage === 'fr' ? 'fr' : 'en'));
   if (!currentUser) return <PageErrorHandler errorStatus={401} />;
   return <Stack spacing={4}>
     <Typography variant='h1'>{t('Your Favorites')}</Typography>

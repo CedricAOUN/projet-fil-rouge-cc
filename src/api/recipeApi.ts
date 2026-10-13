@@ -19,6 +19,7 @@ type RecipeSearchParams = {
   likeRange?: [number, number];
   recipeType?: 'all' | 'premium' | 'free';
   category?: string;
+  language?: 'en' | 'fr';
 };
 
 type Comment = {
@@ -35,6 +36,7 @@ type CreateRecipeFormData = {
   description?: string | null;
   instructions: string;
   category: string;
+  language: string;
   duration: number | string;
   image?: File | null;
   is_premium?: boolean;
@@ -68,6 +70,7 @@ export const recipeApi = createApi({
         likeRange = [0, Number.MAX_SAFE_INTEGER],
         recipeType = 'all',
         category = '',
+        language,
       }) => {
         const params = new URLSearchParams();
         if (search) params.append('search', search);
@@ -77,6 +80,7 @@ export const recipeApi = createApi({
         if (likeRange) params.append('likeRange', likeRange.join(','));
         if (recipeType) params.append('recipeType', recipeType);
         if (category) params.append('category', category);
+        if (language) params.append('language', language);
         return `?${params.toString()}`;
       },
       providesTags: ['Recipes'],
@@ -153,6 +157,7 @@ export const recipeApi = createApi({
         const body = new FormData();
         body.append('title', data.title);
         body.append('category', data.category);
+        body.append('language', data.language);
         body.append('duration', String(data.duration));
         body.append('description', data.description ?? '');
         body.append('instructions', data.instructions);
@@ -187,6 +192,7 @@ export const recipeApi = createApi({
         body.append('_method', 'PUT');
         body.append('title', data.title);
         body.append('category', data.category);
+        body.append('language', data.language);
         body.append('duration', String(data.duration));
         body.append('description', data.description ?? '');
         body.append('instructions', data.instructions);

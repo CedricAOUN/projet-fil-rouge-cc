@@ -172,6 +172,9 @@ test('recipe form validates ingredients, adds/removes rows and submits an upload
   const interaction = userEvent.setup();
   renderApp(<RecipeCreateForm />);
   await screen.findByText('Mark recipe as Premium');
+  expect(screen.getByRole('combobox', { name: /^Recipe language/ })).toHaveTextContent('English');
+  await interaction.click(screen.getByRole('combobox', { name: /^Recipe language/ }));
+  await interaction.click(screen.getByRole('option', { name: 'French' }));
   await interaction.click(screen.getByRole('button', { name: 'Submit Recipe' }));
   expect(await screen.findByText('Title is required')).toBeVisible();
   expect(screen.getByText('Category is required')).toBeVisible();
@@ -210,6 +213,7 @@ test('recipe form validates ingredients, adds/removes rows and submits an upload
   await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/recipe/1'));
   expect(fields.get('ingredients[0][quantity]')).toBe('2');
   expect(fields.get('category')).toBe('starter');
+  expect(fields.get('language')).toBe('fr');
   expect(fields.get('duration')).toBe('30');
   expect((fields.get('image_file') as File).name).toBe('soup.jpg');
 });
@@ -221,6 +225,7 @@ test('recipe editing pre-fills data, sends an update and rejects another owner',
   const { unmount } = renderApp(<Routes><Route path='/recipe/edit/:id' element={<RecipeCreateForm />} /></Routes>, { route: '/recipe/edit/1' });
   expect(await screen.findByDisplayValue('Carrot soup')).toBeVisible();
   expect(screen.getByLabelText(/^Duration/)).toHaveValue(30);
+  expect(screen.getByRole('combobox', { name: /^Recipe language/ })).toHaveTextContent('English');
   expect(screen.getByRole('combobox', { name: /^Category/ })).toHaveTextContent('Starter');
   await interaction.clear(screen.getByPlaceholderText('Title')); await interaction.type(screen.getByPlaceholderText('Title'), 'New soup');
   await interaction.click(screen.getByRole('button', { name: 'Confirm' }));

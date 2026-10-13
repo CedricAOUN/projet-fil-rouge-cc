@@ -19,7 +19,7 @@ import RecipeGrid from '@/components/RecipeComponents/RecipeGrid';
 import { getRecipeCategories } from '@/constants/recipeCategories';
 
 const AdvancedRecipeSearch = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [allIngredients, setAllIngredients] = React.useState<string[]>([]);
   const [allCreators, setAllCreators] = React.useState<string[]>([]);
@@ -49,7 +49,8 @@ const AdvancedRecipeSearch = () => {
     500,
   );
 
-  const { data, isLoading, isFetching } = useGetRecipesQuery({
+  const { currentData: data, isLoading, isFetching } = useGetRecipesQuery({
+    language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en',
     search: debouncedValues.searchTerm,
     category: debouncedValues.category,
     ingredients: debouncedValues.selectedIngredients,
