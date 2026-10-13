@@ -98,7 +98,7 @@ test('own profile offers editing and associated courses', async () => {
   const interaction = userEvent.setup();
   renderApp(<Routes><Route path='/user/:id' element={<SingleUserPage />} /></Routes>, { route: '/user/1' });
   await screen.findByText('Julia');
-  const edit = await screen.findByRole('button', { name: /edit/i });
+  const edit = await screen.findByRole('button', { name: 'Edit Profile' });
   await interaction.click(edit);
   expect(await screen.findByLabelText('Username')).toHaveValue('Julia');
 });

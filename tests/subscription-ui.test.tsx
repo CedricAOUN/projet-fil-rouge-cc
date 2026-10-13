@@ -7,7 +7,7 @@ import SingleUserPage from '@/pages/SingleUserPage/SingleUserPage';
 import PremiumPage from '@/pages/PremiumPage/PremiumPage';
 import '@/i18n';
 import { renderApp } from './render';
-import { API, server, user } from './server';
+import { API, server, user, course } from './server';
 
 const endsAt = '2030-11-01T00:00:00.000000Z';
 const subscription = { can_cancel: true, cancelled: false, ends_at: null, current_period_end: endsAt, cancellation_email_sent: false };
@@ -18,6 +18,23 @@ function profile(route = '/user/1') {
     <Route path='/premium' element={<PremiumPage />} />
   </Routes>, { route });
 }
+
+test.each([true, false])('own courses remain visible alongside subscription management when chef=%s', async isChef => {
+  const creatorIds: string[] = [];
+  server.use(
+    http.get(`${API}/users/me`, () => HttpResponse.json({ data: { ...user, is_chef: isChef, subscription } })),
+    http.get(`${API}/users/1`, () => HttpResponse.json({ data: { ...user, is_chef: isChef } })),
+    http.get(`${API}/courses`, ({ request }) => {
+      creatorIds.push(new URL(request.url).searchParams.get('creator_id'));
+      return HttpResponse.json({ data: [course] });
+    }),
+  );
+  profile();
+  expect(await screen.findByRole('heading', { name: 'Knife skills' })).toBeVisible();
+  expect(await screen.findByRole('button', { name: 'Unsubscribe', exact: true })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Edit', exact: true })).toBeVisible();
+  expect(creatorIds).toEqual(['1']);
+});
 
 test('own profile requires confirmation, cancels renewal, refreshes status and preserves access', async () => {
   let currentSubscription = subscription;

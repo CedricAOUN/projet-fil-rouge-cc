@@ -18,7 +18,7 @@ const SingleUserPage: React.FC = () => {
     { skip: !id },
   );
   const { data: courses } = useGetCoursesByExpertIdQuery(id!, {
-    skip: !id || !singleUser?.is_chef,
+    skip: !id || !singleUser,
   });
 
   const currentUser = useGetCurrentUserQuery()?.data;
@@ -37,16 +37,15 @@ const SingleUserPage: React.FC = () => {
     return <NotFound />;
   }
 
-  const { is_chef } = singleUser;
-
   return (
     <Stack
       gap={3}
-      direction={isMobile ? 'column' : is_chef && hasCourses ? 'row' : 'column'}
+      direction={isMobile ? 'column' : hasCourses ? 'row' : 'column'}
+      alignItems='flex-start'
     >
       <Box
         sx={{ minWidth: 0, flexShrink: 0, width: '100%' }}
-        maxWidth={isMobile ? '100%' : is_chef && hasCourses ? '320px' : '100%'}
+        maxWidth={isMobile ? '100%' : hasCourses ? '320px' : '100%'}
       >
         <ProfileCard
           user={singleUser}
@@ -57,7 +56,6 @@ const SingleUserPage: React.FC = () => {
       {editMode ? (
         <EditProfileForm onStopEdit={() => setEditMode(false)} />
       ) : (
-        is_chef &&
         hasCourses && (
           <CourseList
             courses={courses}

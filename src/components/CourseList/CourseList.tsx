@@ -19,7 +19,7 @@ export default function CourseList({ courses, allowModfications = false }: { cou
   const handleDeleteCourse = (id: number) => {
     deleteCourse({ id }); setCourseIDToDelete(null);
   };
-  return <Stack width='100%' gap={2}>
+  return <Stack width='100%' gap={2} sx={{ minWidth: 0, flex: 1 }}>
     <Typography component='h2' variant='h4'>{t('Courses')}</Typography>
     {courses?.map(course => <ContentPanel key={course.id}>
       <Stack direction={{ xs: 'column', sm: 'row' }} gap={3} alignItems={{ xs: 'flex-start', sm: 'center' }}>
