@@ -43,7 +43,7 @@ declare global {
 }
 
 export function initAnalytics() {
-  if (!allowed || !GA_ID || !import.meta.env.PROD) return;
+  if (!allowed || !GA_ID || !import.meta.env.PROD || location.pathname === '/reset-password') return;
   if (!initialized) {
     initialized = true;
     window.dataLayer = window.dataLayer || [];
@@ -85,7 +85,7 @@ export function initAnalytics() {
 }
 
 export function trackPageView(path: string) {
-  if (!allowed || !GA_ID || !import.meta.env.PROD) return;
+  if (!allowed || !GA_ID || !import.meta.env.PROD || location.pathname === '/reset-password' || path.split('?')[0] === '/reset-password') return;
   window.gtag?.('event', 'page_view', {
     page_path: path,
     page_location: window.location.href,
@@ -94,6 +94,6 @@ export function trackPageView(path: string) {
 }
 
 export function trackEvent(name: string, params?: Record<string, unknown>) {
-  if (!allowed || !GA_ID || !import.meta.env.PROD) return;
+  if (!allowed || !GA_ID || !import.meta.env.PROD || location.pathname === '/reset-password') return;
   window.gtag?.('event', name, params);
 }

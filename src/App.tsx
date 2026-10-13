@@ -30,6 +30,8 @@ const PrivacyPolicy = lazy(() => import('./pages/LegalPages/PrivacyPolicy'));
 const TermsOfUse = lazy(() => import('./pages/LegalPages/TermsOfUse'));
 const TermsOfSale = lazy(() => import('./pages/LegalPages/TermsOfSale'));
 const LegalNotice = lazy(() => import('./pages/LegalPages/LegalNotice'));
+const ForgotPassword = lazy(() => import('./pages/PasswordRecovery/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/PasswordRecovery/ResetPassword'));
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -108,6 +110,8 @@ function App() {
                 <Route path='/billing/success' element={<BillingSuccess />} />
                 <Route path='/billing/cancel' element={<BillingFailure />} />
                 <Route path='/favorites' element={<Favorites />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path='/reset-password' element={<ResetPassword />} />
                 <Route path='/my-recipes' element={<MyRecipes />} />
                 <Route path='/confidentialite' element={<PrivacyPolicy />} />
                 <Route path='/conditions-utilisation' element={<TermsOfUse />} />

@@ -119,6 +119,13 @@ export const authApi = createApi({
         method: 'POST',
       }),
     }),
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
+      query: (body) => ({ url: 'forgot-password', method: 'POST', body }),
+    }),
+    resetPassword: builder.mutation<{ message: string }, { email: string; token: string; password: string; password_confirmation: string }>({
+      query: (body) => ({ url: 'reset-password', method: 'POST', body }),
+      invalidatesTags: (_result, error) => error ? [] : ['SelfUser'],
+    }),
     updateProfile: builder.mutation<
       AuthUser,
       { userId: number; profileData: FormData }
@@ -195,6 +202,8 @@ export const {
   useRegisterMutation,
   useGoogleLoginMutation,
   useLogoutMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
   useGetCurrentUserQuery,
   useUpdateProfileMutation,
   useChangePasswordMutation,

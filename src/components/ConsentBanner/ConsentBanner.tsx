@@ -43,13 +43,13 @@ export default function ConsentBanner({ open, onClose }: { open: boolean; onClos
   }, [consent]);
 
   useEffect(() => {
-    setAnalyticsConsent(consent?.accepted === true);
+    setAnalyticsConsent(consent?.accepted === true && location.pathname !== '/reset-password');
     if (!consent?.accepted) lastPage.current = null;
-  }, [consent]);
+  }, [consent, location.pathname]);
 
   useEffect(() => {
     const path = location.pathname + location.search;
-    if (consent?.accepted && lastPage.current !== path) {
+    if (location.pathname !== '/reset-password' && consent?.accepted && lastPage.current !== path) {
       trackPageView(path);
       lastPage.current = path;
     }
@@ -60,7 +60,7 @@ export default function ConsentBanner({ open, onClose }: { open: boolean; onClos
   }, [open]);
 
   const choose = (accepted: boolean) => {
-    setAnalyticsConsent(accepted);
+    setAnalyticsConsent(accepted && location.pathname !== '/reset-password');
     setConsent(saveConsent(accepted));
     onClose();
     if (open) document.getElementById('manage-cookies')?.focus();

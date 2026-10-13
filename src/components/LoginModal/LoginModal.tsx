@@ -290,6 +290,7 @@ function LoginModal({ isOpen, handleClose }) {
           >
             {t("I don't have an account")}
           </Typography>
+          <Button component={RouterLink} to='/forgot-password' onClick={handleClose}>{t('Forgot password?')}</Button>
         </CustomTabPanel>
 
         <CustomTabPanel
