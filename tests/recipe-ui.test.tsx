@@ -10,6 +10,40 @@ import AdvancedRecipeSearch from '@/components/AdvancedRecipeSearch/AdvancedReci
 import { renderApp } from './render';
 import { API, server, recipe, recipeList, user } from './server';
 
+test.each([
+  { premium: false, guest: true },
+  { premium: false, guest: false },
+  { premium: true, guest: false },
+])('sharing is limited to free recipes (premium=$premium, guest=$guest)', async ({ premium, guest }) => {
+  const title = 'Soup & crème #1';
+  server.use(
+    http.get(`${API}/recipes/1`, () => HttpResponse.json({ data: { ...recipe, title, is_premium: premium } })),
+    http.get(`${API}/users/me`, () => guest ? HttpResponse.json({}, { status: 401 }) : HttpResponse.json({ data: user })),
+  );
+  renderApp(<Routes><Route path='/recipe/:id' element={<SingleRecipePage />} /></Routes>, { route: '/recipe/1?source=profile#instructions' });
+  await screen.findByRole('heading', { name: title });
+  if (premium) {
+    expect(screen.queryByText('Share this recipe')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Share on Twitter / X' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Share on Facebook' })).not.toBeInTheDocument();
+    return;
+  }
+  const twitter = screen.getByRole('link', { name: 'Share on Twitter / X' });
+  const facebook = screen.getByRole('link', { name: 'Share on Facebook' });
+  const twitterUrl = new URL(twitter.getAttribute('href'));
+  const facebookUrl = new URL(facebook.getAttribute('href'));
+  const publicUrl = `${window.location.origin}/recipe/1`;
+  expect(twitterUrl.origin + twitterUrl.pathname).toBe('https://twitter.com/intent/tweet');
+  expect(twitterUrl.searchParams.get('url')).toBe(publicUrl);
+  expect(twitterUrl.searchParams.get('text')).toBe(`${title} on MealMosaic`);
+  expect(facebookUrl.origin + facebookUrl.pathname).toBe('https://www.facebook.com/sharer/sharer.php');
+  expect(facebookUrl.searchParams.get('u')).toBe(publicUrl);
+  for (const link of [twitter, facebook]) {
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+  }
+});
+
 test('recipe details load ingredients and instructions; toggles refresh detail; AI loads on demand', async () => {
   let liked = false; let favorited = false; let aiCalls = 0;
   server.use(

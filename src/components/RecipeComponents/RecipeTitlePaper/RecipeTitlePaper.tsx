@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import AskAIButton from '@/components/AskAIButton/AskAIButton';
 import RecipeImage from '../RecipeImage';
 import { getRecipeCategories } from '@/constants/recipeCategories';
+import RecipeShareButtons from '../RecipeShareButtons';
 
 export default function RecipeTitlePaper({ recipe, onLikeToggle, onFavoriteToggle, isLoading }) {
   const { t } = useTranslation();
@@ -39,6 +40,7 @@ export default function RecipeTitlePaper({ recipe, onLikeToggle, onFavoriteToggl
           onClick={onLikeToggle} disabled={isLoading || !currentUser} startIcon={isLiked ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />}>{recipe.likes.count}</Button>
         {currentUser?.is_premium && <AskAIButton recipe={recipe} />}
       </Stack>
+      <RecipeShareButtons recipe={recipe} />
     </Stack>
   </Paper>;
 }
