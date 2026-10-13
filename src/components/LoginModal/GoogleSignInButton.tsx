@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useRef } from 'react';
+import { readConsent } from '@/consent';
+import useCookieConsent from '@/utils/useCookieConsent';
 
 type CredentialResponse = {
   credential: string;
@@ -37,17 +39,22 @@ function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
   const callbackRef = useRef(onCredential);
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+  const hasAcceptedCookies = useCookieConsent();
+
   callbackRef.current = onCredential;
 
   useEffect(() => {
-    if (!clientId) return;
+    if (!clientId || !hasAcceptedCookies || readConsent()?.accepted !== true) return;
+    let active = true;
 
     const render = () => {
-      if (!window.google || !containerRef.current) return;
+      if (!active || readConsent()?.accepted !== true || !window.google || !containerRef.current) return;
 
       window.google.accounts.id.initialize({
         client_id: clientId,
-        callback: (response) => callbackRef.current(response.credential),
+        callback: (response) => {
+          if (active && readConsent()?.accepted === true) callbackRef.current(response.credential);
+        },
       });
       containerRef.current.replaceChildren();
       window.google.accounts.id.renderButton(containerRef.current, {
@@ -61,10 +68,12 @@ function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
       });
     };
 
-    const existingScript = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
+    const existingScript = document.getElementById(
+      SCRIPT_ID,
+    ) as HTMLScriptElement | null;
     if (window.google) {
       render();
-      return;
+      return () => { active = false; };
     }
 
     const script = existingScript ?? document.createElement('script');
@@ -77,12 +86,16 @@ function GoogleSignInButton({ onCredential }: GoogleSignInButtonProps) {
       document.head.appendChild(script);
     }
 
-    return () => script.removeEventListener('load', render);
-  }, [clientId, i18n.resolvedLanguage]);
+    return () => {
+      active = false;
+      script.removeEventListener('load', render);
+      if (!existingScript) script.remove();
+    };
+  }, [clientId, hasAcceptedCookies, i18n.resolvedLanguage]);
 
-  if (!clientId) return null;
+  if (!clientId || !hasAcceptedCookies) return null;
 
-  return <div ref={containerRef} aria-label={t("Continue with Google")} />;
+  return <div ref={containerRef} aria-label={t('Continue with Google')} />;
 }
 
 export default GoogleSignInButton;

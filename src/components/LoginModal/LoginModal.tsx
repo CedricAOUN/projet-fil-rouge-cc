@@ -26,6 +26,8 @@ import {
 import { formatErrors } from '@/utils/formUtils';
 import GoogleSignInButton from './GoogleSignInButton';
 import { Link as RouterLink } from 'react-router-dom';
+import { readConsent } from '@/consent';
+import useCookieConsent from '@/utils/useCookieConsent';
 
 type ApiError = {
   status?: number;
@@ -63,6 +65,8 @@ function LoginModal({ isOpen, handleClose }) {
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
 
+  const hasAcceptedCookies = useCookieConsent();
+
   const [loginContext, setLoginContext] = useState({
     email: '',
     password: '',
@@ -74,8 +78,9 @@ function LoginModal({ isOpen, handleClose }) {
     password_confirmation: '',
   });
   const [registrationAttempted, setRegistrationAttempted] = useState(false);
-  const passwordRequirements =
-    t("Use at least 12 characters, with uppercase and lowercase letters, a number, and a symbol.");
+  const passwordRequirements = t(
+    'Use at least 12 characters, with uppercase and lowercase letters, a number, and a symbol.',
+  );
   const passwordIsValid =
     Array.from(registerContext.password).length >= 12 &&
     /\p{Ll}/u.test(registerContext.password) &&
@@ -85,7 +90,8 @@ function LoginModal({ isOpen, handleClose }) {
   const passwordsMatch =
     registerContext.password === registerContext.password_confirmation;
   const showConfirmationError =
-    (registrationAttempted || registerContext.password_confirmation.length > 0) &&
+    (registrationAttempted ||
+      registerContext.password_confirmation.length > 0) &&
     (!registerContext.password_confirmation || !passwordsMatch);
   const [pendingGoogleCredential, setPendingGoogleCredential] = useState<
     string | null
@@ -122,7 +128,8 @@ function LoginModal({ isOpen, handleClose }) {
       !passwordIsValid ||
       !passwordsMatch ||
       !registerContext.password_confirmation
-    ) return;
+    )
+      return;
     register({
       name: registerContext.name,
       email: registerContext.email,
@@ -138,6 +145,7 @@ function LoginModal({ isOpen, handleClose }) {
   };
 
   const completeGoogleLogin = (credential: string, password?: string) => {
+    if (readConsent()?.accepted !== true) return;
     setGoogleError(null);
     googleLogin({ credential, ...(password ? { password } : {}) })
       .unwrap()
@@ -157,7 +165,7 @@ function LoginModal({ isOpen, handleClose }) {
         }
 
         setGoogleError(
-          error.data?.message ?? t("Google sign-in failed. Please try again."),
+          error.data?.message ?? t('Google sign-in failed. Please try again.'),
         );
       });
   };
@@ -189,16 +197,22 @@ function LoginModal({ isOpen, handleClose }) {
           position: 'relative',
         }}
       >
-        <IconButton aria-label={t('Close')} onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8, zIndex: 1 }}><Close /></IconButton>
+        <IconButton
+          aria-label={t('Close')}
+          onClick={handleClose}
+          sx={{ position: 'absolute', right: 8, top: 8, zIndex: 1 }}
+        >
+          <Close />
+        </IconButton>
 
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mr: 4 }}>
           <Tabs
             value={value}
             onChange={handleChange}
-            aria-label={t("login/signup tabs")}
+            aria-label={t('login/signup tabs')}
           >
-            <Tab label={t("Login")} {...a11yProps(0)} />
-            <Tab label={t("Sign Up")} {...a11yProps(1)} />
+            <Tab label={t('Login')} {...a11yProps(0)} />
+            <Tab label={t('Sign Up')} {...a11yProps(1)} />
           </Tabs>
         </Box>
 
@@ -228,7 +242,7 @@ function LoginModal({ isOpen, handleClose }) {
             <>
               <TextField
                 fullWidth
-                placeholder={t("Email")}
+                placeholder={t('Email')}
                 type='email'
                 autoComplete='email'
                 required
@@ -240,7 +254,7 @@ function LoginModal({ isOpen, handleClose }) {
               />
               <PasswordField
                 fullWidth
-                placeholder={t("Password")}
+                placeholder={t('Password')}
                 autoComplete='current-password'
                 required
                 sx={{ mb: 2 }}
@@ -262,7 +276,7 @@ function LoginModal({ isOpen, handleClose }) {
             type='submit'
             disabled={isLoggingIn}
           >
-            {isLoggingIn ? t("Logging in...") : t("Login")}
+            {isLoggingIn ? t('Logging in...') : t('Login')}
           </Button>
           <Typography
             variant='subtitle2'
@@ -273,7 +287,9 @@ function LoginModal({ isOpen, handleClose }) {
               cursor: 'pointer',
               marginTop: '10px',
             }}
-          >{t("I don't have an account")}</Typography>
+          >
+            {t("I don't have an account")}
+          </Typography>
         </CustomTabPanel>
 
         <CustomTabPanel
@@ -302,8 +318,8 @@ function LoginModal({ isOpen, handleClose }) {
             <>
               <TextField
                 fullWidth
-                placeholder={t("Name")}
-                label={t("Name")}
+                placeholder={t('Name')}
+                label={t('Name')}
                 autoComplete='username'
                 required
                 slotProps={{ htmlInput: { maxLength: 20 } }}
@@ -318,8 +334,8 @@ function LoginModal({ isOpen, handleClose }) {
               />
               <TextField
                 fullWidth
-                placeholder={t("Email")}
-                label={t("Email")}
+                placeholder={t('Email')}
+                label={t('Email')}
                 type='email'
                 autoComplete='email'
                 required
@@ -334,10 +350,10 @@ function LoginModal({ isOpen, handleClose }) {
               />
               <PasswordField
                 fullWidth
-                placeholder={t("Password")}
+                placeholder={t('Password')}
                 sx={{ mb: 2 }}
                 value={registerContext.password}
-                label={t("Password")}
+                label={t('Password')}
                 autoComplete='new-password'
                 required
                 error={registrationAttempted && !passwordIsValid}
@@ -351,13 +367,15 @@ function LoginModal({ isOpen, handleClose }) {
               />
               <PasswordField
                 fullWidth
-                label={t("Confirm password")}
+                label={t('Confirm password')}
                 autoComplete='new-password'
                 required
                 sx={{ mb: 2 }}
                 value={registerContext.password_confirmation}
                 error={showConfirmationError}
-                helperText={showConfirmationError ? t("Passwords must match.") : undefined}
+                helperText={
+                  showConfirmationError ? t('Passwords must match.') : undefined
+                }
                 onChange={(e) =>
                   setRegisterContext({
                     ...registerContext,
@@ -378,10 +396,35 @@ function LoginModal({ isOpen, handleClose }) {
             type='submit'
             disabled={isRegistering}
           >
-            {isRegistering ? t("Signing Up...") : t("Sign Up")}
+            {isRegistering ? t('Signing Up...') : t('Sign Up')}
           </Button>
-          <Typography variant='caption' color='text.secondary' display='block' sx={{ mt: 1.5 }}>
-            <Trans i18nKey="By creating an account, you accept the <terms>Terms of Use</terms> and acknowledge that you have read the <privacy>privacy policy</privacy>." components={{ terms: <MuiLink component={RouterLink} to='/conditions-utilisation' target='_blank' rel='noreferrer' />, privacy: <MuiLink component={RouterLink} to='/confidentialite' target='_blank' rel='noreferrer' /> }} />
+          <Typography
+            variant='caption'
+            color='text.secondary'
+            display='block'
+            sx={{ mt: 1.5 }}
+          >
+            <Trans
+              i18nKey='By creating an account, you accept the <terms>Terms of Use</terms> and acknowledge that you have read the <privacy>privacy policy</privacy>.'
+              components={{
+                terms: (
+                  <MuiLink
+                    component={RouterLink}
+                    to='/conditions-utilisation'
+                    target='_blank'
+                    rel='noreferrer'
+                  />
+                ),
+                privacy: (
+                  <MuiLink
+                    component={RouterLink}
+                    to='/confidentialite'
+                    target='_blank'
+                    rel='noreferrer'
+                  />
+                ),
+              }}
+            />
           </Typography>
           <Typography
             variant='subtitle2'
@@ -392,63 +435,79 @@ function LoginModal({ isOpen, handleClose }) {
               cursor: 'pointer',
               marginTop: '10px',
             }}
-          >{t("Already have an account?")}</Typography>
+          >
+            {t('Already have an account?')}
+          </Typography>
         </CustomTabPanel>
-
-        <Box sx={{ px: 3, pb: 3 }}>
-          <Divider sx={{ mb: 2 }}>{t("or")}</Divider>
-          {googleError && (
-            <Alert severity='error' sx={{ mb: 2 }}>
-              {googleError}
-            </Alert>
-          )}
-          {pendingGoogleCredential ? (
-            <Box>
-              <Alert severity='info' sx={{ mb: 2 }}>{t("This email already has an account. Enter its password once to link Google sign-in.")}</Alert>
-              <PasswordField
-                fullWidth
-                label={t("Existing account password")}
-                value={linkPassword}
-                onChange={(event) => setLinkPassword(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' && linkPassword) {
-                    completeGoogleLogin(pendingGoogleCredential, linkPassword);
-                  }
-                }}
-                disabled={isGoogleLoading}
-                sx={{ mb: 2 }}
-              />
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button
+        {hasAcceptedCookies && (
+          <Box sx={{ px: 3, pb: 3 }}>
+            <Divider sx={{ mb: 2 }}>{t('or')}</Divider>
+            {googleError && (
+              <Alert severity='error' sx={{ mb: 2 }}>
+                {googleError}
+              </Alert>
+            )}
+            {pendingGoogleCredential ? (
+              <Box>
+                <Alert severity='info' sx={{ mb: 2 }}>
+                  {t(
+                    'This email already has an account. Enter its password once to link Google sign-in.',
+                  )}
+                </Alert>
+                <PasswordField
                   fullWidth
-                  variant='contained'
-                  disabled={!linkPassword || isGoogleLoading}
-                  onClick={() =>
-                    completeGoogleLogin(pendingGoogleCredential, linkPassword)
-                  }
-                >
-                  {isGoogleLoading ? t("Linking...") : t("Link account")}
-                </Button>
-                <Button
-                  fullWidth
-                  variant='outlined'
-                  onClick={cancelGoogleLink}
+                  label={t('Existing account password')}
+                  value={linkPassword}
+                  onChange={(event) => setLinkPassword(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && linkPassword) {
+                      completeGoogleLogin(
+                        pendingGoogleCredential,
+                        linkPassword,
+                      );
+                    }
+                  }}
                   disabled={isGoogleLoading}
-                >{t("Cancel")}</Button>
+                  sx={{ mb: 2 }}
+                />
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    fullWidth
+                    variant='contained'
+                    disabled={!linkPassword || isGoogleLoading}
+                    onClick={() =>
+                      completeGoogleLogin(pendingGoogleCredential, linkPassword)
+                    }
+                  >
+                    {isGoogleLoading ? t('Linking...') : t('Link account')}
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant='outlined'
+                    onClick={cancelGoogleLink}
+                    disabled={isGoogleLoading}
+                  >
+                    {t('Cancel')}
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-          ) : (
-            <Box
-              sx={{ display: 'flex', justifyContent: 'center', minHeight: 44 }}
-            >
-              {isGoogleLoading ? (
-                <CircularProgress size={32} />
-              ) : (
-                <GoogleSignInButton onCredential={completeGoogleLogin} />
-              )}
-            </Box>
-          )}
-        </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  minHeight: 44,
+                }}
+              >
+                {isGoogleLoading ? (
+                  <CircularProgress size={32} />
+                ) : (
+                  <GoogleSignInButton onCredential={completeGoogleLogin} />
+                )}
+              </Box>
+            )}
+          </Box>
+        )}
       </Paper>
     </Modal>
   );

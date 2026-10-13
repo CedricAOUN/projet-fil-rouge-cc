@@ -1,11 +1,12 @@
 import React from 'react';
-import { screen, waitFor, fireEvent } from '@testing-library/react';
+import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse, delay } from 'msw';
 import LoginModal from '@/components/LoginModal/LoginModal';
 import GoogleSignInButton from '@/components/LoginModal/GoogleSignInButton';
 import { renderApp } from './render';
 import { API, server, user } from './server';
+import { CONSENT_KEY, saveConsent } from '@/consent';
 
 function googleSdk() {
   let callback: (response: { credential: string }) => void;
@@ -15,10 +16,11 @@ function googleSdk() {
   } } };
 }
 
-beforeEach(() => { process.env.VITE_GOOGLE_CLIENT_ID = 'test-client'; googleSdk(); });
+beforeEach(() => { process.env.VITE_GOOGLE_CLIENT_ID = 'test-client'; googleSdk(); saveConsent(true); });
 afterEach(() => { delete window.google; delete process.env.VITE_GOOGLE_CLIENT_ID; });
 
 test('login displays server errors, prevents repeated submission while pending, and closes after success', async () => {
+  saveConsent(false);
   let calls = 0;
   server.use(http.post(`${API}/users/login`, async () => {
     calls++; await delay(80);
@@ -102,4 +104,60 @@ test('Google SDK receives its client ID and forwards credential callbacks', asyn
   await userEvent.click(screen.getByRole('button', { name: 'Google sign-in' }));
   expect(window.google.accounts.id.initialize).toHaveBeenCalledWith(expect.objectContaining({ client_id: 'test-client' }));
   expect(credential).toHaveBeenCalledWith('google-credential');
+});
+
+test.each([
+  ['missing', null],
+  ['refused', JSON.stringify({ version: 1, accepted: false, timestamp: Date.now() })],
+  ['malformed', '{invalid'],
+  ['expired', JSON.stringify({ version: 1, accepted: true, timestamp: 0 })],
+  ['invalid', JSON.stringify({ version: 1, accepted: 'true', timestamp: Date.now() })],
+])('Google sign-in stays unavailable with %s consent while password login remains usable', (_, consent) => {
+  if (consent === null) localStorage.removeItem(CONSENT_KEY);
+  else localStorage.setItem(CONSENT_KEY, consent);
+  renderApp(<><LoginModal isOpen handleClose={jest.fn()} /><GoogleSignInButton onCredential={jest.fn()} /></>);
+  expect(screen.queryByRole('button', { name: 'Google sign-in' })).not.toBeInTheDocument();
+  expect(screen.getByPlaceholderText('Password')).toBeEnabled();
+  expect(window.google.accounts.id.initialize).not.toHaveBeenCalled();
+  expect(document.getElementById('google-identity-services')).toBeNull();
+});
+
+test('Google SDK loads only after acceptance and a delayed load is ignored after refusal', () => {
+  saveConsent(false);
+  delete window.google;
+  renderApp(<GoogleSignInButton onCredential={jest.fn()} />);
+  expect(document.getElementById('google-identity-services')).toBeNull();
+  act(() => { saveConsent(true); });
+  const script = document.getElementById('google-identity-services');
+  expect(script).toHaveAttribute('src', 'https://accounts.google.com/gsi/client');
+  act(() => { saveConsent(false); });
+  expect(document.getElementById('google-identity-services')).toBeNull();
+  googleSdk();
+  fireEvent.load(script);
+  expect(window.google.accounts.id.initialize).not.toHaveBeenCalled();
+});
+
+test('changing consent updates an open login dialog and blocks stale Google callbacks', () => {
+  renderApp(<LoginModal isOpen handleClose={jest.fn()} />);
+  const callback = (window.google.accounts.id.initialize as jest.Mock).mock.calls[0][0].callback;
+  act(() => { saveConsent(false); });
+  expect(screen.queryByRole('button', { name: 'Google sign-in' })).not.toBeInTheDocument();
+  act(() => { callback({ credential: 'revoked-credential' }); });
+  expect(screen.queryByLabelText('Existing account password')).not.toBeInTheDocument();
+  act(() => { saveConsent(true); });
+  expect(screen.getByRole('button', { name: 'Google sign-in' })).toBeVisible();
+  act(() => {
+    localStorage.setItem(CONSENT_KEY, JSON.stringify({ version: 1, accepted: false, timestamp: Date.now() }));
+    window.dispatchEvent(new StorageEvent('storage', { key: CONSENT_KEY }));
+  });
+  expect(screen.queryByRole('button', { name: 'Google sign-in' })).not.toBeInTheDocument();
+});
+
+test('Google callbacks stop working immediately when consent is refused, even before the UI updates', () => {
+  const credential = jest.fn();
+  renderApp(<GoogleSignInButton onCredential={credential} />);
+  const callback = (window.google.accounts.id.initialize as jest.Mock).mock.calls[0][0].callback;
+  localStorage.setItem(CONSENT_KEY, JSON.stringify({ version: 1, accepted: false, timestamp: Date.now() }));
+  act(() => { callback({ credential: 'revoked-credential' }); });
+  expect(credential).not.toHaveBeenCalled();
 });
