@@ -290,7 +290,20 @@ function LoginModal({ isOpen, handleClose }) {
           >
             {t("I don't have an account")}
           </Typography>
-          <Button component={RouterLink} to='/forgot-password' onClick={handleClose}>{t('Forgot password?')}</Button>
+          <Typography
+            component={RouterLink}
+            to='/forgot-password'
+            onClick={handleClose}
+            color='primary'
+            sx={{
+              display: 'block',
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              marginTop: '10px',
+            }}
+          >
+            {t('Forgot password?')}
+          </Typography>
         </CustomTabPanel>
 
         <CustomTabPanel
