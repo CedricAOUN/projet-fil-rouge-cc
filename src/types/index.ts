@@ -2,6 +2,7 @@
 
 import { User } from '@/api/api.types';
 import { AuthUser } from '@/api/authApi';
+import type { RecipeCategory } from '@/constants/recipeCategories';
 
 export interface Course {
   id: number;
@@ -27,6 +28,8 @@ export interface Comment {
 export interface Recipe {
   id: string;
   title: string;
+  category: RecipeCategory | null;
+  duration: number | null;
   description: string;
   likes: Likes;
   date: string;

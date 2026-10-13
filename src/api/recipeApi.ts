@@ -18,6 +18,7 @@ type RecipeSearchParams = {
   ingredients?: string[];
   likeRange?: [number, number];
   recipeType?: 'all' | 'premium' | 'free';
+  category?: string;
 };
 
 type Comment = {
@@ -33,7 +34,8 @@ type CreateRecipeFormData = {
   title: string;
   description?: string | null;
   instructions: string;
-  duration?: number | null;
+  category: string;
+  duration: number | string;
   image?: File | null;
   is_premium?: boolean;
   ingredients?: {
@@ -65,6 +67,7 @@ export const recipeApi = createApi({
         ingredients = [],
         likeRange = [0, Number.MAX_SAFE_INTEGER],
         recipeType = 'all',
+        category = '',
       }) => {
         const params = new URLSearchParams();
         if (search) params.append('search', search);
@@ -73,6 +76,7 @@ export const recipeApi = createApi({
           params.append('ingredients', ingredients.join(','));
         if (likeRange) params.append('likeRange', likeRange.join(','));
         if (recipeType) params.append('recipeType', recipeType);
+        if (category) params.append('category', category);
         return `?${params.toString()}`;
       },
       providesTags: ['Recipes'],
@@ -148,6 +152,8 @@ export const recipeApi = createApi({
       query: (data) => {
         const body = new FormData();
         body.append('title', data.title);
+        body.append('category', data.category);
+        body.append('duration', String(data.duration));
         body.append('description', data.description ?? '');
         body.append('instructions', data.instructions);
         body.append('is_premium', data.is_premium ? '1' : '0');
@@ -177,7 +183,11 @@ export const recipeApi = createApi({
     >({
       query: ({ data, id }) => {
         const body = new FormData();
+        // PHP parses multipart POST bodies; Laravel routes this as PUT.
+        body.append('_method', 'PUT');
         body.append('title', data.title);
+        body.append('category', data.category);
+        body.append('duration', String(data.duration));
         body.append('description', data.description ?? '');
         body.append('instructions', data.instructions);
         body.append('is_premium', data.is_premium ? '1' : '0');
@@ -193,7 +203,7 @@ export const recipeApi = createApi({
         }
 
         return {
-          method: 'PUT',
+          method: 'POST',
           url: `${API_URL}/recipes/edit/${id}`,
           body,
         };

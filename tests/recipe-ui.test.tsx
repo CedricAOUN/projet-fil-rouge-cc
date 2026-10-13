@@ -88,7 +88,13 @@ test.each([401, 403, 404, 500])('recipe HTTP %s shows its error page', async sta
 
 test('search waits for debounce and applies recipe type and ingredient filters', async () => {
   const queries: URLSearchParams[] = [];
-  server.use(http.get(`${API}/recipes`, ({ request }) => { queries.push(new URL(request.url).searchParams); return HttpResponse.json(recipeList); }));
+  server.use(http.get(`${API}/recipes`, ({ request }) => {
+    const params = new URL(request.url).searchParams;
+    queries.push(params);
+    return HttpResponse.json(params.get('category') === 'dessert'
+      ? { ...recipeList, recipes: [{ ...recipe, id: 2, title: 'Carrot dessert', category: 'dessert' }] }
+      : recipeList);
+  }));
   const interaction = userEvent.setup();
   renderApp(<AdvancedRecipeSearch />);
   await screen.findByText('Carrot soup');
@@ -102,6 +108,16 @@ test('search waits for debounce and applies recipe type and ingredient filters',
   await interaction.click(ingredient);
   await interaction.click(await screen.findByRole('option', { name: 'Carrot' }));
   await waitFor(() => expect(queries.at(-1).get('ingredients')).toBe('Carrot'));
+  await interaction.click(screen.getByRole('combobox', { name: 'By category' }));
+  await interaction.click(screen.getByRole('option', { name: 'Dessert' }));
+  await waitFor(() => expect(queries.at(-1).get('category')).toBe('dessert'));
+  expect(await screen.findByText('Carrot dessert')).toBeVisible();
+  expect(queries.at(-1).get('ingredients')).toBe('Carrot');
+  expect(queries.at(-1).get('recipeType')).toBe('premium');
+  await interaction.click(screen.getByRole('combobox', { name: 'By category' }));
+  await interaction.click(screen.getByRole('option', { name: 'All categories' }));
+  expect(await screen.findByText('Carrot soup')).toBeVisible();
+  expect(screen.queryByText('Carrot dessert')).not.toBeInTheDocument();
 });
 
 test('search displays an empty result and navigates from a recipe card', async () => {
@@ -124,6 +140,8 @@ test('recipe form validates ingredients, adds/removes rows and submits an upload
   await screen.findByText('Mark recipe as Premium');
   await interaction.click(screen.getByRole('button', { name: 'Submit Recipe' }));
   expect(await screen.findByText('Title is required')).toBeVisible();
+  expect(screen.getByText('Category is required')).toBeVisible();
+  expect(screen.getByText('Duration is required')).toBeVisible();
   expect(screen.getByText('Ingredient name is required')).toBeVisible();
   await interaction.type(screen.getByPlaceholderText('Title'), 'Soup');
   await interaction.type(screen.getByPlaceholderText('Instructions'), 'Boil');
@@ -133,7 +151,16 @@ test('recipe form validates ingredients, adds/removes rows and submits an upload
   await interaction.click(screen.getByRole('button', { name: 'Submit Recipe' }));
   expect(await screen.findByText('Amount must be a number')).toBeVisible();
   await interaction.clear(screen.getByPlaceholderText('Amount')); await interaction.type(screen.getByPlaceholderText('Amount'), '2');
-  await interaction.click(screen.getByRole('combobox'));
+  await interaction.click(screen.getByRole('combobox', { name: /^Category/ }));
+  await interaction.click(screen.getByRole('option', { name: 'Starter' }));
+  await interaction.type(screen.getByLabelText(/^Duration/), '30');
+  await interaction.clear(screen.getByLabelText(/^Duration/));
+  await interaction.type(screen.getByLabelText(/^Duration/), '1.5');
+  await interaction.click(screen.getByRole('button', { name: 'Submit Recipe' }));
+  expect(await screen.findByText('Duration must be a positive whole number of minutes')).toBeVisible();
+  await interaction.clear(screen.getByLabelText(/^Duration/));
+  await interaction.type(screen.getByLabelText(/^Duration/), '30');
+  await interaction.click(screen.getByRole('combobox', { name: 'Unit' }));
   await interaction.click(screen.getByRole('option', { name: 'Pieces' }));
   await interaction.click(screen.getByRole('button', { name: '+' }));
   expect(screen.getAllByPlaceholderText('Ingredient Name')).toHaveLength(2);
@@ -148,15 +175,19 @@ test('recipe form validates ingredients, adds/removes rows and submits an upload
   await interaction.click(screen.getByRole('button', { name: 'Submit Recipe' }));
   await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/recipe/1'));
   expect(fields.get('ingredients[0][quantity]')).toBe('2');
+  expect(fields.get('category')).toBe('starter');
+  expect(fields.get('duration')).toBe('30');
   expect((fields.get('image_file') as File).name).toBe('soup.jpg');
 });
 
 test('recipe editing pre-fills data, sends an update and rejects another owner', async () => {
   let body: FormData;
-  server.use(http.put(`${API}/recipes/edit/1`, async ({ request }) => { body = await request.formData(); return HttpResponse.json({ data: recipe }); }));
+  server.use(http.post(`${API}/recipes/edit/1`, async ({ request }) => { body = await request.formData(); expect(body.get('_method')).toBe('PUT'); return HttpResponse.json({ data: recipe }); }));
   const interaction = userEvent.setup();
   const { unmount } = renderApp(<Routes><Route path='/recipe/edit/:id' element={<RecipeCreateForm />} /></Routes>, { route: '/recipe/edit/1' });
   expect(await screen.findByDisplayValue('Carrot soup')).toBeVisible();
+  expect(screen.getByLabelText(/^Duration/)).toHaveValue(30);
+  expect(screen.getByRole('combobox', { name: /^Category/ })).toHaveTextContent('Starter');
   await interaction.clear(screen.getByPlaceholderText('Title')); await interaction.type(screen.getByPlaceholderText('Title'), 'New soup');
   await interaction.click(screen.getByRole('button', { name: 'Confirm' }));
   await waitFor(() => expect(body?.get('title')).toBe('New soup'));

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import {
   CircularProgress,
+  MenuItem,
   Stack,
   TextField,
   ToggleButton,
@@ -15,6 +16,7 @@ import CustomSlider from './CustomSlider';
 import useDebounce from '@/utils/useDebounce';
 import ContentPanel from '@/components/Layout/ContentPanel';
 import RecipeGrid from '@/components/RecipeComponents/RecipeGrid';
+import { getRecipeCategories } from '@/constants/recipeCategories';
 
 const AdvancedRecipeSearch = () => {
   const { t } = useTranslation();
@@ -23,6 +25,7 @@ const AdvancedRecipeSearch = () => {
   const [allCreators, setAllCreators] = React.useState<string[]>([]);
 
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [category, setCategory] = React.useState('');
   const [selectedIngredients, setSelectedIngredients] = React.useState<
     string[]
   >([]);
@@ -37,6 +40,7 @@ const AdvancedRecipeSearch = () => {
   const debouncedValues = useDebounce(
     {
       searchTerm,
+      category,
       selectedIngredients,
       selectedCreators,
       likeRange,
@@ -47,6 +51,7 @@ const AdvancedRecipeSearch = () => {
 
   const { data, isLoading, isFetching } = useGetRecipesQuery({
     search: debouncedValues.searchTerm,
+    category: debouncedValues.category,
     ingredients: debouncedValues.selectedIngredients,
     creators: debouncedValues.selectedCreators,
     likeRange: debouncedValues.likeRange,
@@ -93,6 +98,10 @@ const AdvancedRecipeSearch = () => {
             gap={3}
           >
             <Typography variant='h5' component='h2'>{t("Filters")}</Typography>
+            <TextField select fullWidth label={t('By category')} value={category} onChange={event => setCategory(event.target.value)}>
+              <MenuItem value=''>{t('All categories')}</MenuItem>
+              {getRecipeCategories(t).map(category => <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>)}
+            </TextField>
             <MultiSelectFilter
               label={t("By ingredient")}
               options={allIngredients}

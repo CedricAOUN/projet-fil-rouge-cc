@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  MenuItem,
   Stack,
   TextField,
   Typography,
@@ -13,10 +14,11 @@ import {
 } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
 import UnitSelector from '@/components/UnitSelector/UnitSelector';
-import { useForm, useFieldArray, Resolver } from 'react-hook-form';
+import { Controller, useForm, useFieldArray, Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { UNIT_VALUES } from '@/constants/recipeFormConstants';
+import { getRecipeCategories, RECIPE_CATEGORY_VALUES } from '@/constants/recipeCategories';
 import './recipeCreateForm.css';
 import {
   useCreateRecipeMutation,
@@ -29,6 +31,8 @@ import PageErrorHandler from '../PageErrorHandler/PageErrorHandler';
 
 type RecipeFormData = {
   title: string;
+  category: string;
+  duration: string;
   description: string;
   instructions: string;
   is_premium: boolean;
@@ -43,6 +47,13 @@ type RecipeFormData = {
 const schema = yup
   .object({
     title: yup.string().required(() => t("Title is required")),
+    category: yup.string().oneOf(RECIPE_CATEGORY_VALUES, () => t('Category is required')).required(() => t('Category is required')),
+    duration: yup.number().transform((value, original) => original === '' ? undefined : value)
+      .typeError(() => t('Duration must be a positive whole number of minutes'))
+      .integer(() => t('Duration must be a positive whole number of minutes'))
+      .min(1, () => t('Duration must be a positive whole number of minutes'))
+      .max(4294967295, () => t('Duration must be a positive whole number of minutes'))
+      .required(() => t('Duration is required')),
     description: yup.string().defined(),
     instructions: yup.string().required(() => t("Instructions are required")),
     is_premium: yup.boolean().defined(),
@@ -87,6 +98,8 @@ function RecipeCreateForm() {
   const formValues = useMemo<RecipeFormData>(
     () => ({
       title: edittingRecipe?.title || '',
+      category: edittingRecipe?.category || '',
+      duration: String(edittingRecipe?.duration ?? ''),
       description: edittingRecipe?.description || '',
       instructions: edittingRecipe?.instructions || '',
       is_premium: edittingRecipe?.is_premium || false,
@@ -193,6 +206,16 @@ function RecipeCreateForm() {
         error={!!errors.description}
         helperText={errors.description?.message}
       />
+
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <Controller name='category' control={control} render={({ field }) => (
+          <TextField {...field} select label={t('Category')} required fullWidth error={!!errors.category} helperText={errors.category?.message}>
+            {getRecipeCategories(t).map(category => <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>)}
+          </TextField>
+        )} />
+        <TextField {...register('duration')} label={t('Duration (minutes)')} type='number' required fullWidth
+          slotProps={{ htmlInput: { min: 1, max: 4294967295, step: 1 } }} error={!!errors.duration} helperText={errors.duration?.message} />
+      </Stack>
 
       <Stack>
         {currentUser?.is_chef && (

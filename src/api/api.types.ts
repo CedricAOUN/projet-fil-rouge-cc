@@ -1,4 +1,5 @@
 import { AuthUser } from './authApi';
+import type { RecipeCategory } from '@/constants/recipeCategories';
 
 // Define or import Course type before using it
 export type Course = {
@@ -26,6 +27,8 @@ export type User = {
 export interface Recipe {
   id: string;
   title: string;
+  category: RecipeCategory | null;
+  duration: number | null;
   description: string;
   date: string;
   image_url: string;

@@ -10,6 +10,7 @@ import { useGetCurrentUserQuery } from '@/api/authApi';
 import dayjs from 'dayjs';
 import AskAIButton from '@/components/AskAIButton/AskAIButton';
 import RecipeImage from '../RecipeImage';
+import { getRecipeCategories } from '@/constants/recipeCategories';
 
 export default function RecipeTitlePaper({ recipe, onLikeToggle, onFavoriteToggle, isLoading }) {
   const { t } = useTranslation();
@@ -23,6 +24,10 @@ export default function RecipeTitlePaper({ recipe, onLikeToggle, onFavoriteToggl
         sx={(theme) => ({ alignSelf: 'flex-start', color: 'premium.main', bgcolor: alpha(theme.palette.premium.main, 0.1), '& .MuiChip-icon': { color: 'inherit' } })} />}
       <Typography variant='h1'>{recipe.title}</Typography>
       <Typography color='text.secondary'>{recipe.description}</Typography>
+      {(recipe.category || recipe.duration) && <Stack direction='row' gap={1} flexWrap='wrap'>
+        {recipe.category && <Chip size='small' label={getRecipeCategories(t).find(category => category.value === recipe.category)?.label} />}
+        {recipe.duration && <Chip size='small' label={t('{{count}} min', { count: recipe.duration })} />}
+      </Stack>}
       <Box>
         <Typography variant='body2' color='secondary.main'>{t('By {{author}}', { author: recipe.creator.name })}</Typography>
         <Typography variant='body2' color='text.secondary'>{t('Created on {{date}}', { date: dayjs(recipe.created_at).format('MMMM D, YYYY') })}</Typography>

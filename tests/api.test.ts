@@ -62,12 +62,13 @@ test('search encodes filters and sends the bearer and Accept headers', async () 
 test.each(['createRecipe', 'editRecipe'] as const)('%s serializes quantities, premium status and image as multipart data', async endpoint => {
   let fields: FormData;
   server.use(http.all(`${API}/recipes/*`, async ({ request }) => { fields = await request.formData(); return HttpResponse.json({ data: recipe }); }));
-  const data = { title: 'Soup', instructions: 'Boil', is_premium: true, ingredients: [{ name: 'Salt', amount: '2', unit: 'tsp' }], image: new File(['image'], 'soup.jpg', { type: 'image/jpeg' }) };
+  const data = { title: 'Soup', category: 'starter', duration: 30, instructions: 'Boil', is_premium: true, ingredients: [{ name: 'Salt', amount: '2', unit: 'tsp' }], image: new File(['image'], 'soup.jpg', { type: 'image/jpeg' }) };
   const payload = endpoint === 'editRecipe' ? { data, id: '1' } : data;
   expect(await makeStore().dispatch(recipeApi.endpoints[endpoint].initiate(payload as any)).unwrap()).toEqual(recipe);
   expect(fields.get('ingredients[0][quantity]')).toBe('2');
   expect(fields.get('description')).toBe('');
   expect(fields.get('is_premium')).toBe('1');
+  expect(fields.get('_method')).toBe(endpoint === 'editRecipe' ? 'PUT' : null);
   expect((fields.get('image_file') as File).name).toBe('soup.jpg');
 });
 
