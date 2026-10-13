@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Typography } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { useCancelSubscriptionMutation } from '@/api/authApi';
 import type { AuthUser, CancelSubscriptionResponse } from '@/api/authApi';
@@ -13,7 +13,20 @@ export default function SubscriptionManagement({ user }: { user: AuthUser }) {
   const subscription = user.subscription;
   const cancelled = !!result || subscription?.cancelled;
 
-  if (!subscription || (!subscription.can_cancel && !cancelled)) return null;
+  if (!subscription || (!subscription.can_cancel && !cancelled)) {
+    const message = subscription === undefined
+      ? 'Subscription details are unavailable. Please refresh the page or try again later.'
+      : subscription
+        ? 'Your subscription has ended. There is no renewal to cancel.'
+        : user.is_premium
+          ? 'Your premium access is not linked to a billing subscription. There is no renewal to cancel.'
+          : 'You do not have a subscription.';
+    return <Stack spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
+      <Divider sx={{ width: '100%' }} />
+      <Typography variant='h5' component='h2'>{t('Subscription')}</Typography>
+      <Typography textAlign='center'>{t(message)}</Typography>
+    </Stack>;
+  }
 
   const endsAt = result?.ends_at || subscription.ends_at || subscription.current_period_end;
   const date = endsAt ? dayjs(endsAt).format('MMMM D, YYYY') : null;
@@ -30,6 +43,7 @@ export default function SubscriptionManagement({ user }: { user: AuthUser }) {
   };
 
   return <Stack spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
+    <Divider sx={{ width: '100%' }} />
     <Typography variant='h5' component='h2'>{t('Subscription')}</Typography>
     {cancelled ? <>
       <Typography textAlign='center'>{t('Your subscription will not renew. Your access remains available until {{date}}.', { date })}</Typography>

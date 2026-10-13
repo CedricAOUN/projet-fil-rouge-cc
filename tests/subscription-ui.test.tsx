@@ -90,7 +90,7 @@ test('email delivery failure reports successful cancellation and allows a confir
   expect(requests).toBe(2);
 });
 
-test('subscription management is hidden on other profiles and for accounts without a subscription', async () => {
+test('subscription management is private and explains unavailable subscription details', async () => {
   server.use(
     http.get(`${API}/users/me`, () => HttpResponse.json({ data: { ...user, subscription } })),
     http.get(`${API}/users/2`, () => HttpResponse.json({ data: { ...user, id: 2, name: 'Other chef' } })),
@@ -99,11 +99,25 @@ test('subscription management is hidden on other profiles and for accounts witho
   await screen.findByRole('heading', { name: 'Other chef' });
   await waitFor(() => expect(first.store.getState().user.currentUser).not.toBeNull());
   expect(screen.queryByRole('button', { name: 'Unsubscribe' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('heading', { name: 'Subscription' })).not.toBeInTheDocument();
   first.unmount();
   server.use(http.get(`${API}/users/me`, () => HttpResponse.json({ data: user })));
   const second = profile();
   await screen.findByRole('heading', { name: 'Julia' });
   await waitFor(() => expect(second.store.getState().user.currentUser).not.toBeNull());
+  expect(await screen.findByText('Subscription details are unavailable. Please refresh the page or try again later.')).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'Unsubscribe' })).not.toBeInTheDocument();
+});
+
+test.each([
+  [true, null, 'Your premium access is not linked to a billing subscription. There is no renewal to cancel.'],
+  [false, null, 'You do not have a subscription.'],
+  [false, { ...subscription, can_cancel: false }, 'Your subscription has ended. There is no renewal to cancel.'],
+])('own profile explains billing status for premium=%s and subscription=%s', async (isPremium, billingSubscription, message) => {
+  server.use(http.get(`${API}/users/me`, () => HttpResponse.json({ data: { ...user, is_premium: isPremium, subscription: billingSubscription } })));
+  profile();
+  expect(await screen.findByRole('heading', { name: 'Subscription' })).toBeVisible();
+  expect(await screen.findByText(message as string)).toBeVisible();
   expect(screen.queryByRole('button', { name: 'Unsubscribe' })).not.toBeInTheDocument();
 });
 
