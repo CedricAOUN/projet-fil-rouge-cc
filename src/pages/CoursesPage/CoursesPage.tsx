@@ -15,7 +15,7 @@ import {
 import React, { useState } from 'react';
 
 const CoursesPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [mode, setMode] = useState<'course' | 'chef'>('course');
   const [query, setQuery] = useState<string>('');
   const debouncedQuery = useDebounce(query, 300);
@@ -23,7 +23,8 @@ const CoursesPage = () => {
   const { data: chefs, isLoading: isChefsLoading } = useGetChefsQuery({
     query: debouncedQuery,
   });
-  const { data: courses, isLoading: isCoursesLoading } = useGetCoursesQuery({
+  const { currentData: courses, isLoading: isCoursesLoading } = useGetCoursesQuery({
+    language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en',
     query: debouncedQuery,
   });
 

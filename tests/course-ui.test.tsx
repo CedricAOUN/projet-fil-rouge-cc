@@ -37,6 +37,9 @@ test('course form validates content and video size, previews markdown and create
   const interaction = userEvent.setup();
   renderApp(<CourseCreateForm />);
   const title = await screen.findByPlaceholderText('Title');
+  expect(screen.getByRole('combobox', { name: /^Course language/ })).toHaveTextContent('English');
+  await interaction.click(screen.getByRole('combobox', { name: /^Course language/ }));
+  await interaction.click(screen.getByRole('option', { name: 'French' }));
   await interaction.type(title, 'Knife');
   await interaction.click(screen.getByRole('button', { name: 'Submit' }));
   expect(await screen.findByText('Content is required')).toBeVisible();
@@ -54,20 +57,24 @@ test('course form validates content and video size, previews markdown and create
   await interaction.click(screen.getByRole('button', { name: 'Submit' }));
   await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/course/1'));
   expect(fields.get('title')).toBe('Knife');
+  expect(fields.get('language')).toBe('fr');
   expect(fields.get('content')).toBe('# Chop safely');
   expect((fields.get('video') as File).name).toBe('lesson.mp4');
 });
 
 test('course edit pre-fills existing content and saves an update', async () => {
   let fields: FormData;
-  server.use(http.put(`${API}/courses/edit/1`, async ({ request }) => { fields = await request.formData(); return HttpResponse.json({ data: course }); }));
+  server.use(http.post(`${API}/courses/edit/1`, async ({ request }) => { fields = await request.formData(); return HttpResponse.json({ data: course }); }));
   const interaction = userEvent.setup();
   renderApp(<Routes><Route path='/course/edit/:id' element={<CourseCreateForm />} /></Routes>, { route: '/course/edit/1' });
   const title = await screen.findByDisplayValue('Knife skills');
+  expect(screen.getByRole('combobox', { name: /^Course language/ })).toHaveTextContent('English');
   await interaction.clear(title); await interaction.type(title, 'Advanced knife skills');
   await interaction.click(screen.getByRole('button', { name: 'Confirm' }));
   await waitFor(() => expect(fields?.get('title')).toBe('Advanced knife skills'));
   expect(fields.has('video')).toBe(false);
+  expect(fields.get('language')).toBe('en');
+  expect(fields.get('_method')).toBe('PUT');
 });
 
 test.each([{ ...user, is_chef: false }, { ...user, id: 2 }])('course edit rejects non-chefs and non-owners', async currentUser => {

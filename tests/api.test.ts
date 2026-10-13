@@ -76,9 +76,11 @@ test.each(['createRecipe', 'editRecipe'] as const)('%s serializes quantities, pr
 test.each(['createCourse', 'editCourse'] as const)('%s sends course content and video', async endpoint => {
   let fields: FormData;
   server.use(http.all(`${API}/courses/*`, async ({ request }) => { fields = await request.formData(); return HttpResponse.json({ data: course }); }));
-  const data = { id: 1, title: 'Knife', content: '# Chop', video: new File(['video'], 'lesson.mp4', { type: 'video/mp4' }) };
+  const data = { id: 1, title: 'Knife', language: 'en', content: '# Chop', video: new File(['video'], 'lesson.mp4', { type: 'video/mp4' }) };
   expect(await makeStore().dispatch(courseApi.endpoints[endpoint].initiate(data)).unwrap()).toEqual(course);
   expect(fields.get('content')).toBe('# Chop');
+  expect(fields.get('language')).toBe('en');
+  expect(fields.get('_method')).toBe(endpoint === 'editCourse' ? 'PUT' : null);
   expect((fields.get('video') as File).name).toBe('lesson.mp4');
 });
 

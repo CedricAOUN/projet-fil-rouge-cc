@@ -21,25 +21,26 @@ export const courseApi = createApi({
       query: (id) => `${id}`,
       transformResponse: (response: { data: Course }) => response.data,
     }),
-    getCoursesByExpertId: builder.query<Course[], string>({
-      query: (expertId) => `?creator_id=${expertId}`,
+    getCoursesByExpertId: builder.query<Course[], { expertId: string; language: 'en' | 'fr' }>({
+      query: ({ expertId, language }) => `?${new URLSearchParams({ creator_id: expertId, language })}`,
       transformResponse: (response: { data: Course[] }) => response.data,
-      providesTags: (_result, _error, expertId) => [
+      providesTags: (_result, _error, { expertId }) => [
         { type: 'Courses', id: `EXPERT-${expertId}` },
       ],
     }),
-    getCourses: builder.query<Course[], { query: string }>({
-      query: ({ query }) => `list?search=${query}`,
+    getCourses: builder.query<Course[], { query: string; language?: 'en' | 'fr' }>({
+      query: ({ query, language }) => `list?${new URLSearchParams({ search: query, ...(language && { language }) })}`,
       transformResponse: (response: { data: Course[] }) => response.data,
       providesTags: ['Courses'],
     }),
     createCourse: builder.mutation<
       Course,
-      { title: string; content?: string; video?: File }
+      { title: string; language: string; content?: string; video?: File }
     >({
-      query: ({ title, content, video }) => {
+      query: ({ title, language, content, video }) => {
         const body = new FormData();
         body.append('title', title);
+        body.append('language', language);
 
         if (content) {
           body.append('content', content);
@@ -60,11 +61,13 @@ export const courseApi = createApi({
     }),
     editCourse: builder.mutation<
       Course,
-      { title: string; content?: string; video?: File; id: number }
+      { title: string; language: string; content?: string; video?: File; id: number }
     >({
-      query: ({ title, content, video, id }) => {
+      query: ({ title, language, content, video, id }) => {
         const body = new FormData();
+        body.append('_method', 'PUT');
         body.append('title', title);
+        body.append('language', language);
 
         if (content) {
           body.append('content', content);
@@ -75,7 +78,7 @@ export const courseApi = createApi({
         }
 
         return {
-          method: 'PUT',
+          method: 'POST',
           url: `edit/${id}`,
           body,
         };

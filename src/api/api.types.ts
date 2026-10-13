@@ -4,6 +4,7 @@ import type { RecipeCategory } from '@/constants/recipeCategories';
 // Define or import Course type before using it
 export type Course = {
   id: number;
+  language: 'en' | 'fr';
   title: string;
   description: string;
   content: string;

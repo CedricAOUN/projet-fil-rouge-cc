@@ -11,13 +11,14 @@ import {
   Box,
   Button,
   CircularProgress,
+  MenuItem,
   useTheme,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import MDEditor, { commands } from '@uiw/react-md-editor';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { useGetCurrentUserQuery } from '@/api/authApi';
@@ -30,6 +31,7 @@ const MAX_VIDEO_SIZE = 200 * 1024 * 1024;
 
 type CourseFormData = {
   title: string;
+  language: string;
   content: string;
   video?: File;
 };
@@ -37,6 +39,7 @@ type CourseFormData = {
 const schema = yup
   .object({
     title: yup.string().required(() => t('Title is required')),
+    language: yup.string().oneOf(['en', 'fr']).required(() => t('Course language is required')),
     content: yup.string().required(() => t('Content is required')),
     video: yup
       .mixed<File>()
@@ -72,7 +75,7 @@ const getHeadingGroup = (t: TFunction) =>
   );
 
 const CourseCreateForm = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -86,13 +89,15 @@ const CourseCreateForm = () => {
   const currentUserOwnsCourse =
     currentUser?.id == edittingCourse?.created_by?.id;
 
+  const [initialCourseLanguage] = useState(() => i18n.resolvedLanguage === 'fr' ? 'fr' : 'en');
   const formValues = useMemo<CourseFormData>(
     () => ({
       title: edittingCourse?.title || '',
+      language: edittingCourse?.language || initialCourseLanguage,
       content: edittingCourse?.content || '',
       video: undefined,
     }),
-    [edittingCourse],
+    [edittingCourse, initialCourseLanguage],
   );
 
   const {
@@ -169,6 +174,12 @@ const CourseCreateForm = () => {
         error={!!errors.title}
         helperText={errors.title?.message}
       />
+      <Controller name='language' control={control} render={({ field }) => (
+        <TextField {...field} select label={t('Course language')} required fullWidth error={!!errors.language} helperText={errors.language?.message}>
+          <MenuItem value='en'>{t('English')}</MenuItem>
+          <MenuItem value='fr'>{t('French')}</MenuItem>
+        </TextField>
+      )} />
       <Stack spacing={1}>
         <Typography variant='h4' component='h2'>
           {t('Course video')}

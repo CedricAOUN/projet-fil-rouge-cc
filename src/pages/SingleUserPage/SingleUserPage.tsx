@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, CircularProgress, Stack, useMediaQuery } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import NotFound from '@/pages/NotFound/NotFound';
@@ -9,6 +10,7 @@ import { useGetCoursesByExpertIdQuery } from '@/api/courseApi';
 import { useGetCurrentUserQuery, useGetUserByIdQuery } from '@/api/authApi';
 
 const SingleUserPage: React.FC = () => {
+  const { i18n } = useTranslation();
   const isMobile = useMediaQuery('(max-width:900px)');
   const { id } = useParams<{ id: string }>();
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -17,7 +19,7 @@ const SingleUserPage: React.FC = () => {
     id!,
     { skip: !id },
   );
-  const { data: courses } = useGetCoursesByExpertIdQuery(id!, {
+  const { currentData: courses } = useGetCoursesByExpertIdQuery({ expertId: id!, language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en' }, {
     skip: !id || !singleUser,
   });
 
