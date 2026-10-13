@@ -59,7 +59,7 @@ const SingleRecipePage: React.FC = () => {
         onFavoriteToggle={handleFavoriteClick}
         isLoading={isLikeLoading || isFavoriteLoading}
       />
-      <Stack direction={isMobile ? 'column' : 'row'} gap={3} alignItems='flex-start'>
+      <Stack direction={isMobile ? 'column' : 'row'} gap={3} alignItems='stretch'>
         <IngredientList ingredients={ingredients} />
         <StepByStep instructions={instructions} />
       </Stack>
