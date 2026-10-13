@@ -98,7 +98,7 @@ const AdvancedRecipeSearch = () => {
             gap={3}
           >
             <Typography variant='h5' component='h2'>{t("Filters")}</Typography>
-            <TextField select fullWidth label={t('By category')} value={category} onChange={event => setCategory(event.target.value)}>
+            <TextField select fullWidth size='small' label={t('By category')} value={category} onChange={event => setCategory(event.target.value)}>
               <MenuItem value=''>{t('All categories')}</MenuItem>
               {getRecipeCategories(t).map(category => <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>)}
             </TextField>
