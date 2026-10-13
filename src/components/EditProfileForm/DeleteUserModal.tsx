@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
+import PasswordField from '@/components/PasswordField/PasswordField';
 import {
   useDeleteUserByIdMutation,
   useGetCurrentUserQuery,
 } from '@/api/authApi';
-import { Button, Dialog, Stack, TextField, Typography } from '@mui/material';
+import { Button, Dialog, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 
 interface DeleteUserModalProps {
@@ -51,16 +52,15 @@ const DeleteUserModal = ({ open, onClose }: DeleteUserModalProps) => {
             'Please re-enter your password to confirm account deletion. This action is irreversible.',
           )}
         </Typography>
-        <TextField
+        <PasswordField
           id='password'
-          type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder={t('Password')}
           error={!!error}
           helperText={error ? errorMessage : undefined}
           disabled={isLoading}
-        ></TextField>
+        ></PasswordField>
         <Button
           onClick={handleDeleteUser}
           disabled={isLoading || !password || !currentUser.data}

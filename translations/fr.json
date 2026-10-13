@@ -401,5 +401,7 @@
   "Changing password...": "Modification du mot de passe…",
   "Password changed successfully.": "Mot de passe modifié avec succès.",
   "Unable to change your password. Please try again.": "Impossible de modifier votre mot de passe. Veuillez réessayer.",
-  "You sign in with Google and do not have a password to change.": "Vous vous connectez avec Google et n’avez pas de mot de passe à modifier."
+  "You sign in with Google and do not have a password to change.": "Vous vous connectez avec Google et n’avez pas de mot de passe à modifier.",
+  "Show password": "Afficher le mot de passe",
+  "Hide password": "Masquer le mot de passe"
 }

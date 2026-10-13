@@ -400,5 +400,7 @@
   "Changing password...": "Changing password...",
   "Password changed successfully.": "Password changed successfully.",
   "Unable to change your password. Please try again.": "Unable to change your password. Please try again.",
-  "You sign in with Google and do not have a password to change.": "You sign in with Google and do not have a password to change."
+  "You sign in with Google and do not have a password to change.": "You sign in with Google and do not have a password to change.",
+  "Show password": "Show password",
+  "Hide password": "Hide password"
 }

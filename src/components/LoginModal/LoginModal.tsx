@@ -15,6 +15,7 @@ import {
   IconButton,
   Link as MuiLink,
 } from '@mui/material';
+import PasswordField from '@/components/PasswordField/PasswordField';
 import './LoginModal.css';
 import Close from '@mui/icons-material/Close';
 import {
@@ -237,9 +238,8 @@ function LoginModal({ isOpen, handleClose }) {
                   setLoginContext({ ...loginContext, email: e.target.value })
                 }
               />
-              <TextField
+              <PasswordField
                 fullWidth
-                type='password'
                 placeholder={t("Password")}
                 autoComplete='current-password'
                 required
@@ -332,9 +332,8 @@ function LoginModal({ isOpen, handleClose }) {
                   })
                 }
               />
-              <TextField
+              <PasswordField
                 fullWidth
-                type='password'
                 placeholder={t("Password")}
                 sx={{ mb: 2 }}
                 value={registerContext.password}
@@ -350,9 +349,8 @@ function LoginModal({ isOpen, handleClose }) {
                   })
                 }
               />
-              <TextField
+              <PasswordField
                 fullWidth
-                type='password'
                 label={t("Confirm password")}
                 autoComplete='new-password'
                 required
@@ -407,9 +405,8 @@ function LoginModal({ isOpen, handleClose }) {
           {pendingGoogleCredential ? (
             <Box>
               <Alert severity='info' sx={{ mb: 2 }}>{t("This email already has an account. Enter its password once to link Google sign-in.")}</Alert>
-              <TextField
+              <PasswordField
                 fullWidth
-                type='password'
                 label={t("Existing account password")}
                 value={linkPassword}
                 onChange={(event) => setLinkPassword(event.target.value)}

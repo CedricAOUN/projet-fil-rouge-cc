@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import PasswordField from '@/components/PasswordField/PasswordField';
 import {
   Alert,
   Box,
@@ -10,7 +11,6 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
-  TextField,
 } from '@mui/material';
 import { useChangePasswordMutation } from '@/api/authApi';
 import type { ChangePasswordRequest } from '@/api/authApi';
@@ -101,10 +101,9 @@ function ChangePasswordModal({ onClose, onSuccess }: ChangePasswordModalProps) {
                 {errorData?.message || t('Unable to change your password. Please try again.')}
               </Alert>
             )}
-            <TextField
+            <PasswordField
               id='current-password'
               label={t('Current password')}
-              type='password'
               autoComplete='current-password'
               autoFocus
               required
@@ -115,10 +114,9 @@ function ChangePasswordModal({ onClose, onSuccess }: ChangePasswordModalProps) {
               error={!!currentPasswordError}
               helperText={currentPasswordError}
             />
-            <TextField
+            <PasswordField
               id='new-password'
               label={t('New password')}
-              type='password'
               autoComplete='new-password'
               required
               fullWidth
@@ -128,10 +126,9 @@ function ChangePasswordModal({ onClose, onSuccess }: ChangePasswordModalProps) {
               error={!!newPasswordError}
               helperText={newPasswordError || passwordRequirements}
             />
-            <TextField
+            <PasswordField
               id='confirm-new-password'
               label={t('Confirm password')}
-              type='password'
               autoComplete='new-password'
               required
               fullWidth
