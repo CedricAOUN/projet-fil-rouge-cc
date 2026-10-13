@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Recipe } from '@/types';
-import { deleteRecipe } from '@/store';
-import { method } from 'lodash';
 import { API_URL } from '@/api/config';
+import { authApi } from '@/api/authApi';
 
 interface RecipeResponse {
   recipes: Recipe[];
@@ -100,6 +99,14 @@ export const recipeApi = createApi({
       invalidatesTags: (result, error, { recipeId }) => [
         { type: 'Recipes', id: recipeId },
       ],
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(authApi.util.invalidateTags(['SelfUser']));
+        } catch {
+          // A failed toggle leaves the user's favorites unchanged.
+        }
+      },
     }),
     addComment: builder.mutation<
       Comment,
@@ -129,7 +136,7 @@ export const recipeApi = createApi({
       void,
       { commentId: number; recipeId: string }
     >({
-      query: ({ commentId, recipeId }) => ({
+      query: ({ commentId }) => ({
         method: 'DELETE',
         url: `${API_URL}/comments/delete/${commentId}`,
       }),
@@ -210,7 +217,7 @@ export const recipeApi = createApi({
           url: `${API_URL}/recipes/${id}/ai`,
         };
       },
-      transformResponse: (res: any) => res.data.suggestion,
+      transformResponse: (res: { data: { suggestion: string } }) => res.data.suggestion,
     }),
   }),
 });

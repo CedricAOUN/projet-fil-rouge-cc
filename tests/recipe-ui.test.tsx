@@ -1,9 +1,10 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Routes, Route } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 import { http, HttpResponse, delay } from 'msw';
 import SingleRecipePage from '@/pages/SingleRecipePage/SingleRecipePage';
+import Favorites from '@/pages/Favorites/Favorites';
 import RecipeCreateForm from '@/pages/RecipeCreateForm/RecipeCreateForm';
 import AdvancedRecipeSearch from '@/components/AdvancedRecipeSearch/AdvancedRecipeSearch';
 import { renderApp } from './render';
@@ -34,6 +35,46 @@ test('recipe details load ingredients and instructions; toggles refresh detail; 
   expect(aiCalls).toBe(1);
   await interaction.click(screen.getByTestId('CloseIcon').closest('button'));
   await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+});
+
+test('favorites refresh when a recipe is added or removed, including when returning to the favorites page', async () => {
+  let favorited = false;
+  let userReads = 0;
+  server.use(
+    http.get(`${API}/users/me`, () => {
+      userReads++;
+      return HttpResponse.json({ data: { ...user, favorite_recipes: favorited ? [recipe] : [] } });
+    }),
+    http.get(`${API}/recipes/1`, () => HttpResponse.json({ data: { ...recipe,
+      favorites: { count: favorited ? 1 : 0, is_favorited_by_user: favorited },
+    } })),
+    http.post(`${API}/recipes/1/favorite`, () => { favorited = !favorited; return HttpResponse.json({}); }),
+  );
+  const interaction = userEvent.setup();
+  renderApp(<>
+    <Link to='/favorites'>Open favorites</Link>
+    <Link to='/recipe/1'>Open recipe</Link>
+    <Routes>
+      <Route path='/favorites' element={<Favorites />} />
+      <Route path='/recipe/:id' element={<SingleRecipePage />} />
+    </Routes>
+  </>, { route: '/favorites' });
+  await screen.findByText("You don't have any favorites yet !");
+  await interaction.click(screen.getByRole('link', { name: 'Open recipe' }));
+  const add = await screen.findByTestId('FavoriteBorderIcon');
+  await waitFor(() => expect(add.closest('button')).toBeEnabled());
+  await interaction.click(add.closest('button'));
+  await screen.findByTestId('FavoriteIcon');
+  await interaction.click(screen.getByRole('link', { name: 'Open favorites' }));
+  expect(await screen.findByRole('heading', { name: 'Carrot soup' })).toBeVisible();
+  await interaction.click(screen.getByRole('button', { name: 'View Recipe' }));
+  const remove = await screen.findByTestId('FavoriteIcon');
+  await waitFor(() => expect(remove.closest('button')).toBeEnabled());
+  await interaction.click(remove.closest('button'));
+  await screen.findByTestId('FavoriteBorderIcon');
+  await interaction.click(screen.getByRole('link', { name: 'Open favorites' }));
+  expect(await screen.findByText("You don't have any favorites yet !")).toBeVisible();
+  expect(userReads).toBe(3);
 });
 
 test.each([401, 403, 404, 500])('recipe HTTP %s shows its error page', async status => {
