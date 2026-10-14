@@ -117,7 +117,7 @@ test.each([['month', 1, 1200, '12.00 EUR'], ['month', 6, 6000, '10.00 EUR'], ['y
 test('profile updates and account deletion use the current ID and preserve password request data', async () => {
   const store = makeStore();
   const calls: any[] = [];
-  server.use(http.put(`${API}/users/edit/1`, async ({ request }) => { calls.push((await request.formData()).get('name')); return HttpResponse.json(user); }), http.delete(`${API}/users/delete/1`, async ({ request }) => { calls.push(await request.json()); return new HttpResponse(null, { status: 204 }); }));
+  server.use(http.post(`${API}/users/edit/1`, async ({ request }) => { calls.push((await request.formData()).get('name')); return HttpResponse.json(user); }), http.delete(`${API}/users/delete/1`, async ({ request }) => { calls.push(await request.json()); return new HttpResponse(null, { status: 204 }); }));
   await store.dispatch(authApi.endpoints.getCurrentUser.initiate()).unwrap();
   const profileData = new FormData(); profileData.append('name', 'New name');
   await store.dispatch(authApi.endpoints.updateProfile.initiate({ userId: 1, profileData })).unwrap();

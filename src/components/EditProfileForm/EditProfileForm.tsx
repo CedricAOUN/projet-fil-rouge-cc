@@ -1,4 +1,5 @@
 import ContentPanel from '@/components/Layout/ContentPanel';
+import { getFieldError } from '@/utils/formUtils';
 import { useTranslation } from 'react-i18next';
 import React, { useRef, useState } from 'react';
 import {
@@ -57,7 +58,7 @@ function EditProfileForm({ onStopEdit }) {
 
     updateProfile({ userId: currentUser?.id, profileData: payload })
       .unwrap()
-      .then(() => onStopEdit());
+      .then(() => onStopEdit()).catch(() => {});
   };
 
   const handleCancel = () => {
@@ -93,7 +94,7 @@ function EditProfileForm({ onStopEdit }) {
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
           error={!!errors?.name}
-          helperText={errors?.name}
+          helperText={getFieldError(errorObject, 'name')}
         ></TextField>
         <TextField
           label={t('First name')}
@@ -101,7 +102,7 @@ function EditProfileForm({ onStopEdit }) {
           value={formData.first_name}
           onChange={(e) => handleChange('first_name', e.target.value)}
           error={!!errors?.first_name}
-          helperText={errors?.first_name}
+          helperText={getFieldError(errorObject, 'first_name')}
         ></TextField>
         <TextField
           label={t('Last name')}
@@ -109,7 +110,7 @@ function EditProfileForm({ onStopEdit }) {
           value={formData.last_name}
           onChange={(e) => handleChange('last_name', e.target.value)}
           error={!!errors?.last_name}
-          helperText={errors?.last_name}
+          helperText={getFieldError(errorObject, 'last_name')}
         ></TextField>
         <TextField
           label={t('Biography')}
@@ -119,7 +120,7 @@ function EditProfileForm({ onStopEdit }) {
           value={formData.biography}
           onChange={(e) => handleChange('biography', e.target.value)}
           error={!!errors?.biography}
-          helperText={errors?.biography}
+          helperText={getFieldError(errorObject, 'biography')}
         ></TextField>
         <Button variant='contained' component='label'>
           {t('New Avatar')}

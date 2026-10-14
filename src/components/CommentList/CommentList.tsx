@@ -23,6 +23,7 @@ import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import SendIcon from '@mui/icons-material/Send';
 import EditCommentDialog from './EditCommentDialog';
 import { useGetCurrentUserQuery } from '@/api/authApi';
+import { getFieldError } from '@/utils/formUtils';
 
 function CommentList({
   comments,
@@ -40,17 +41,24 @@ function CommentList({
   const currentUserId = currentUser?.id;
   const isPremiumUser = currentUser?.is_premium || false;
 
-  const [addComment] = useAddCommentMutation();
-  const [editComment] = useEditCommentMutation();
+  const [addComment, { error: addError, isLoading: isAdding }] = useAddCommentMutation();
+  const [editComment, { error: editError, isLoading: isEditing, reset: resetEdit }] = useEditCommentMutation();
   const [deleteComment] = useDeleteCommentMutation();
 
   const handleAddComment = async (content: string) => {
-    setNewCommentContent(''); // Clear the input field after adding a comment
-    addComment({ recipeId, content });
+    if (isAdding) return;
+    try {
+      await addComment({ recipeId, content }).unwrap();
+      setNewCommentContent('');
+    } catch { /* Keep the text and display the field error. */ }
   };
 
   const handleEditComment = async (commentId: number, content: string) => {
-    editComment({ commentId, content });
+    if (isEditing) return;
+    try {
+      await editComment({ commentId, content }).unwrap();
+      setIdToEdit(null);
+    } catch { /* Keep the editor open so the author can correct the text. */ }
   };
 
   const handleDeleteComment = async (commentId: number) => {
@@ -68,10 +76,13 @@ function CommentList({
               multiline
               fullWidth
               value={newCommentContent}
+              error={!!addError}
+              helperText={getFieldError(addError, 'content') || (addError ? t('Unable to save. Please try again.') : undefined)}
               onChange={(e) => setNewCommentContent(e.target.value)}
             ></TextField>
             <Button
               aria-label={t('Submit')}
+              disabled={isAdding}
               color='primary'
               onClick={() => handleAddComment(newCommentContent)}
             >
@@ -94,10 +105,13 @@ function CommentList({
             multiline
             fullWidth
             value={newCommentContent}
+              error={!!addError}
+              helperText={getFieldError(addError, 'content') || (addError ? t('Unable to save. Please try again.') : undefined)}
             onChange={(e) => setNewCommentContent(e.target.value)}
           ></TextField>
           <Button
             aria-label={t('Submit')}
+              disabled={isAdding}
             color='primary'
             onClick={() => handleAddComment(newCommentContent)}
           >
@@ -144,7 +158,7 @@ function CommentList({
                 aria-label={t('Edit Comment')}
                 color='primary'
                 onClick={() => {
-                  setIdToEdit(comment.id);
+                  resetEdit(); setIdToEdit(comment.id);
                   setEditedCommentContent(comment.content);
                 }}
               >
@@ -175,11 +189,12 @@ function CommentList({
         open={idToEdit !== null}
         onClose={() => setIdToEdit(null)}
         onConfirm={() => {
-          setIdToEdit(null);
-          handleEditComment(idToEdit, editedCommentContent); // Assuming you want to edit the first comment for demonstration
+          handleEditComment(idToEdit, editedCommentContent);
         }}
         title={t("Edit Comment")}
         content={editedCommentContent}
+        error={getFieldError(editError, 'content') || (editError ? t('Unable to save. Please try again.') : undefined)}
+        isSaving={isEditing}
         onContentChange={(content) => setEditedCommentContent(content)}
       />
     </Stack>

@@ -130,11 +130,14 @@ export const authApi = createApi({
       AuthUser,
       { userId: number; profileData: FormData }
     >({
-      query: ({ userId, profileData }) => ({
-        url: `edit/${userId}`,
-        method: 'PUT',
-        body: profileData,
-      }),
+      query: ({ userId, profileData }) => {
+        profileData.set('_method', 'PUT');
+        return {
+          url: `edit/${userId}`,
+          method: 'POST',
+          body: profileData,
+        };
+      },
       invalidatesTags: (result, error, { userId }) => [
         'SelfUser',
         { type: 'User', id: String(userId) },

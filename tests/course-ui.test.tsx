@@ -96,3 +96,22 @@ test('course list searches and navigates to a selected lesson', async () => {
   await interaction.click(await screen.findByRole('button', { name: 'View Course' }));
   expect(screen.getByTestId('location')).toHaveTextContent('/course/1');
 });
+
+test('course moderation errors stay beside the field and preserve the lesson for correction', async () => {
+  let attempts = 0;
+  server.use(http.post(`${API}/courses/create`, () => ++attempts === 1
+    ? HttpResponse.json({ errors: { content: ['Please remove inappropriate language.'] } }, { status: 422 })
+    : HttpResponse.json({ data: course })));
+  const interaction = userEvent.setup();
+  renderApp(<CourseCreateForm />);
+  await interaction.type(await screen.findByPlaceholderText('Title'), 'My lesson');
+  await interaction.type(screen.getByLabelText('Course content'), 'Blocked content');
+  await interaction.click(screen.getByRole('button', { name: 'Submit' }));
+  expect(await screen.findByText('Please remove inappropriate language.')).toBeVisible();
+  expect(screen.getByLabelText('Course content')).toHaveValue('Blocked content');
+  expect(screen.getByDisplayValue('My lesson')).toBeVisible();
+  await interaction.clear(screen.getByLabelText('Course content'));
+  await interaction.type(screen.getByLabelText('Course content'), 'Chop safely');
+  await interaction.click(screen.getByRole('button', { name: 'Submit' }));
+  await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/course/1'));
+});

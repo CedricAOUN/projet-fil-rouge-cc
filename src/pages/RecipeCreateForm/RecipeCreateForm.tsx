@@ -1,4 +1,5 @@
 import ContentPanel from '@/components/Layout/ContentPanel';
+import { applyValidationErrors } from '@/utils/formUtils';
 import { useTranslation } from 'react-i18next';
 import { t } from '@/i18n';
 import React, { useMemo, useState, useRef } from 'react';
@@ -121,6 +122,7 @@ function RecipeCreateForm() {
 
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors },
     control,
@@ -169,11 +171,13 @@ function RecipeCreateForm() {
     if (edittingRecipe) {
       editRecipe({ data, id })
         .unwrap()
-        .then((res) => navigate(`/recipe/${res.id}`));
+        .then((res) => navigate(`/recipe/${res.id}`))
+        .catch(error => applyValidationErrors(error, setError));
     } else {
       createRecipe(data)
         .unwrap()
-        .then((res) => navigate(`/recipe/${res.id}`));
+        .then((res) => navigate(`/recipe/${res.id}`))
+        .catch(error => applyValidationErrors(error, setError));
     }
   };
 
@@ -362,6 +366,7 @@ function RecipeCreateForm() {
         helperText={errors.instructions?.message}
       />
 
+      {errors.root?.server && <Typography color='error'>{errors.root.server.message}</Typography>}
       <Button
         variant='contained'
         color='primary'

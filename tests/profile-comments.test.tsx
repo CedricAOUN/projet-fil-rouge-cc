@@ -13,6 +13,27 @@ import { API, server, user } from './server';
 
 const comment = { id: 3, content: 'Lovely soup', creator: user, recipe_id: 1, created_at: '2026-01-01', updated_at: '2026-01-02' };
 
+test('rejected comments preserve the draft and editing errors keep the dialog open', async () => {
+  server.use(
+    http.post(`${API}/comments/create`, () => HttpResponse.json({ errors: { content: ['Please remove inappropriate language.'] } }, { status: 422 })),
+    http.put(`${API}/comments/edit/3`, () => HttpResponse.json({ errors: { content: ['Please remove inappropriate language.'] } }, { status: 422 })),
+  );
+  const interaction = userEvent.setup();
+  renderApp(<CommentList comments={[comment]} recipeId='1' />);
+  const input = await screen.findByLabelText('Add a comment');
+  await interaction.type(input, 'My rejected draft');
+  await interaction.click(screen.getByRole('button', { name: 'Submit' }));
+  expect(await screen.findByText('Please remove inappropriate language.')).toBeVisible();
+  expect(screen.getByLabelText('Add a comment')).toHaveValue('My rejected draft');
+  await interaction.click(screen.getByTestId('EditIcon').closest('button'));
+  const dialog = within(screen.getByRole('dialog'));
+  await interaction.clear(dialog.getByRole('textbox'));
+  await interaction.type(dialog.getByRole('textbox'), 'Rejected edit');
+  await interaction.click(dialog.getByRole('button', { name: 'Confirm' }));
+  expect(await dialog.findByText('Please remove inappropriate language.')).toBeVisible();
+  expect(dialog.getByRole('textbox')).toHaveValue('Rejected edit');
+});
+
 test('premium users can add and edit comments, and cancel or confirm deletion', async () => {
   const writes: any[] = [];
   server.use(http.all(`${API}/comments/*`, async ({ request }) => { writes.push({ method: request.method, body: request.method === 'DELETE' ? null : await request.json() }); return HttpResponse.json({ id: 3, recipe_id: '1' }); }));
@@ -59,7 +80,7 @@ test('empty comments still permit premium users to add their first comment', asy
 
 test('profile edit submits name, biography and the actual avatar file and can cancel', async () => {
   let fields: FormData;
-  server.use(http.put(`${API}/users/edit/1`, async ({ request }) => { fields = await request.formData(); return HttpResponse.json(user); }));
+  server.use(http.post(`${API}/users/edit/1`, async ({ request }) => { fields = await request.formData(); return HttpResponse.json(user); }));
   const store = makeStore(); await store.dispatch(authApi.endpoints.getCurrentUser.initiate()).unwrap();
   const stop = jest.fn(); const interaction = userEvent.setup();
   renderApp(<EditProfileForm onStopEdit={stop} />, { store });

@@ -10,6 +10,31 @@ import AdvancedRecipeSearch from '@/components/AdvancedRecipeSearch/AdvancedReci
 import { renderApp } from './render';
 import { API, server, recipe, recipeList, user } from './server';
 
+test('recipe moderation reports field and ingredient errors without losing the draft', async () => {
+  server.use(http.post(`${API}/recipes/create`, () => HttpResponse.json({ errors: {
+    title: ['Please remove inappropriate language.'], 'ingredients.0.name': ['Please remove inappropriate language.'],
+  } }, { status: 422 })));
+  const interaction = userEvent.setup();
+  renderApp(<RecipeCreateForm />);
+  await screen.findByText('Mark recipe as Premium');
+  await interaction.type(screen.getByPlaceholderText('Title'), 'My draft');
+  await interaction.type(screen.getByPlaceholderText('Description'), 'Warm');
+  await interaction.type(screen.getByPlaceholderText('Instructions'), 'Boil');
+  await interaction.type(screen.getByPlaceholderText('Ingredient Name'), 'Carrot');
+  await interaction.type(screen.getByPlaceholderText('Amount'), '2');
+  await interaction.click(screen.getByRole('combobox', { name: 'Unit' }));
+  await interaction.click(screen.getByRole('option', { name: 'Pieces' }));
+  await interaction.click(screen.getByRole('combobox', { name: /^Category/ }));
+  await interaction.click(screen.getByRole('option', { name: 'Starter' }));
+  await interaction.type(screen.getByLabelText(/^Duration/), '30');
+  await interaction.click(screen.getByRole('button', { name: 'Submit Recipe' }));
+  await waitFor(() => expect(screen.getAllByText('Please remove inappropriate language.')).toHaveLength(2));
+  expect(screen.getByDisplayValue('My draft')).toBeVisible();
+  expect(screen.getByDisplayValue('Carrot')).toBeVisible();
+  expect(screen.getByDisplayValue('Boil')).toBeVisible();
+  expect(screen.getByTestId('location')).toHaveTextContent('/');
+});
+
 test.each([
   { premium: false, guest: true },
   { premium: false, guest: false },

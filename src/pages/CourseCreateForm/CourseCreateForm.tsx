@@ -1,4 +1,5 @@
 import ContentPanel from '@/components/Layout/ContentPanel';
+import { applyValidationErrors } from '@/utils/formUtils';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { t } from '@/i18n';
@@ -102,6 +103,7 @@ const CourseCreateForm = () => {
 
   const {
     register,
+    setError,
     control,
     handleSubmit,
     setValue,
@@ -138,7 +140,7 @@ const CourseCreateForm = () => {
 
     request.unwrap().then((res) => {
       navigate(`/course/${res.id}`);
-    });
+    }).catch(error => applyValidationErrors(error, setError));
   };
 
   if (isLoadingExistingCourse || isCreateLoading || isEditLoading) {
@@ -247,6 +249,7 @@ const CourseCreateForm = () => {
             : t('Write something in the editor to preview it here !')}
         </ReactMarkdown>
       </Box>
+      {errors.root?.server && <Typography color='error'>{errors.root.server.message}</Typography>}
       <Button variant='contained' fullWidth type='submit'>
         {edittingCourse ? t('Confirm') : t('Submit')}
       </Button>

@@ -138,7 +138,7 @@ export const recipeApi = createApi({
         url: `${API_URL}/comments/edit/${commentId}`,
         body: { content },
       }),
-      invalidatesTags: (result) => [{ type: 'Recipes', id: result.recipe_id }],
+      invalidatesTags: (result) => result ? [{ type: 'Recipes', id: result.recipe_id }] : [],
     }),
     deleteComment: builder.mutation<
       void,
