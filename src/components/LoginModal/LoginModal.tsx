@@ -292,6 +292,7 @@ function LoginModal({ isOpen, handleClose }) {
           </Typography>
           <Typography
             component={RouterLink}
+            variant='subtitle2'
             to='/forgot-password'
             onClick={handleClose}
             color='primary'
