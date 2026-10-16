@@ -25,13 +25,15 @@ const actionButtonSx = (color: 'warning' | 'error') => (theme: Theme) => {
 export default function MyRecipes() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const currentUser = useGetCurrentUserQuery()?.data;
-  const { currentData: data } = useGetRecipesQuery({ creators: [currentUser?.name], language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en' });
+  const { data: currentUser, isLoading } = useGetCurrentUserQuery();
+  const { currentData: data } = useGetRecipesQuery({ creators: [currentUser?.name], language: i18n.resolvedLanguage === 'fr' ? 'fr' : 'en' }, { skip: !currentUser });
   const recipes = data?.recipes;
   const [deleteRecipe] = useDeleteRecipeMutation();
   const [recipeIDToDelete, setRecipeIDToDelete] = useState<string | null>(null);
   const handleDeleteRecipe = (id: string) => { deleteRecipe(id); setRecipeIDToDelete(null); };
+  if (isLoading) return null;
   if (!currentUser) return <PageErrorHandler errorStatus={401} />;
+  const canCreate = currentUser.is_premium;
   return <Stack spacing={4}>
     <Typography variant='h1'>{t('Your Recipes')}</Typography>
     {recipes?.length ? <RecipeGrid>{recipes.map(recipe => <RecipeCard key={recipe.id} id={recipe.id} title={recipe.title} image={recipe.image_url} description={recipe.description}
@@ -39,7 +41,11 @@ export default function MyRecipes() {
         <IconButton aria-label={t('Edit')} color='warning' sx={actionButtonSx('warning')} onClick={() => navigate(`/recipe/edit/${recipe.id}`)}><EditIcon /></IconButton>
         <IconButton aria-label={t('Delete')} color='error' sx={actionButtonSx('error')} onClick={() => setRecipeIDToDelete(recipe.id)}><DeleteIcon /></IconButton>
       </>} />)}</RecipeGrid> : <ContentPanel>
-        <Stack alignItems='center' spacing={2}><Typography>{t("You haven't created any recipes yet !")}</Typography><Button variant='contained' onClick={() => navigate('/recipe/create')}>{t('Create a Recipe')}</Button></Stack>
+        <Stack alignItems='center' spacing={2}>
+          <Typography>{t("You haven't created any recipes yet !")}</Typography>
+          {!canCreate && <Typography>{t('A premium subscription is required to create recipes.')}</Typography>}
+          <Button variant='contained' onClick={() => navigate(canCreate ? '/recipe/create' : '/premium')}>{t(canCreate ? 'Create a Recipe' : 'Discover Premium')}</Button>
+        </Stack>
       </ContentPanel>}
     <ConfirmationModal title={t('Delete confirmation')} message={t('Are you sure you want to delete this recipe ?')} onClose={() => setRecipeIDToDelete(null)} open={Boolean(recipeIDToDelete)} onConfirm={() => handleDeleteRecipe(recipeIDToDelete)} />
   </Stack>;

@@ -54,6 +54,7 @@ test('profile dropdown exposes entitled actions and navigates to favorites', asy
   expect(screen.getByRole('menuitem', { name: 'Create a course' })).toBeVisible();
   await interaction.click(screen.getByRole('menuitem', { name: 'Favorites' }));
   expect(screen.getByTestId('location')).toHaveTextContent('/favorites');
+  await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
 });
 
 test('favorites empty state links to search and populated state opens a recipe', async () => {
@@ -99,7 +100,7 @@ test('checkout requires login and terms, resets acceptance when billing changes,
   expect(proceed).toBeDisabled();
   await interaction.click(screen.getByRole('checkbox'));
   await waitFor(() => expect(proceed).toBeEnabled());
-  await interaction.click(screen.getAllByRole('combobox')[1]);
+  await interaction.click(screen.getByRole('combobox', { name: 'Billing cycle' }));
   await interaction.click(screen.getByRole('option', { name: 'Yearly' }));
   expect(proceed).toBeDisabled();
   expect(screen.getByRole('checkbox')).not.toBeChecked();
@@ -127,7 +128,7 @@ test('billing success displays fetched order details and both outcomes return ho
   expect(screen.getByTestId('location')).toHaveTextContent('/');
   first.unmount(); window.history.replaceState({}, '', '/');
   renderApp(<BillingFailure />, { route: '/billing/cancel' });
-  expect(screen.getByRole('heading', { name: 'Payment Failed' })).toBeVisible();
+  expect(screen.getByRole('heading', { name: 'Checkout cancelled' })).toBeVisible();
   await interaction.click(screen.getByRole('button', { name: 'Back to Home' }));
   expect(screen.getByTestId('location')).toHaveTextContent('/');
 });
@@ -139,7 +140,7 @@ test('premium tier cards update checkout selection', async () => {
   const buttons = screen.getAllByRole('button').filter(button => /select|choose|start/i.test(button.textContent));
   expect(buttons.length).toBeGreaterThan(0);
   await interaction.click(buttons.at(-1));
-  expect(screen.getAllByRole('combobox')[0]).toHaveTextContent('Master Chef');
+  expect(screen.getByRole('combobox', { name: 'Subscription plan' })).toHaveTextContent('Master Chef');
 });
 
 test('course owners can edit and confirm deletion; free users are directed to premium', async () => {
@@ -157,4 +158,24 @@ test('course owners can edit and confirm deletion; free users are directed to pr
   renderApp(<CourseList courses={[course]} />);
   await interaction.click(await screen.findByRole('button', { name: 'Get Premium' }));
   expect(screen.getByTestId('location')).toHaveTextContent('/premium');
+});
+
+
+test('plan cards and checkout display the same Stripe currency and amount', async () => {
+  server.use(http.get(API + '/users/me', () => HttpResponse.json({ data: { ...user, is_premium: false } })));
+  renderApp(<PremiumPage />);
+  expect(await screen.findAllByText('12.00 EUR/month')).toHaveLength(2);
+  expect(screen.getByText('Price now: 12.00 EUR')).toBeVisible();
+  expect(screen.queryByText(/\$9\.99|\$19\.99/)).not.toBeInTheDocument();
+});
+
+test('free accounts see an upgrade action in My Recipes', async () => {
+  server.use(
+    http.get(API + '/users/me', () => HttpResponse.json({ data: { ...user, is_premium: false, is_chef: false } })),
+    http.get(API + '/recipes', () => HttpResponse.json({ ...recipeList, recipes: [] })),
+  );
+  renderApp(<MyRecipes />);
+  await userEvent.click(await screen.findByRole('button', { name: 'Discover Premium' }));
+  expect(screen.getByTestId('location')).toHaveTextContent('/premium');
+  expect(screen.queryByRole('button', { name: 'Create a Recipe' })).not.toBeInTheDocument();
 });

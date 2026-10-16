@@ -1,6 +1,6 @@
 import ContentPanel from '@/components/Layout/ContentPanel';
 import { useTranslation } from 'react-i18next';
-import { Button, Paper, Typography, Stack } from '@mui/material';
+import { Button, Typography, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function BillingFailure() {
@@ -18,9 +18,10 @@ function BillingFailure() {
           alignItems: 'center',
         }}
       >
-        <Typography variant='h1'>{t("Payment Failed")}</Typography>
-        <Typography variant='h6' component='p'>{t("Unfortunately, your payment could not be processed. Please try again or contact support for assistance.")}</Typography>
+        <Typography variant='h1'>{t("Checkout cancelled")}</Typography>
+        <Typography variant='h6' component='p'>{t("You cancelled checkout before completing your subscription. You can return to Premium whenever you are ready.")}</Typography>
       </ContentPanel>
+      <Button variant='outlined' onClick={() => navigate('/premium')}>{t('Discover Premium')}</Button>
       <Button variant='contained' onClick={() => navigate('/')}>{t("Back to Home")}</Button>
     </Stack>
   );

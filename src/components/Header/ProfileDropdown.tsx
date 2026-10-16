@@ -78,27 +78,27 @@ function SimpleMenu({ isMobile, currentUser, onNavigateToProfile, onLogout }) {
             {currentUser.name}
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onNavigateToProfile}>
+        <MenuItem onClick={() => { handleClose(); onNavigateToProfile(); }}>
           <Typography textAlign={'center'} width={'100%'}>{t("Profile")}</Typography>
         </MenuItem>
-        <MenuItem onClick={() => navigate('/favorites')}>
+        <MenuItem onClick={() => { handleClose(); navigate('/favorites'); }}>
           <Typography textAlign={'center'} width={'100%'}>{t("Favorites")}</Typography>
         </MenuItem>
-        <MenuItem onClick={() => navigate('/my-recipes')}>
+        <MenuItem onClick={() => { handleClose(); navigate('/my-recipes'); }}>
           <Typography textAlign={'center'} width={'100%'}>{t("My Recipes")}</Typography>
         </MenuItem>
         {isCurrentUserPremium && (
-          <MenuItem onClick={() => navigate('/recipe/create')}>
+          <MenuItem onClick={() => { handleClose(); navigate('/recipe/create'); }}>
             <Typography textAlign={'center'} width={'100%'}>{t("Create a recipe")}</Typography>
           </MenuItem>
         )}
         {isCurrentUserChef && (
-          <MenuItem onClick={() => navigate('/course/create')}>
+          <MenuItem onClick={() => { handleClose(); navigate('/course/create'); }}>
             <Typography textAlign={'center'} width={'100%'}>{t("Create a course")}</Typography>
           </MenuItem>
         )}
         <Divider />
-        <MenuItem onClick={onLogout}>
+        <MenuItem onClick={() => { handleClose(); onLogout(); }}>
           <Typography textAlign={'center'} width={'100%'} color={'error'}>{t("Logout")}</Typography>
         </MenuItem>
       </Menu>

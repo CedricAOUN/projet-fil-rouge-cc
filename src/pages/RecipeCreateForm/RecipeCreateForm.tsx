@@ -6,6 +6,7 @@ import React, { useMemo, useState, useRef } from 'react';
 import {
   Button,
   Checkbox,
+  FormControlLabel,
   CircularProgress,
   MenuItem,
   Stack,
@@ -87,7 +88,8 @@ function RecipeCreateForm() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:900px)');
-  const currentUser = useGetCurrentUserQuery().data;
+  const { data: currentUser, isLoading: isLoadingCurrentUser } = useGetCurrentUserQuery();
+  const [requiresUpgrade, setRequiresUpgrade] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Existing Recipe (for editting)
@@ -177,17 +179,34 @@ function RecipeCreateForm() {
       createRecipe(data)
         .unwrap()
         .then((res) => navigate(`/recipe/${res.id}`))
-        .catch(error => applyValidationErrors(error, setError));
+        .catch(error => {
+          if (error?.status === 403) {
+            setRequiresUpgrade(true);
+            setError('root.server', { type: 'server', message: t('A premium subscription is required to create recipes.') });
+          } else {
+            applyValidationErrors(error, setError);
+          }
+        });
     }
   };
 
-  if (isLoadingExistingRecipe || isCreateLoading || isEditLoading) {
+  if (isLoadingCurrentUser || isLoadingExistingRecipe) {
     return (
       <Stack direction={'row'} justifyContent={'center'} p={3}>
         <CircularProgress size={'50px'} />
       </Stack>
     );
   }
+
+  if (!currentUser) return <PageErrorHandler errorStatus={401} />;
+
+  if (!id && !currentUser.is_premium) return <ContentPanel>
+    <Stack spacing={2} alignItems='flex-start'>
+      <Typography variant='h1'>{t('Create a recipe')}</Typography>
+      <Typography>{t('A premium subscription is required to create recipes.')}</Typography>
+      <Button variant='contained' onClick={() => navigate('/premium')}>{t('Discover Premium')}</Button>
+    </Stack>
+  </ContentPanel>;
 
   if (edittingRecipe && edittingRecipe?.creator?.id !== currentUser?.id) {
     return <PageErrorHandler errorStatus={403} />;
@@ -233,10 +252,7 @@ function RecipeCreateForm() {
 
       <Stack>
         {currentUser?.is_chef && (
-          <Stack direction='row' gap={1} alignItems='center'>
-            <Typography>{t("Mark recipe as Premium")}</Typography>
-            <Checkbox {...register('is_premium')} />
-          </Stack>
+          <FormControlLabel control={<Checkbox {...register('is_premium')} />} label={t('Mark recipe as Premium')} />
         )}
       </Stack>
 
@@ -257,16 +273,16 @@ function RecipeCreateForm() {
             <img className='image-preview' src={imagePreview} alt={t("Preview of your recipe photo")} />
           )}
 
-          <Button variant='contained' component='label'>
+          <Button type='button' variant='contained' onClick={() => fileInputRef.current?.click()}>
             {imagePreview ? t('Change image') : t('Upload image')}
-            <input
-              type='file'
-              hidden
-              accept='image/png,image/jpeg,image/webp'
-              onChange={handleImageChange}
-              ref={fileInputRef}
-            />
           </Button>
+          <input
+            type='file'
+            hidden
+            accept='image/png,image/jpeg,image/webp'
+            onChange={handleImageChange}
+            ref={fileInputRef}
+          />
 
           {imagePreview && (
             <Button
@@ -367,10 +383,12 @@ function RecipeCreateForm() {
       />
 
       {errors.root?.server && <Typography color='error'>{errors.root.server.message}</Typography>}
+      {requiresUpgrade && <Button onClick={() => navigate('/premium')}>{t('Discover Premium')}</Button>}
       <Button
         variant='contained'
         color='primary'
         onClick={handleSubmit(onSubmit)}
+        disabled={isCreateLoading || isEditLoading}
       >
         {edittingRecipe ? t("Confirm") : t("Submit Recipe")}
       </Button>

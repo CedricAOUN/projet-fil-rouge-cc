@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Slider, Typography, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface RatingSliderProps {
   label: string;
@@ -14,6 +15,7 @@ const CustomSlider = ({
   max = 5,
   onChange,
 }: RatingSliderProps) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState<number | number[]>([min, max]);
 
   const handleChange = (_: Event, newValue: number | number[]) => {
@@ -34,6 +36,7 @@ const CustomSlider = ({
           {value[0]}
         </Typography>
         <Slider
+          getAriaLabel={(index) => t(index === 0 ? 'Minimum {{label}}' : 'Maximum {{label}}', { label })}
           value={value}
           min={min}
           max={max}

@@ -14,7 +14,7 @@ afterEach(async () => { await act(async () => { await i18n.changeLanguage('en');
 
 test('switching interface language preserves an unfinished recipe form', async () => {
   renderApp(<RecipeCreateForm />);
-  await userEvent.type(screen.getByPlaceholderText('Title'), 'Unfinished recipe');
+  await userEvent.type(await screen.findByPlaceholderText('Title'), 'Unfinished recipe');
   await act(async () => { await i18n.changeLanguage('fr'); });
   expect(screen.getByDisplayValue('Unfinished recipe')).toBeVisible();
   expect(screen.getByRole('combobox', { name: /^Langue de la recette/ })).toHaveTextContent(i18n.t('English'));

@@ -5,6 +5,8 @@ import {
   CircularProgress,
   Checkbox,
   FormControlLabel,
+  FormControl,
+  InputLabel,
   Link as MuiLink,
   MenuItem,
   Select,
@@ -46,7 +48,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
   const selectedPlan = getPremiumTiers(t).find((tier) => tier.id === selectedTier);
   const selectedPlanStripeId = selectedPlan?.stripePriceMap[selectedBilling];
 
-  const { data: planDetails, isLoading: isPlanDetailsLoading } =
+  const { currentData: planDetails, isFetching: isPlanDetailsLoading } =
     useGetPlanDetailsQuery(selectedPlanStripeId);
 
   return (
@@ -65,39 +67,49 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
             <ReceiptIcon />
             <Typography variant='h6' component='h3'>{t("Subscription information")}</Typography>
           </Stack>
-          <Select
-            fullWidth
-            size='small'
-            value={selectedTier}
-            onChange={(e) => onTierSelect(e.target.value)}
-          >
-            <MenuItem value='premium'>{t("Sous Chef")}</MenuItem>
-            <MenuItem value='chef'>{t("Master Chef")}</MenuItem>
-          </Select>
-          <Select
-            fullWidth
-            size='small'
-            value={selectedBilling}
-            onChange={(e) => {
-              setSelectedBilling(e.target.value);
-            }}
-          >
-            <MenuItem value='monthly'>{t("Monthly")}</MenuItem>
-            <MenuItem value='6_months'>{t("Every 6 Months")}</MenuItem>
-            <MenuItem value='annual'>{t("Yearly")}</MenuItem>
-          </Select>
+          <FormControl fullWidth size='small'>
+            <InputLabel id='subscription-plan-label'>{t('Subscription plan')}</InputLabel>
+            <Select
+              labelId='subscription-plan-label'
+              label={t('Subscription plan')}
+              fullWidth
+              size='small'
+              value={selectedTier}
+              onChange={(e) => onTierSelect(e.target.value)}
+            >
+              <MenuItem value='premium'>{t("Sous Chef")}</MenuItem>
+              <MenuItem value='chef'>{t("Master Chef")}</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth size='small'>
+            <InputLabel id='billing-cycle-label'>{t('Billing cycle')}</InputLabel>
+            <Select
+              labelId='billing-cycle-label'
+              label={t('Billing cycle')}
+              fullWidth
+              size='small'
+              value={selectedBilling}
+              onChange={(e) => {
+                setSelectedBilling(e.target.value);
+              }}
+            >
+              <MenuItem value='monthly'>{t("Monthly")}</MenuItem>
+              <MenuItem value='6_months'>{t("Every 6 Months")}</MenuItem>
+              <MenuItem value='annual'>{t("Yearly")}</MenuItem>
+            </Select>
+          </FormControl>
           {isPlanDetailsLoading ? (
             <Stack direction={'row'} justifyContent={'center'} p={3}>
               <CircularProgress size={'50px'} />
             </Stack>
-          ) : (
+          ) : planDetails ? (
             <>
               <Typography variant='body2' fontSize={18}>{t('Price now: {{price}}', { price: planDetails?.price })}
               </Typography>
               <Typography variant='body2' fontSize={18}>{t('Equivalent to {{price}}/month', { price: planDetails?.monthlyPrice ?? t('N/A') })}</Typography>
-              <Typography variant='body2' color='text.secondary'>{t("You will be charged based on the selected billing cycle. This student version does not yet provide self-service cancellation.")}</Typography>
             </>
-          )}
+          ) : <Typography role='alert' color='error'>{t('Price unavailable')}</Typography>}
+          <Typography variant='body2' color='text.secondary'>{t('Billing follows the selected cycle. To stop renewal, open your profile and select Unsubscribe. Access continues until the end of the current billing period. Payments are simulated in Stripe sandbox mode.')}</Typography>
           <FormControlLabel
             control={
               <Checkbox
@@ -122,6 +134,7 @@ function Checkout({ paymentSectionRef, selectedTier, onTierSelect }) {
             disabled={
               isCheckoutLoading ||
               isPlanDetailsLoading ||
+              !planDetails ||
               !isLoggedIn ||
               !hasAcceptedTerms
             }

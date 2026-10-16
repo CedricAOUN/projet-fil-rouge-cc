@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,6 +17,7 @@ import CloseIcon from '@mui/icons-material/Close';
 function AskAIButton({ recipe }) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const titleId = useId();
 
   const { data: suggestion, isLoading } = useAskAIQuery(
     { id: recipe?.id },
@@ -29,6 +30,7 @@ function AskAIButton({ recipe }) {
     <>
       <Button sx={{ height: 40 }} onClick={() => setIsOpen(true)}>{t("Ask AI")}</Button>
       <Dialog
+        aria-labelledby={titleId}
         open={isOpen}
         onClose={() => setIsOpen(false)}
         fullWidth
@@ -42,7 +44,7 @@ function AskAIButton({ recipe }) {
           justifyContent={'space-between'}
         >
           <SmartToyIcon color='primary'></SmartToyIcon>
-          <Typography variant='h5' component='h2' color='primary'>{t("AI Assisted Steps")}</Typography>
+          <Typography id={titleId} variant='h5' component='h2' color='primary'>{t("AI Assisted Steps")}</Typography>
           <IconButton aria-label={t('Close')} onClick={() => setIsOpen(false)}>
             <CloseIcon sx={{ fontSize: 24 }}></CloseIcon>
           </IconButton>

@@ -189,6 +189,7 @@ const CourseCreateForm = () => {
         <input
           type='file'
           accept='.mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv'
+          aria-label={t('Course video')}
           aria-describedby={errors.video ? 'video-error' : undefined}
           onChange={(event) => {
             const selectedVideo = event.target.files?.[0];
@@ -214,6 +215,7 @@ const CourseCreateForm = () => {
         control={control}
         render={({ field }) => (
           <MDEditor
+            textareaProps={{ 'aria-label': t('Course content editor') }}
             value={field.value}
             onChange={(value) => field.onChange(value ?? '')}
             height={400}

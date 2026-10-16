@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Link, Routes, Route } from 'react-router-dom';
 import { http, HttpResponse, delay } from 'msw';
@@ -92,6 +92,7 @@ test('recipe details load ingredients and instructions; toggles refresh detail; 
   await interaction.click(screen.getByRole('button', { name: 'Ask AI' }));
   expect(await screen.findByText('Roast carrots.')).toBeVisible();
   expect(aiCalls).toBe(1);
+  expect(screen.getByRole('dialog', { name: 'AI Assisted Steps' })).toBeVisible();
   await interaction.click(screen.getByTestId('CloseIcon').closest('button'));
   await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 });
@@ -260,4 +261,44 @@ test('recipe editing pre-fills data, sends an update and rejects another owner',
   renderApp(<Routes><Route path='/recipe/edit/:id' element={<RecipeCreateForm />} /></Routes>, { route: '/recipe/edit/1' });
   await waitFor(() => expect(screen.queryByRole('progressbar')).not.toBeInTheDocument());
   expect(screen.queryByPlaceholderText('Title')).not.toBeInTheDocument();
+});
+
+
+test('free accounts cannot fill the creation form through its direct URL', async () => {
+  server.use(http.get(API + '/users/me', () => HttpResponse.json({ data: { ...user, is_premium: false, is_chef: false } })));
+  renderApp(<RecipeCreateForm />, { route: '/recipe/create' });
+  const upgrade = await screen.findByRole('button', { name: 'Discover Premium' });
+  expect(screen.queryByPlaceholderText('Title')).not.toBeInTheDocument();
+  await userEvent.click(upgrade);
+  expect(screen.getByTestId('location')).toHaveTextContent('/premium');
+});
+
+test.each(['{Enter}', ' '])('image upload activates from the keyboard with %s', async key => {
+  renderApp(<RecipeCreateForm />);
+  const upload = await screen.findByRole('button', { name: 'Upload image' });
+  const fileInput = document.querySelector('input[type=file]') as HTMLInputElement;
+  const click = jest.spyOn(fileInput, 'click');
+  act(() => upload.focus());
+  await userEvent.keyboard(key);
+  expect(click).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole('checkbox', { name: 'Mark recipe as Premium' })).toBeInTheDocument();
+});
+
+test('expired recipe creation permission preserves the draft and offers an upgrade', async () => {
+  server.use(http.post(API + '/recipes/create', () => HttpResponse.json({ message: 'Forbidden' }, { status: 403 })));
+  const interaction = userEvent.setup(); renderApp(<RecipeCreateForm />);
+  await screen.findByRole('button', { name: 'Submit Recipe' });
+  await interaction.type(screen.getByPlaceholderText('Title'), 'My draft');
+  await interaction.type(screen.getByPlaceholderText('Instructions'), 'Boil');
+  await interaction.type(screen.getByPlaceholderText('Ingredient Name'), 'Carrot');
+  await interaction.type(screen.getByPlaceholderText('Amount'), '2');
+  await interaction.click(screen.getByRole('combobox', { name: 'Unit' }));
+  await interaction.click(screen.getByRole('option', { name: 'Pieces' }));
+  await interaction.type(screen.getByLabelText(/^Duration/), '30');
+  await interaction.click(screen.getByRole('combobox', { name: /^Category/ }));
+  await interaction.click(screen.getByRole('option', { name: 'Starter' }));
+  await interaction.click(screen.getByRole('button', { name: 'Submit Recipe' }));
+  expect(await screen.findByText('A premium subscription is required to create recipes.')).toBeVisible();
+  expect(screen.getByDisplayValue('My draft')).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Discover Premium' })).toBeVisible();
 });

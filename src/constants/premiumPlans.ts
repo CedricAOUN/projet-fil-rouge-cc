@@ -3,8 +3,6 @@ export const getPremiumTiers = (t: TFunction) => [
   {
     id: 'basic',
     title: t("Home Cook"),
-    price: 0,
-    prevPrice: null,
     features: [t("View Basic Recipes")],
     isSelectable: false,
     stripePriceMap: null,
@@ -12,7 +10,6 @@ export const getPremiumTiers = (t: TFunction) => [
   {
     id: 'premium',
     title: t("Sous Chef"),
-    price: 9.99,
     features: [t("View Basic Recipes"), t("View Premium Recipes"), t("Create Recipes")],
     isSelectable: true,
     isPopular: true,
@@ -25,7 +22,6 @@ export const getPremiumTiers = (t: TFunction) => [
   {
     id: 'chef',
     title: t("Master Chef"),
-    price: '19.99',
     features: [
       t("View Basic Recipes"),
       t("View Premium Recipes"),

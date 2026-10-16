@@ -8,6 +8,15 @@ import { getPremiumTiers } from '@/constants/premiumPlans';
 import Checkout from '@/components/Checkout/Checkout';
 import { useGetCurrentUserQuery } from '@/api/authApi';
 import ContentPanel from '@/components/Layout/ContentPanel';
+import { useGetPlanDetailsQuery } from '@/api/plansApi';
+
+function PlanPrice({ priceId }: { priceId?: string }) {
+  const { t } = useTranslation();
+  const { data, isLoading } = useGetPlanDetailsQuery(priceId!, { skip: !priceId });
+  return <Typography variant='h2' component='p'>
+    {!priceId ? t('Free') : data ? t('{{price}}/month', { price: data.price }) : isLoading ? t('Loading price…') : t('Price unavailable')}
+  </Typography>;
+}
 
 export default function PremiumPage() {
   const { t } = useTranslation();
@@ -31,8 +40,7 @@ export default function PremiumPage() {
         <Box sx={{ minHeight: 32 }}>{tier.isPopular && <Chip label={t('Recommended')} size='small' sx={(theme) => ({ bgcolor: alpha(theme.palette.premium.main, 0.12), color: 'premium.main' })} />}</Box>
         <Typography variant='h3' component='h2'>{tier.title}</Typography>
         <Box>
-          {tier.prevPrice && <Typography color='text.secondary' sx={{ textDecoration: 'line-through' }}>${tier.prevPrice}</Typography>}
-          <Typography variant='h2' component='p'>{tier.price !== 0 ? `$${tier.price}` : t('Free')}</Typography>
+          <PlanPrice priceId={tier.stripePriceMap?.monthly} />
         </Box>
         <Stack spacing={2} sx={{ flex: 1 }}>
           {tier.features.map(feature => <Stack key={feature} direction='row' gap={1.5}><DoneIcon color='success' fontSize='small' sx={{ mt: 0.5 }} /><Typography variant='body2'>{feature}</Typography></Stack>)}
