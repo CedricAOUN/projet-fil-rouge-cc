@@ -7,7 +7,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage --runInBand",
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && jest --ci && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
